@@ -1,0 +1,218 @@
+;; Object RandomLib/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "RandomLib/"
+  :tables (list 
+   (semanticdb-table "Makefile"
+    :major-mode 'makefile-mode
+    :tags '(("TARGET" variable (:default-value ("RandomExample" "RandomPermutation" "shuffle")) nil [54 103]) ("all" function (:arguments ("$(TARGET)")) nil [104 120]) ("CPPFLAGS" variable (:default-value ("-I.." "-DDEFAULT_GENERATOR=SRandomGenerator64")) nil [120 175]) ("CXXFLAGS" variable (:default-value ("-Wall" "-O3" "-funroll-loops" "-finline-functions" "-fomit-frame-pointer")) nil [175 252]) ("CC" variable (:default-value ("g++")) nil [252 262]) ("CPPFLAGS" variable (:default-value ("-DDEFAULT_GENERATOR=$(DEFAULT_GENERATOR)")) nil [289 342]) ("HAVE_SSE2" variable (:default-value ("$(shell grep \"flags\\b.*\\bsse2\\b\" /proc/cpuinfo 2> /dev/null | \\
+	tail -1 | wc -l | tr -d ' \\t')")) nil [349 460]) ("HAVE_ALTIVEC" variable (:default-value ("$(shell arch 2> /dev/null | grep ppc | tail -1 | wc -l | tr -d ' \\t')")) nil [461 549]) ("CPPFLAGS" variable (:default-value ("-DHAVE_SSE2")) nil [574 598]) ("CXXFLAGS" variable (:default-value ("-msse2")) nil [600 619]) ("CPPFLAGS" variable (:default-value ("-DHAVE_ALTIVEC")) nil [653 680]) ("CXXFLAGS" variable (:default-value ("-faltivec" "-maltivec")) nil [682 714]) ("test" function nil nil [721 774]) ("HAVE_BOOST_SERIALIZATION" variable (:default-value ("$(if $(wildcard /usr/lib*/libboost_serialization.*),1,0)")) nil [774 861]) ("CPPFLAGS" variable (:default-value ("-DHAVE_BOOST_SERIALIZATION=1")) nil [901 942]) ("LDLIBS" variable (:default-value ("-lboost_serialization")) nil [944 975]) ("REQUIREDHEADERS" variable (:default-value ("Random.hpp" "RandomCanonical.hpp" "RandomPower2.hpp" "RandomEngine.hpp" "RandomAlgorithm.hpp" "RandomMixer.hpp" "RandomSeed.hpp" "RandomType.hpp")) nil [982 1137]) ("OTHERHEADERS" variable (:default-value ("NormalDistribution.hpp" "ExponentialDistribution.hpp" "LeadingZeros.hpp" "ExponentialProb.hpp" "RandomSelect.hpp" "ExactExponential.hpp" "ExactPower.hpp" "RandomNumber.hpp")) nil [1138 1317]) ("Random.o" function (:arguments ("$(REQUIREDHEADERS)")) nil [1318 1348]) ("RandomExample.o" function (:arguments ("$(REQUIREDHEADERS)" "NormalDistribution.hpp" "RandomSelect.hpp")) nil [1348 1437]) ("RandomExample" function (:arguments ("Random.o")) nil [1424 1449]) ("RandomPermutation.o" function (:arguments ("$(REQUIREDHEADERS)")) nil [1449 1506]) ("RandomPermutation" function (:arguments ("Random.o")) nil [1489 1518]) ("shuffle" function (:arguments ("shuffle.sh")) nil [1518 1554]) ("clean" function nil nil [1554 1573]) ("doc" function (:arguments ("Doxyfile" "Random.doc" "$(REQUIREDHEADERS)" "$(OTHERHEADERS)" "Random.cpp" "RandomExample.cpp" "RandomPermutation.cpp" "exphist.pdf" "exphist.png" "powerhist.pdf" "powerhist.png")) nil [1573 1857]))
+    :file "Makefile"
+    :pointmax 1857
+    )
+   (semanticdb-table "Random.cpp"
+    :major-mode 'c++-mode
+    :tags '(("RandomLib/Random.hpp" include nil nil [2554 2585]) ("fstream" include (:system-flag t) nil [2587 2605]) ("ctime" include (:system-flag t) nil [2644 2660]) ("sstream" include (:system-flag t) nil [2693 2711]) ("iomanip" include (:system-flag t) nil [2749 2767]) ("sys/time.h" include (:system-flag t) nil [2818 2839]) ("unistd.h" include (:system-flag t) nil [2878 2897]) ("windows.h" include (:system-flag t) nil [2951 2971]) ("winbase.h" include (:system-flag t) nil [3013 3033]) ("process.h" include (:system-flag t) nil [3034 3054]) ("getpid" variable (:constant-flag t :default-value (nil)) nil [3089 3113]) ("strtoull" variable (:constant-flag t :default-value (nil)) nil [3112 3138]) ("gmtime_r" variable (:constant-flag t :default-value (nil)) nil [3137 3172]) ("RANDOM_CPP" variable (:constant-flag t :default-value (nil)) nil [3181 3278]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMTYPE_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3290 3305])) :type "int") nil [3279 3306]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMSEED_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3318 3333])) :type "int") nil [3307 3334]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMENGINE_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3346 3363])) :type "int") nil [3335 3364]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMMIXER_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3376 3392])) :type "int") nil [3365 3393]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMALGORITHM_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3405 3425])) :type "int") nil [3394 3426]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMPOWER2_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3438 3455])) :type "int") nil [3427 3456]) ("RCSID_DECL" function (:prototype-flag t :arguments (("" variable (:type ("RANDOMCANONICAL_HPP" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3468 3488])) :type "int") nil [3457 3489]) ("RandomLib" type (:members (("Write32" function (:throws ("std::ios::failure") :parent "Random_u32" :arguments (("os" variable (:type ("std::ostream" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3586 3603]) ("bin" variable (:type ("bool" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3604 3613]) ("cnt" variable (:type "int") (reparse-symbol arg-sub-list) [3614 3623]) ("x" variable (:type ("Random_u32::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3630 3649])) :type "void") (reparse-symbol namespacesubparts) [3561 4409]) ("Read32" function (:throws ("std::ios::failure") :parent "Random_u32" :arguments (("is" variable (:type ("std::istream" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [4450 4467]) ("bin" variable (:type ("bool" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [4468 4477]) ("x" variable (:type ("Random_u32::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [4478 4498])) :type "void") (reparse-symbol namespacesubparts) [4426 5097]) ("Write32" function (:throws ("std::ios::failure") :parent "Random_u64" :arguments (("os" variable (:type ("std::ostream" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [5139 5156]) ("bin" variable (:type ("bool" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [5157 5166]) ("cnt" variable (:type "int") (reparse-symbol arg-sub-list) [5167 5176]) ("x" variable (:type ("Random_u64::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [5183 5202])) :type "void") (reparse-symbol namespacesubparts) [5114 5369]) ("Read32" function (:throws ("std::ios::failure") :parent "Random_u64" :arguments (("is" variable (:type ("std::istream" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [5410 5427]) ("bin" variable (:type ("bool" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [5428 5437]) ("x" variable (:type ("Random_u64::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [5438 5458])) :type "void") (reparse-symbol namespacesubparts) [5386 5654]) ("SeedWord" function (:parent "RandomSeed" :type ("RandomSeed::seed_type" type (:type "class") nil nil)) (reparse-symbol namespacesubparts) [5690 6536]) ("SeedVector" function (:parent "RandomSeed" :type "int") (reparse-symbol namespacesubparts) [6575 7427]) ("StringToVector" function (:throws ("std::bad_alloc") :parent "RandomSeed" :arguments (("s" variable (:constant-flag t :type ("std::string" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [7495 7516])) :type "int") (reparse-symbol namespacesubparts) [7468 7863]) ("Init" function (:type "int") (reparse-symbol namespacesubparts) [7979 10090]) ("Check" function (:throws ("std::out_of_range") :arguments (("v" variable (:type ("u64::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [10190 10202]) ("e" variable (:type ("u32::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [10203 10215]) ("m" variable (:type ("u32::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [10222 10234])) :type "int") (reparse-symbol namespacesubparts) [10184 11332]) ("RandomEngine" function (:throws ("std::ios::failure" "std::out_of_range" "std::bad_alloc") :arguments (("is" variable (:type ("std::istream" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [11428 11445]) ("bin" variable (:type ("bool" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [11446 11455])) :type "int") (reparse-symbol namespacesubparts) [11415 12610]) ("Save" function (:throws ("std::ios::failure") :arguments (("os" variable (:type ("std::ostream" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [12703 12720]) ("bin" variable (:type ("bool" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [12730 12739])) :type "int") (reparse-symbol namespacesubparts) [12698 13476]) ("StepCount" function (:arguments (("n" variable (:type "long long") (reparse-symbol arg-sub-list) [13574 13586])) :type "int") (reparse-symbol namespacesubparts) [13564 14248]) ("SelfTest" function (:type "int") (reparse-symbol namespacesubparts) [14336 15500]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [15610 15621])) :type "int") (reparse-symbol namespacesubparts) [15595 15707]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [15817 15828])) :type "int") (reparse-symbol namespacesubparts) [15802 15934]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [16044 16055])) :type "int") (reparse-symbol namespacesubparts) [16029 16141]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [16251 16262])) :type "int") (reparse-symbol namespacesubparts) [16236 16368]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [16466 16477])) :type "int") (reparse-symbol namespacesubparts) [16451 16562]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [16660 16671])) :type "int") (reparse-symbol namespacesubparts) [16645 16776]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [16876 16887])) :type "int") (reparse-symbol namespacesubparts) [16861 16972]) ("SelfTestResult" function (:arguments (("i" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [17072 17083])) :type "int") (reparse-symbol namespacesubparts) [17057 17189]) ("SeedToState" function (:arguments (("" variable (:constant-flag t :type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [17295 17335]) ("" variable (:type ("seed" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [17337 17342]) ("state" variable (:dereference 1 :type ("mixer_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [17350 17369]) ("n" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [17370 17381])) :type "int") (reparse-symbol namespacesubparts) [17283 18583]) ("SeedToState" function (:arguments (("" variable (:constant-flag t :type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [18656 18696]) ("" variable (:type ("seed" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [18698 18703]) ("state" variable (:dereference 1 :type ("mixer_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [18711 18730]) ("n" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [18731 18742])) :type "int") (reparse-symbol namespacesubparts) [18644 20016]) ("SeedToState" function (:parent "MixerSFMT" :arguments (("" variable (:constant-flag t :type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [20048 20088]) ("" variable (:type ("seed" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [20090 20095]) ("state" variable (:dereference 1 :type ("mixer_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [20101 20120]) ("n" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [20121 20132])) :type "void") (reparse-symbol namespacesubparts) [20020 21905]) ("MT19937_STEP" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [22018 22057]) ("MT19937_REVSTEP" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [22524 22751]) ("Transition" function (:arguments (("count" variable (:type "long long") (reparse-symbol arg-sub-list) [22821 22837]) ("statev" variable (:dereference 1 :type ("internal_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [22838 22861])) :type "int") (reparse-symbol namespacesubparts) [22810 23579]) ("NormalizeState" function (:arguments (("state" variable (:dereference 1 :type ("engine_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [23697 23717])) :type "int") (reparse-symbol namespacesubparts) [23682 24497]) ("CheckState" function (:throws ("std::out_of_range") :arguments (("state" variable (:dereference 1 :constant-flag t :type ("engine_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [24567 24593]) ("check" variable (:type ("Random_u32::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [24605 24629])) :type "int") (reparse-symbol namespacesubparts) [24556 25350]) ("SFMT19937_STEP128" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [26572 27045]) ("SFMT19937_REVSTEP128" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [28011 28604]) ("Transition" function (:arguments (("count" variable (:type "long long") (reparse-symbol arg-sub-list) [28676 28692]) ("statev" variable (:dereference 1 :type ("internal_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [28693 28716])) :type "int") (reparse-symbol namespacesubparts) [28665 29511]) ("ALTIVEC_PERM" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [30104 30148]) ("SFMT19937_STEP128" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [30150 30487]) ("SFMT19937_REVSTEP128" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [30489 31000]) ("Transition" function (:arguments (("count" variable (:type "long long") (reparse-symbol arg-sub-list) [31072 31088]) ("statev" variable (:dereference 1 :type ("internal_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [31089 31112])) :type "int") (reparse-symbol namespacesubparts) [31061 34167]) ("SFMT19937_STEP32" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [34287 35179]) ("SFMT19937_REVSTEP32" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [35181 36319]) ("Transition" function (:arguments (("count" variable (:type "long long") (reparse-symbol arg-sub-list) [36375 36391]) ("statev" variable (:dereference 1 :type ("internal_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [36392 36415])) :type "int") (reparse-symbol namespacesubparts) [36364 37273]) ("SFMT19937_STEP64" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [37327 37778]) ("SFMT19937_REVSTEP64" variable (:constant-flag t :default-value (nil)) (reparse-symbol namespacesubparts) [38038 38681]) ("Transition" function (:arguments (("count" variable (:type "long long") (reparse-symbol arg-sub-list) [38737 38753]) ("statev" variable (:dereference 1 :type ("internal_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [38754 38777])) :type "int") (reparse-symbol namespacesubparts) [38726 39522]) ("NormalizeState" function (:arguments (("state" variable (:dereference 1 :type ("engine_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [39655 39675])) :type "int") (reparse-symbol namespacesubparts) [39640 40259]) ("NormalizeState" function (:arguments (("state" variable (:dereference 1 :type ("engine_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [40319 40339])) :type "int") (reparse-symbol namespacesubparts) [40304 40875]) ("CheckState" function (:throws ("std::out_of_range") :arguments (("state" variable (:dereference 1 :constant-flag t :type ("engine_type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [40947 40973]) ("check" variable (:type ("Random_u32::type" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [40980 41004])) :type "int") (reparse-symbol namespacesubparts) [40936 41290]) ("RandomPower2::power2" variable (:dereference 1 :constant-flag t :default-value "{
+#if RANDOM_LONGDOUBLEPREC > 64
+    // It would be nice to be able to use the C99 notation of 0x1.0p-120
+    // for 2^-120 here.
+    1/1329227995784915872903807060280344576.f, // 2^-120
+    1/664613997892457936451903530140172288.f, // 2^-119
+    1/332306998946228968225951765070086144.f, // 2^-118
+    1/166153499473114484112975882535043072.f, // 2^-117
+    1/83076749736557242056487941267521536.f, // 2^-116
+    1/41538374868278621028243970633760768.f, // 2^-115
+    1/20769187434139310514121985316880384.f, // 2^-114
+    1/10384593717069655257060992658440192.f, // 2^-113
+    1/5192296858534827628530496329220096.f, // 2^-112
+    1/2596148429267413814265248164610048.f, // 2^-111
+    1/1298074214633706907132624082305024.f, // 2^-110
+    1/649037107316853453566312041152512.f, // 2^-109
+    1/324518553658426726783156020576256.f, // 2^-108
+    1/162259276829213363391578010288128.f, // 2^-107
+    1/81129638414606681695789005144064.f, // 2^-106
+    1/40564819207303340847894502572032.f, // 2^-105
+    1/20282409603651670423947251286016.f, // 2^-104
+    1/10141204801825835211973625643008.f, // 2^-103
+    1/5070602400912917605986812821504.f, // 2^-102
+    1/2535301200456458802993406410752.f, // 2^-101
+    1/1267650600228229401496703205376.f, // 2^-100
+    1/633825300114114700748351602688.f, // 2^-99
+    1/316912650057057350374175801344.f, // 2^-98
+    1/158456325028528675187087900672.f, // 2^-97
+    1/79228162514264337593543950336.f, // 2^-96
+    1/39614081257132168796771975168.f, // 2^-95
+    1/19807040628566084398385987584.f, // 2^-94
+    1/9903520314283042199192993792.f, // 2^-93
+    1/4951760157141521099596496896.f, // 2^-92
+    1/2475880078570760549798248448.f, // 2^-91
+    1/1237940039285380274899124224.f, // 2^-90
+    1/618970019642690137449562112.f, // 2^-89
+    1/309485009821345068724781056.f, // 2^-88
+    1/154742504910672534362390528.f, // 2^-87
+    1/77371252455336267181195264.f, // 2^-86
+    1/38685626227668133590597632.f, // 2^-85
+    1/19342813113834066795298816.f, // 2^-84
+    1/9671406556917033397649408.f, // 2^-83
+    1/4835703278458516698824704.f, // 2^-82
+    1/2417851639229258349412352.f, // 2^-81
+    1/1208925819614629174706176.f, // 2^-80
+    1/604462909807314587353088.f, // 2^-79
+    1/302231454903657293676544.f, // 2^-78
+    1/151115727451828646838272.f, // 2^-77
+    1/75557863725914323419136.f, // 2^-76
+    1/37778931862957161709568.f, // 2^-75
+    1/18889465931478580854784.f, // 2^-74
+    1/9444732965739290427392.f,	// 2^-73
+    1/4722366482869645213696.f,	// 2^-72
+    1/2361183241434822606848.f,	// 2^-71
+    1/1180591620717411303424.f,	// 2^-70
+    1/590295810358705651712.f,	// 2^-69
+    1/295147905179352825856.f,	// 2^-68
+    1/147573952589676412928.f,	// 2^-67
+    1/73786976294838206464.f,	// 2^-66
+    1/36893488147419103232.f,	// 2^-65
+#endif
+    1/18446744073709551616.f,	// 2^-64
+    1/9223372036854775808.f,	// 2^-63
+    1/4611686018427387904.f,	// 2^-62
+    1/2305843009213693952.f,	// 2^-61
+    1/1152921504606846976.f,	// 2^-60
+    1/576460752303423488.f,	// 2^-59
+    1/288230376151711744.f,	// 2^-58
+    1/144115188075855872.f,	// 2^-57
+    1/72057594037927936.f,	// 2^-56
+    1/36028797018963968.f,	// 2^-55
+    1/18014398509481984.f,	// 2^-54
+    1/9007199254740992.f,	// 2^-53
+    1/4503599627370496.f,	// 2^-52
+    1/2251799813685248.f,	// 2^-51
+    1/1125899906842624.f,	// 2^-50
+    1/562949953421312.f,	// 2^-49
+    1/281474976710656.f,	// 2^-48
+    1/140737488355328.f,	// 2^-47
+    1/70368744177664.f,		// 2^-46
+    1/35184372088832.f,		// 2^-45
+    1/17592186044416.f,		// 2^-44
+    1/8796093022208.f,		// 2^-43
+    1/4398046511104.f,		// 2^-42
+    1/2199023255552.f,		// 2^-41
+    1/1099511627776.f,		// 2^-40
+    1/549755813888.f,		// 2^-39
+    1/274877906944.f,		// 2^-38
+    1/137438953472.f,		// 2^-37
+    1/68719476736.f,		// 2^-36
+    1/34359738368.f,		// 2^-35
+    1/17179869184.f,		// 2^-34
+    1/8589934592.f,		// 2^-33
+    1/4294967296.f,		// 2^-32
+    1/2147483648.f,		// 2^-31
+    1/1073741824.f,		// 2^-30
+    1/536870912.f,		// 2^-29
+    1/268435456.f,		// 2^-28
+    1/134217728.f,		// 2^-27
+    1/67108864.f,		// 2^-26
+    1/33554432.f,		// 2^-25
+    1/16777216.f,		// 2^-24
+    1/8388608.f,		// 2^-23
+    1/4194304.f,		// 2^-22
+    1/2097152.f,		// 2^-21
+    1/1048576.f,		// 2^-20
+    1/524288.f,			// 2^-19
+    1/262144.f,			// 2^-18
+    1/131072.f,			// 2^-17
+    1/65536.f,			// 2^-16
+    1/32768.f,			// 2^-15
+    1/16384.f,			// 2^-14
+    1/8192.f,			// 2^-13
+    1/4096.f,			// 2^-12
+    1/2048.f,			// 2^-11
+    1/1024.f,			// 2^-10
+    1/512.f,			// 2^-9
+    1/256.f,			// 2^-8
+    1/128.f,			// 2^-7
+    1/64.f,			// 2^-6
+    1/32.f,			// 2^-5
+    1/16.f,			// 2^-4
+    1/8.f,			// 2^-3
+    1/4.f,			// 2^-2
+    1/2.f,			// 2^-1
+    1.f,			// 2^0
+    2.f,			// 2^1
+    4.f,			// 2^2
+    8.f,			// 2^3
+    16.f,			// 2^4
+    32.f,			// 2^5
+    64.f,			// 2^6
+    128.f,			// 2^7
+    256.f,			// 2^8
+    512.f,			// 2^9
+    1024.f,			// 2^10
+    2048.f,			// 2^11
+    4096.f,			// 2^12
+    8192.f,			// 2^13
+    16384.f,			// 2^14
+    32768.f,			// 2^15
+    65536.f,			// 2^16
+    131072.f,			// 2^17
+    262144.f,			// 2^18
+    524288.f,			// 2^19
+    1048576.f,			// 2^20
+    2097152.f,			// 2^21
+    4194304.f,			// 2^22
+    8388608.f,			// 2^23
+    16777216.f,			// 2^24
+    33554432.f,			// 2^25
+    67108864.f,			// 2^26
+    134217728.f,		// 2^27
+    268435456.f,		// 2^28
+    536870912.f,		// 2^29
+    1073741824.f,		// 2^30
+    2147483648.f,		// 2^31
+    4294967296.f,		// 2^32
+    8589934592.f,		// 2^33
+    17179869184.f,		// 2^34
+    34359738368.f,		// 2^35
+    68719476736.f,		// 2^36
+    137438953472.f,		// 2^37
+    274877906944.f,		// 2^38
+    549755813888.f,		// 2^39
+    1099511627776.f,		// 2^40
+    2199023255552.f,		// 2^41
+    4398046511104.f,		// 2^42
+    8796093022208.f,		// 2^43
+    17592186044416.f,		// 2^44
+    35184372088832.f,		// 2^45
+    70368744177664.f,		// 2^46
+    140737488355328.f,		// 2^47
+    281474976710656.f,		// 2^48
+    562949953421312.f,		// 2^49
+    1125899906842624.f,		// 2^50
+    2251799813685248.f,		// 2^51
+    4503599627370496.f,		// 2^52
+    9007199254740992.f,		// 2^53
+    18014398509481984.f,	// 2^54
+    36028797018963968.f,	// 2^55
+    72057594037927936.f,	// 2^56
+    144115188075855872.f,	// 2^57
+    288230376151711744.f,	// 2^58
+    576460752303423488.f,	// 2^59
+    1152921504606846976.f,	// 2^60
+    2305843009213693952.f,	// 2^61
+    4611686018427387904.f,	// 2^62
+    9223372036854775808.f,	// 2^63
+    18446744073709551616.f,	// 2^64
+  }" :type "float") (reparse-symbol namespacesubparts) [41539 48110]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48236 48301]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48313 48378]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48390 48455]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48467 48532]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48551 48604]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48616 48669]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48681 48734]) ("RandomEngine" type (:type "class") (reparse-symbol namespacesubparts) [48746 48799]) ("Global" function (:prototype-flag t :arguments (("" variable (:type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [48932 48958])) :type "int") (reparse-symbol namespacesubparts) [48925 48963]) ("Global" function (:prototype-flag t :arguments (("" variable (:type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [49059 49085])) :type "int") (reparse-symbol namespacesubparts) [49052 49090]) ("Global" function (:prototype-flag t :arguments (("" variable (:type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [49186 49212])) :type "int") (reparse-symbol namespacesubparts) [49179 49217]) ("Global" function (:prototype-flag t :arguments (("" variable (:type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [49313 49339])) :type "int") (reparse-symbol namespacesubparts) [49306 49344])) :type "namespace") nil [3491 49347]))
+    :file "Random.cpp"
+    :pointmax 49371
+    )
+   (semanticdb-table "Random.hpp"
+    :major-mode 'c++-mode
+    :tags '(("RANDOM_HPP" variable (:constant-flag t :default-value (nil)) nil [560 632]) ("WINDOWS" variable (:constant-flag t :default-value (nil)) nil [657 674]) ("WINDOWS" variable (:constant-flag t :default-value (nil)) nil [769 786]) ("SUN" variable (:constant-flag t :default-value (nil)) nil [816 829]) ("SUN" variable (:constant-flag t :default-value (nil)) nil [836 849]) ("uint32_t" type (:typedef ("unsigned int") :superclasses "unsigned int" :type "typedef") nil [870 896]) ("uint64_t" type (:typedef ("unsigned long long") :superclasses "unsigned long long" :type "typedef") nil [897 933]) ("stdint.h" include (:system-flag t) nil [940 959]) ("RANDOM_U32_T" variable (:constant-flag t :default-value (nil)) nil [1075 1214]) ("RANDOM_U64_T" variable (:constant-flag t :default-value (nil)) nil [1213 1311]) ("RCSID_DECL" variable (:constant-flag t) nil [1310 1341]) ("unnamed" type (:members (("x" variable (:type "int") (reparse-symbol namespacesubparts) [1390 1392])) :type "namespace") nil [1332 1394]) ("RCSID_DECL" variable (:constant-flag t) nil [1531 1562]) ("unnamed" type (:members (("x" variable (:dereference 1 :default-value "x;" :type "int") (reparse-symbol namespacesubparts) [1578 1587])) :type "namespace") nil [1553 1589]) ("HAVE_SSE2" variable (:constant-flag t :default-value (nil)) nil [1622 1641]) ("HAVE_ALTIVEC" variable (:constant-flag t :default-value (nil)) nil [1955 1977]) ("HAVE_BOOST_SERIALIZATION" variable (:constant-flag t :default-value (nil)) nil [2130 2164]) ("RANDOM_LEGACY" variable (:constant-flag t :default-value (nil)) nil [2331 2354]) ("RANDOM_POWERTABLE" variable (:constant-flag t :default-value (nil)) nil [2675 2702]) ("RANDOM_POWERTABLE" variable (:constant-flag t :default-value (nil)) nil [2741 2768]) ("RANDOM_LONGDOUBLEPREC" variable (:constant-flag t :default-value (nil)) nil [2789 2821]) ("RANDOM_LONGDOUBLEPREC" variable (:constant-flag t :default-value (nil)) nil [2832 2865]) ("RANDOM_LONGDOUBLEPREC" variable (:constant-flag t :default-value (nil)) nil [3059 3254]) ("STATIC_ASSERT" variable (:constant-flag t :default-value (nil)) nil [3253 3333]) ("RANDOM_HASDENORM" variable (:constant-flag t :default-value (nil)) nil [3473 3509]) ("RandomLib/RandomCanonical.hpp" include nil nil [3511 3551]) ("RandomLib" type (:members (("DEFAULT_GENERATOR" variable (:constant-flag t) (reparse-symbol namespacesubparts) [3608 3811]) ("RandomGenerator" type (:typedef ("DEFAULT_GENERATOR" type (:type "class") nil nil) :superclasses "DEFAULT_GENERATOR" :type "typedef") (reparse-symbol namespacesubparts) [3804 3846]) ("Random" variable (:type "int") (reparse-symbol namespacesubparts) [4008 4015])) :type "namespace") nil [3553 4018]))
+    :file "Random.hpp"
+    :pointmax 4064
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )

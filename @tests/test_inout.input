@@ -1,0 +1,37 @@
+Group "CALCULATION_START_CONTROL" {
+   ! Start new calculation or restart a previous one <-----------------
+   RestartCalculations ? Yes;
+
+   ! Start from CalcID
+   StartFromCalcId = 'test_inout';
+   ! Start from Step ( -1 for start from the last step )
+   StartFromStep   = -1;
+}
+
+
+Group "OUTPUT_CONTROL" { 
+   ! Identificator of calculation <------------------------------
+   CalcId = 'test_inout';  
+
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 1;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 2;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 2;
+}
+
+
+Group "NS_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'ns_particle_flux.h5';
+   ! size of the deque array
+   Size = 20;
+}
+
+Group "NS_PARTICLE_FLUX_1" {
+   ! results will be saved in this file   
+   OutputFilename = 'ns_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}

@@ -1,0 +1,23 @@
+;; Object LPT/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "LPT/"
+  :tables (list 
+   (semanticdb-table "large_particles_tools.h"
+    :major-mode 'c++-mode
+    :tags '(("LARGE_PARTICLES_TOOLS_H" variable (:constant-flag t) nil [33 67]) ("ATbase.h" include nil nil [66 85]) ("../../LIBS/RandomLib/Random.hpp" include nil nil [87 129]) ("../particle_list.h" include nil nil [131 160]) ("LargeParticlesTools" type (:members (("public" label nil (reparse-symbol classsubparts) [514 521]) ("AdjustNumberOfParticles" function (:prototype-flag t :arguments (("p" variable (:type ("P" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [625 630])) :type ("bool" type (:type "class") nil nil)) (reparse-symbol classsubparts) [596 631]) ("AdjustNumberOfParticles" function (:prototype-flag t :arguments (("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [739 754]) ("" variable (:type ("pl" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [756 759])) :type ("bool" type (:type "class") nil nil)) (reparse-symbol classsubparts) [710 760]) ("SetupFromConfig" function (:prototype-flag t :arguments (("in" variable (:type ("FileInput" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [835 849])) :type "void") (reparse-symbol classsubparts) [814 850]) ("private" label nil (reparse-symbol classsubparts) [852 860]) ("_Rand" variable (:type ("RandomLib::Random" type (:type "class") nil nil)) (reparse-symbol classsubparts) [925 949])) :type "class") nil [486 953]) ("AdjustNumberOfParticles" function (:parent "LargeParticlesTools" :arguments (("p" variable (:type ("P" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1473 1478])) :type ("bool" type (:type "class") nil nil)) nil [1423 1979]) ("AdjustNumberOfParticles" function (:parent "LargeParticlesTools" :arguments (("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2332 2347]) ("" variable (:type ("pl" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2349 2352])) :type ("bool" type (:type "class") nil nil)) nil [2282 2571]))
+    :file "large_particles_tools.h"
+    :pointmax 2582
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "large_particles_tools.cpp"
+    :major-mode 'c++-mode
+    :tags '(("large_particles_tools.h" include nil nil [1 35]) ("SetupFromConfig" function (:parent "LargeParticlesTools" :arguments (("in" variable (:type ("FileInput" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [189 203])) :type "void") nil [147 461]))
+    :file "large_particles_tools.cpp"
+    :pointmax 462
+    :unmatched-syntax 'nil
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )

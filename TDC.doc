@@ -1,0 +1,145 @@
+/**
+ * \file TDC.doc
+ * \brief Documentation for Time Dependent Cascade project
+ */
+
+/**
+\mainpage
+
+\section usage Usage
+ - \subpage  command line_page   command line options
+ - \subpage  stop_and_save_page  stop and resume computations
+
+\section contents Contents
+ - \subpage  physics_page
+ - \ref setup_page
+ - \ref bc_page
+ - \ref output_page
+ . 
+*************************************************/
+
+/**
+\page  stop_and_save_page  Stop and resume computations
+
+  - signals:
+    -# SIGTERM
+    -# SIGINT (Ctrl-C)
+    -# SIGUSR1
+
+  - files in results directory:
+    -# 
+
+
+*************************************************/
+
+
+/**
+\page  physics_page Physical ingredients
+
+These physical components are actively involved in simulation
+
+- \b Ingredients 
+  -# %Charged particles [\ref Charged]
+  -# %Pairs  [\ref  Pairs]
+  -# %Fields [\ref  fields_grp]  
+- \b Actions
+  -# \ref pic_grp
+  -# \ref monte_carlo_grp
+  -# \ref lpt_grp
+  -# \ref particles_bc_grp
+  -# \ref initial_distr_grp
+- \ref environment_grp
+  -# \ref magnetic_field_grp
+- \ref solution_properties_grp
+- \ref main_grp
+
+These components are complimentary, as they are not involved in simulation process
+
+- \ref setup_params_grp
+- \ref setup_consts_grp
+- \ref setup_properties_grp
+
+************************************************/
+
+
+
+
+
+
+
+
+
+
+/**
+\page setup_page Calculation Setup Sequence
+
+- Create ParameterList and initialize all classes in group \ref setup_params_grp by
+  calling ParameterList::SetupFromConfig(FileInput& in)
+- Create Cascade class and initialize all cascade ingredients by calling
+  Cascade::SetupFromConfig(FileInput& in). This proceeds initialization in the following way:
+ - Setup Mesh, Fields- and Particles- Layouts via MeshAndLayouts class
+ - Creates and initializes Electromagnetic Fields
+ - Initializes ParticleList by creating and initializing Particles  [\ref particle_setup_page ]
+ - Setup Particles Boundary Conditions [\ref particle_setup_page ]
+ - Creates Pairs
+ - Setup PIC	
+ - Setup MonteCarlo	
+ .
+.
+************************************************/
+
+
+
+/**
+\page bc_page Boundary Conditions
+
+Boundary conditions are implemented in following components
+- \ref particles_bc_grp
+- %Fields [\ref  fields_grp]
+- \ref pic_grp
+.
+************************************************/
+
+
+/**
+\page output_page Output
+
+Data are saved in a series of HDF files
+- Particles are saved in separate files for each Particle type
+- Electromagnetic fields are saved in 'fields.h5'
+- Particle fluxes are saved in corresponfding files
+- Grid properties are saved in 'properties.h5'
+.
+************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

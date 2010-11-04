@@ -1,0 +1,37 @@
+;; Object tests/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "tests/"
+  :tables (list 
+   (semanticdb-table "tests.mk"
+    :major-mode 'makefile-mode
+    :tags '(("FILES_TO_BUILD" variable (:default-value ("test_inout.exe" "test_absorption.exe" "test_emission.exe")) nil [1 71]) ("TEST_EXE_FILES" variable (:default-value ("$(addprefix @tests/, $(FILES_TO_BUILD) )")) nil [73 129]) ("TEST_OBJ" variable (:default-value ("$(addsuffix .o, $(TEST_EXE_FILES))")) nil [130 174]) (".PHONY" function (:arguments ("tests")) nil [176 191]) ("tests" function (:arguments ("$(TEST_EXE_FILES)")) nil [191 217]) ("OBJ_ABSORPTION" variable (:default-value ("$(SRC_PARTICLES)" "$(OBJ_CONTAINERS)" "$(OBJ_SETUP_PARAMETERS)" "$(OBJ_SETUP_PROPERTIES)" "$(OBJ_INOUT)" "$(OBJ_UTILS)" "$(OBJ_MESH)" "$(OBJ_MC)" "$(OBJ_MAGNETIC_FIELD)" "$(OBJ_FIELDS)")) nil [218 460]) ("tests/test_emission.exe" function (:arguments ("%.exe" ":" "%.exe.o" "$(RANDOM_LIB_SRC)" "$(OBJ_ABSORPTION)")) nil [464 745]) ("tests/test_absorption.exe" function (:arguments ("%.exe" ":" "%.exe.o" "$(RANDOM_LIB_SRC)" "$(OBJ_ABSORPTION)")) nil [746 1029]) ("tests/test_particles.exe" function (:arguments ("%.exe" ":" "%.exe.o" "$(OBJ_SETUP_PARAMETERS)" "$(OBJ_UTILS)" "$(OBJ_INOUT)" "$(OBJ_POOMA_FIX)" "$(OBJ_CONTAINERS)")) nil [1031 1359]) ("tests/test_inout.exe" function (:arguments ("%.exe" ":" "%.exe.o" "$(OBJ_SETUP_PARAMETERS)" "$(OBJ_INOUT)" "$(OBJ_POOMA_FIX)" "$(OBJ_SOLUTION_PROPERTIES)")) nil [1362 1684]) ("$(TEST_OBJ)" function (:arguments ("%.o:%.cpp")) nil [1687 1851]) ("DEP_TEST_OBJ" variable (:default-value ("$(patsubst %.o, %.d, $(TEST_OBJ) )")) nil [1904 1953]) ("$(DEP_TEST_OBJ)" function (:arguments ("%.d" ":" "%.cpp")) nil [1954 2263]))
+    :file "tests.mk"
+    :pointmax 2263
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "test_inout.exe.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [105 124]) ("fstream" include (:system-flag t) nil [125 143]) ("iomanip" include (:system-flag t) nil [144 162]) ("cmath" include (:system-flag t) nil [163 179]) ("vector" include (:system-flag t) nil [181 198]) ("list" include (:system-flag t) nil [199 214]) ("deque" include (:system-flag t) nil [215 231]) ("Pooma/Fields.h" include nil nil [233 258]) ("ATbase.h" include nil nil [260 279]) ("../utils/stl_utils.h" include nil nil [281 312]) ("../inout/save2hdf.h" include nil nil [313 343]) ("../inout/timetable.h" include nil nil [344 375]) ("../SetupParameters/output_params.h" include nil nil [377 422]) ("../SetupParameters/calculation_start_params.h" include nil nil [423 479]) ("../_SolutionProperties/QuantitiesVsTime.h" include nil nil [481 533]) ("../_SolutionProperties/particle_flux.h" include nil nil [534 583]) ("SETUP_FILE" variable (:constant-flag t :default-value "\"@tests/test_inout.input\"" :type ("string" type (:type "class") nil nil)) nil [588 638]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [692 701]) ("argv" variable (:pointer 1 :dereference 1 :type "char") (reparse-symbol arg-sub-list) [702 715])) :type "int") nil [683 6432]))
+    :file "test_inout.exe.cpp"
+    :pointmax 6433
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "test_emission.exe.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [1 20]) ("ATbase.h" include nil nil [22 41]) ("../SetupParameters/geometry_params.h" include nil nil [43 90]) ("../SetupParameters/pulsar_params.h" include nil nil [91 136]) ("../SetupParameters/output_params.h" include nil nil [137 182]) ("../_MC/Emission/CR.h" include nil nil [184 215]) ("../_Environment/MagneticField/dipole.h" include nil nil [216 265]) ("config_file" variable (:constant-flag t :default-value "\"@tests/test_emission.input\"" :type ("string" type (:type "class") nil nil)) nil [288 343]) ("MagneticField" type (:typedef ("Dipole" type (:type "class") nil nil) :superclasses "Dipole" :type "typedef") nil [377 406]) ("main" function (:type "int") nil [409 5159]))
+    :file "test_emission.exe.cpp"
+    :pointmax 5160
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "test_absorption.exe.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [1 20]) ("string" include (:system-flag t) nil [21 38]) ("vector" include (:system-flag t) nil [39 56]) ("ATbase.h" include nil nil [58 77]) ("../SetupParameters/grid_params.h" include nil nil [79 122]) ("../SetupParameters/geometry_params.h" include nil nil [123 170]) ("../SetupParameters/pulsar_params.h" include nil nil [171 216]) ("../_Mesh/MeshAndLayouts.h" include nil nil [218 254]) ("../_Environment/MagneticField/dipole.h" include nil nil [256 305]) ("../_Particles/pairs.h" include nil nil [307 339]) ("../_MC/PairProduction/gamma2pair.h" include nil nil [341 386]) ("../_MC/Photons/photons.h" include nil nil [387 422]) ("../_MC/monte_carlo.h" include nil nil [423 454]) ("config_file" variable (:constant-flag t :default-value "\"@tests/test_absorption.input\"" :type ("string" type (:type "class") nil nil)) nil [479 536]) ("output_directory" variable (:constant-flag t :default-value "\"../RESULTS/TESTS/\"" :type ("string" type (:type "class") nil nil)) nil [559 610]) ("MagneticField" type (:typedef ("Dipole" type (:type "class") nil nil) :superclasses "Dipole" :type "typedef") nil [644 673]) ("Mesh_t" variable (:type ("Mesh_t" type (:type "class") nil nil)) nil [853 868]) ("Field_t" variable (:type "int") nil [971 979]) ("FLayout_t" type (:typedef ("Field_t::Engine_t::Layout_t" type (:type "class") nil nil) :superclasses "Field_t::Engine_t::Layout_t" :type "typedef") nil [980 1047]) ("PTraits_t" variable (:type "int") nil [1132 1142]) ("Pairs_t" variable (:type "int") nil [1187 1195]) ("main" function (:type "int") nil [1306 5600]))
+    :file "test_absorption.exe.cpp"
+    :pointmax 5601
+    :unmatched-syntax 'nil
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )

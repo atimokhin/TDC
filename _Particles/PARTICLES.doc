@@ -1,0 +1,48 @@
+/**
+\addtogroup particles_grp
+
+- Particles are represented by classes derived from My_Particles class.
+- Each sort of particles is represented by a child class of My_Particles class.
+- Particles have 'Attributes' and 'Properties' 
+  - Attributes are 1D Arrays [POOMA Dynamic Arrays], describing 
+    physical quantities specific to each macroparticle of this kind
+    (like position, mometum, etc)
+  - Properties are scalar quatity destcribing physical quatity common for this 
+    kind of particles (like charge to mass ratio, charge, etc.)
+  .
+. 
+
+See also \ref particle_setup_page
+************************************************/
+
+
+/**
+\page particle_setup_page Particle setup
+
+Particles are initialized by the following sequence:
+
+- Instance of ParticleList class calls method 
+  ParticleList::SetupFromConfigGroup(FileInput& in) which for each 
+  particle type in the list:
+  - creates requested number of particles
+  - calls virtual function My_Particles::SetupFromConfigGroup(FileInput& in) 
+  - creates HDF file and puts it into the internal tabel
+  .
+- Instance of My_Particles class via method 
+  My_Particles::SetupFromConfigGroup(FileInput& in) sets up
+  <B> Initial particle distribution </B> [see \ref initial_distr_grp]
+- Child classes of My_Particles finishes the setup process setting in particulary
+  all specific particle parametrs
+  - in particular Charged class via Charged::SetupFromConfigGroup(FileInput& in)
+    sets up charges of particles
+  .
+.
+
+Particles Boundary Conditions are initialized by the following sequence:
+
+- Instance of TDC_ParticleBC reads type of boundary conditions calling
+  TDC_ParticleBC::SetupFromConfigGroup(FileInput& in)
+- Then it calls method TDC_ParticleBC::SetupGeneralBC(ParticleList<P>& plist) wich sets up
+  general Partciles boundary conditions (such as PeriodicBC, KillBC, AbsorbBC etc.)
+. 
+************************************************/

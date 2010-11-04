@@ -1,0 +1,64 @@
+;; Object BC/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "BC/"
+  :tables (list 
+   (semanticdb-table "tdc_particles_bc.h"
+    :major-mode 'c++-mode
+    :tags '(("TDC_PARTICLES_BC_H" variable (:constant-flag t) nil [28 57]) ("ATbase.h" include nil nil [56 75]) ("../../SetupParameters/geometry_params.h" include nil nil [77 127]) ("../../SetupParameters/grid_params.h" include nil nil [128 174]) ("../../SetupProperties/pulsar_gap_props.h" include nil nil [175 226]) ("../../_Fields/em_fields.h" include nil nil [228 264]) ("../particle_list.h" include nil nil [266 295]) ("TDC_ParticlesBC" type (:members (("public" label nil (reparse-symbol classsubparts) [673 680]) ("SetupGeneralBC" function (:prototype-flag t :typemodifiers ("virtual") :arguments (("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [744 759]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [761 767])) :type "void") (reparse-symbol classsubparts) [716 768]) ("SetupFromConfigGroup" function (:pure-virtual-flag t :prototype-flag t :typemodifiers ("virtual") :arguments (("in" variable (:type ("FileInput" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [871 885])) :type "void") (reparse-symbol classsubparts) [837 891]) ("ApplyTimeDependentBC" function (:pure-virtual-flag t :prototype-flag t :typemodifiers ("virtual") :arguments (("em" variable (:type ("EM" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1567 1574]) ("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1575 1590]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1592 1598]) ("t" variable (:type "double") (reparse-symbol arg-sub-list) [1599 1608]) ("dt" variable (:type "double") (reparse-symbol arg-sub-list) [1609 1620])) :type ("bool" type (:type "class") nil nil)) (reparse-symbol classsubparts) [1532 1625]) ("protected" label nil (reparse-symbol classsubparts) [1628 1638]) ("GeneralBCType_t" type (:members (("BC_PERIODIC" variable (:constant-flag t :type "int") (reparse-symbol enumsubparts) [1708 1720]) ("BC_OUTFLOW" variable (:constant-flag t :type "int") (reparse-symbol enumsubparts) [1721 1733])) :type "enum") (reparse-symbol classsubparts) [1685 1734]) ("_GeneralBCType" variable (:type ("GeneralBCType_t" type (:type "class") nil nil)) (reparse-symbol classsubparts) [1738 1769])) :type "class") nil [649 1799]) ("SetupGeneralBC" function (:arguments (("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2346 2361]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2363 2369])) :type "int") nil [2331 3098]))
+    :file "tdc_particles_bc.h"
+    :pointmax 3107
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "tdc_particles_bc_maker.h"
+    :major-mode 'c++-mode
+    :tags '(("TDC_PARTICLES_BC_MAKER_H" variable (:constant-flag t) nil [34 69]) ("iostream" include (:system-flag t) nil [68 87]) ("string" include (:system-flag t) nil [88 105]) ("list" include (:system-flag t) nil [106 121]) ("ATbase.h" include nil nil [123 142]) ("tdc_particles_bc.h" include nil nil [145 174]) ("PERIODIC.h" include nil nil [361 382]) ("RS_1.h" include nil nil [383 400]) ("SCLF_1.h" include nil nil [401 420]) ("SCLF_2.h" include nil nil [421 440]) ("SCLF_3.h" include nil nil [441 460]) ("INJECT.h" include nil nil [461 480]) ("MACRO__MAKE_P_BC_PARTICLES_FOR_ALL" variable (:constant-flag t :default-value (nil)) nil [689 772]) ("MACRO__MAKE_P_BC_PARTICLES" function (:prototype-flag t :arguments (("" variable (:type ("RS_1" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [806 811])) :type "int") nil [779 812]) ("MACRO__MAKE_P_BC_PARTICLES" function (:prototype-flag t :arguments (("" variable (:type ("SCLF_1" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [845 852])) :type "int") nil [818 853]) ("MACRO__MAKE_P_BC_PARTICLES" function (:prototype-flag t :arguments (("" variable (:type ("SCLF_2" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [886 893])) :type "int") nil [859 894]) ("MACRO__MAKE_P_BC_PARTICLES" function (:prototype-flag t :arguments (("" variable (:type ("SCLF_3" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [927 934])) :type "int") nil [900 935]) ("MACRO__MAKE_P_BC_PARTICLES" function (:prototype-flag t :arguments (("" variable (:type ("INJECT" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [968 975])) :type "int") nil [941 976]) ("TDC_ParticlesBC_Maker" type (:members (("public" label nil (reparse-symbol classsubparts) [1301 1308]) ("TDC_ParticlesBC_Maker" function (:constructor-flag t :arguments (("in" variable (:type ("FileInput" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1371 1385])) :type ("TDC_ParticlesBC_Maker" type "class")) (reparse-symbol classsubparts) [1349 1400]) ("pMake" function (:prototype-flag t :pointer 1 :arguments (("type" variable (:type ("string" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1502 1515])) :type "int") (reparse-symbol classsubparts) [1493 1522]) ("private" label nil (reparse-symbol classsubparts) [1524 1532]) ("mInput" variable (:type ("FileInput" type (:type "class") nil nil)) (reparse-symbol classsubparts) [1536 1554])) :type "class") nil [1271 1592]) ("MACRO__MAKE_P_BC_PARTICLES" variable (:constant-flag t :default-value (nil)) nil [1914 1977]) ("push_back" function (:prototype-flag t :arguments (("" variable (:type ("NAME" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1988 1993])) :type "int") nil [1977 1994]) ("pMake" function (:arguments (("distr_name" variable (:type ("string" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2380 2398])) :type "int") nil [2374 3106]))
+    :file "tdc_particles_bc_maker.h"
+    :pointmax 3120
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "SCLF_1.h"
+    :major-mode 'c++-mode
+    :tags '(("SCLF_1__H" variable (:constant-flag t) nil [19 39]) ("../../SetupProperties/fmp_props.h" include nil nil [38 82]) ("tdc_particles_bc.h" include nil nil [84 113]) ("ApplyTimeDependentBC" function (:arguments (("em" variable (:type ("EM" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1772 1779]) ("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1780 1795]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1797 1803]) ("t" variable (:type "double") (reparse-symbol arg-sub-list) [1804 1813]) ("dt" variable (:type "double") (reparse-symbol arg-sub-list) [1814 1825])) :type "int") nil [1750 4014]))
+    :file "SCLF_1.h"
+    :pointmax 4023
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "SCLF_2.h"
+    :major-mode 'c++-mode
+    :tags '(("SCLF_2__H" variable (:constant-flag t) nil [19 40]) ("tdc_particles_bc.h" include nil nil [39 68]) ("ApplyTimeDependentBC" function (:arguments (("em" variable (:type ("EM" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1433 1440]) ("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1441 1456]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1458 1464]) ("t" variable (:type "double") (reparse-symbol arg-sub-list) [1465 1474]) ("dt" variable (:type "double") (reparse-symbol arg-sub-list) [1475 1486])) :type "int") nil [1411 3800]))
+    :file "SCLF_2.h"
+    :pointmax 3809
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "SCLF_3.h"
+    :major-mode 'c++-mode
+    :tags '(("SCLF_3__H" variable (:constant-flag t) nil [19 39]) ("tdc_particles_bc.h" include nil nil [38 67]) ("ApplyTimeDependentBC" function (:arguments (("em" variable (:type ("EM" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1140 1147]) ("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1148 1163]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1165 1171]) ("t" variable (:type "double") (reparse-symbol arg-sub-list) [1172 1181]) ("dt" variable (:type "double") (reparse-symbol arg-sub-list) [1182 1193])) :type "int") nil [1118 2335]) ("NumberOfParticlesInCell" function (:arguments (("p" variable (:type ("P" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2407 2412]) ("m" variable (:typemodifiers ("typename") :constant-flag t :type ("P::Traits_t::Mesh_t" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [2421 2459]) ("i_cell" variable (:type "int") (reparse-symbol arg-sub-list) [2460 2471])) :type "int") nil [2383 2681]))
+    :file "SCLF_3.h"
+    :pointmax 2691
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "PERIODIC.h"
+    :major-mode 'c++-mode
+    :tags '(("PERIODIC_H" variable (:constant-flag t) nil [20 41]) ("tdc_particles_bc.h" include nil nil [40 69]))
+    :file "PERIODIC.h"
+    :pointmax 822
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "RS_1.h"
+    :major-mode 'c++-mode
+    :tags '(("RS_1_H" variable (:constant-flag t) nil [16 33]) ("tdc_particles_bc.h" include nil nil [32 61]))
+    :file "RS_1.h"
+    :pointmax 818
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "INJECT.h"
+    :major-mode 'c++-mode
+    :tags '(("INJECT__H" variable (:constant-flag t) nil [19 39]) ("../../SetupProperties/fmp_props.h" include nil nil [38 82]) ("tdc_particles_bc.h" include nil nil [84 113]) ("ApplyTimeDependentBC" function (:arguments (("em" variable (:type ("EM" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1856 1863]) ("" variable (:type ("ParticleList" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1864 1879]) ("" variable (:type ("plist" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1881 1887]) ("t" variable (:type "double") (reparse-symbol arg-sub-list) [1888 1897]) ("dt" variable (:type "double") (reparse-symbol arg-sub-list) [1898 1909])) :type "int") nil [1834 3072]))
+    :file "INJECT.h"
+    :pointmax 3081
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )

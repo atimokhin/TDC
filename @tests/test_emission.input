@@ -1,0 +1,169 @@
+
+Test_CR           ? Yes;
+Test_EnergyLosses ? Yes;
+
+
+Group "TEST__Photons" {
+   MaxNumberOfPhotons = 3e5;
+}
+
+Group "OUTPUT_CONTROL" {
+   ! Identificator of calculation <------------------------------
+   CalcId = 'test_emission';  
+
+   ! -> zero or negative output intervals means no output <--
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 0;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 0;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 0;
+}
+
+
+Group "DIMENSIONAL_CONSTANTS" {
+   InitializerType='PSR_ConstsInitializer';
+
+   Group "PSR_ConstsInitializer" {
+       ! Magnetic field at the pole  [10^12 G]
+      B_12  = 1;
+      ! Period of pulsar [seconds]
+      P_SEC = 3;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1;
+
+      ! Inclination angle
+      CHI = 0;
+      ! NS radius [10^6 cm]
+      RNS_6 = 1;
+   }
+}
+
+
+Group "GEOMETRY" {
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
+   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   LENGTH = 10;
+   ! Colatitude of the field line [ in units of \thepa_pc ]
+   THETA = 1;
+}
+
+Group "MAGNETIC_FIELD" {
+   Type = 'Dipole';
+}
+
+Group "TEST__DISCRETE_EMISSION" {
+
+   Group "EmittingParticle" {
+      X0     = 0;
+      dT     = 3e2;
+      P_par  = 4e7;
+      P_perp = 0;
+   }
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 1e6;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 2;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 1e7;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 1000;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 350;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-6,10;
+	 Number_of_subintervals = 4000;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+}
+
+
+Group "TEST__CONTINUOUS_EMISSION" {
+
+   Group "EmittingParticle" {
+      X0     = .1;
+      dT     = 1000;
+      P_par  = 2e6;
+      P_perp = 0;
+   }
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 1e6;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 2;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 100;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 360;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 120;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-6,10;
+	 Number_of_subintervals = 4000;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+}
+
+
+Group "TEST__EnergyLosses" {
+
+   IterationsOfEnergyLosses = 15000;
+
+   Group "EmittingParticle" {
+      X0     = 0;
+      dT     = .002;
+      P_par  = 3e7;
+      P_perp = 0;
+   }
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 1e6;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 2;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 1000;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 360;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 120;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-6,10;
+	 Number_of_subintervals = 800;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? Yes;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+}

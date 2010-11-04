@@ -1,0 +1,7 @@
+
+Group "ParticlesProperties" {
+   E_#0=1e4;
+   E_#1=1e5;
+   E_#2=1e6;
+   E_#3=1e7;
+}

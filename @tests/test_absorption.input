@@ -1,0 +1,156 @@
+! test absorption of gamma-rays in the magnetic field
+
+Test_GammaB ? Yes;
+
+
+Group "CODE_CONTROL" {
+   
+   ! all optional
+   DoOnTheSpotPairCreation ? No;
+}     
+
+
+
+Group "IntegratedQuantities" {
+
+   NumberOfPoints=5000;
+
+   Eps_Itgr=1e-3;
+}
+
+
+Group "PHOTONS" {
+   NumberOfPhotons = 2500;
+
+   X0   = 0.6;
+   T0   = 0;
+   E    = 2e5;
+   Psi0 = 0;
+
+   Direction = -1;
+
+   IDTS = 1001;
+   ID   = 111;
+}
+
+
+Group "OUTPUT_CONTROL" {
+   ! Identificator of calculation <------------------------------
+   CalcId = 'test_absorption';  
+
+   ! -> zero or negative output intervals means no output <--
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 0;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 0;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 0;
+}
+
+	
+
+
+Group "DIMENSIONAL_CONSTANTS" {
+   InitializerType='PSR_ConstsInitializer';
+
+   Group "PSR_ConstsInitializer" {
+       ! Magnetic field at the pole  [10^12 G]
+      B_12  = 10;
+      ! Period of pulsar [seconds]
+      P_SEC = .2;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1.5;
+
+      ! Inclination angle
+      CHI = 0;
+      ! NS radius [10^6 cm]
+      RNS_6 = 1;
+   }
+}
+
+
+Group "GEOMETRY" {
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
+   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   LENGTH = 1;
+   ! Colatitude of the field line [ in units of \thepa_pc ]
+   THETA = 1;
+}
+
+
+Group "GRID" {
+   ! Number of Cells
+   NumberOfCells = 1000;
+}
+
+Group "MAGNETIC_FIELD" {
+   Type = 'Dipole';
+}
+
+
+Group "PAIRS" {
+   NumberOfParticles_Initial = 0;
+   ! these parameters are read at RESTART<<<<<<
+   NumberOfParticles_Maximal = 130000;
+   NumberOfParticles_Optimum = 90000;
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+}
+
+
+
+
+Group "MONTE_CARLO" {
+
+   MaxNumberOfPhotons = 150;	   
+
+   Group "Gamma2Pair" {
+      ! smallest step in the optical depth integration	 
+      dX_Tau =  1e-6;
+
+      ! smallest upper boundary for tau when photon propagation will
+      ! be considered
+      TAU_MIN = 1e-4;
+      ! admitted relative error in optical depth claculation
+      EPS_TAU = 1e-3;
+
+      ! number of Large steps
+      N_LS = 100;
+      ! estimated number of cross-section evaluation in LargeSteps_Method
+      ! is used to decide whether to use LS method or use SS from the beginning
+      LS_N_SIGMA_EVAL = 150;
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 1e6;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 1000;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 50;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 360;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 120;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-7,10;
+	 Number_of_subintervals = 80;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+}
+

@@ -1,0 +1,273 @@
+!  relativistic 2 stream instability
+!  gamma=10
+!  test LPT
+
+Group "CALCULATION_START_CONTROL" {
+   ! Start new calculation or restart a previous one <-----------------
+   RestartCalculations ? No;
+
+   ! Start from CalcID
+   StartFromCalcId = 'test_2stream_g10_ymax';
+   ! Start from Step ( -1 for start from the last step )
+   StartFromStep   = -1;
+}
+
+
+Group "OUTPUT_CONTROL" {
+   ! Identificator of calculation <------------------------------
+   CalcId = 'test_2stream_g10_ymax_LPT';  
+
+   ! -> zero or negative output intervals means no output <--
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 10;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 50;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 50;
+}
+
+	
+
+Group "TEST_CASCADE" {
+   
+   DoGatherRhoAndJ ? Yes;
+   DoMaxwell       ? Yes;
+   DoMoveParticles ? Yes;
+
+   DoMonteCarlo    ? No;
+
+   DoLPT           ? Yes;   
+   ! optional	   
+   DoLPTforTimeLaterThan = 220*8.7460e-04;
+}
+
+
+Group "PULSAR" {
+   ! Magnetic field at the pole  [10^12 G]
+   B_12 = 1;
+   ! Inclination angle
+   CHI = 0;
+   ! Period of pulsar [seconds]
+   P_SEC = 1;
+   ! NS radius [10^6 cm]
+   RNS_6 = 1;
+}
+
+Group "GEOMETRY" {
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
+   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   LENGTH = 0.0453;
+   ! Colatitude of the field line [ in units of \thepa_pc ]
+   THETA = 1;
+}
+
+
+Group "GRID" {
+   ! Number of Cells
+   NumberOfCells = 500;
+}
+
+
+Group "TIME" {
+   !  Timestep
+   dT =  0.0279/1000;
+   !  Number of timesteps
+   NumberOfTimeSteps = 10000;   
+}
+
+
+Group "ELECTRODYNAMICS" {
+   Type = 'Electrostatic_1D';
+
+   Group "Electrostatic_1D" {
+      Group "Electrostatic_1D_J" {
+         Type = 'Constant';
+         J0 = 0;
+      }
+      Group "BoundaryConditions_Phi" {
+         Type = 'Periodic';
+      }
+      Group "BoundaryConditions_E" {
+         Type = 'Periodic';
+      }
+   }
+}
+	
+
+
+
+Group "PARTICLES" {
+
+   ! these parameters are read at RESTART <<<<<<<<
+   ! Number of particles to provide \rho_{GJ}
+   NGJ = 100000;
+
+   NumberOfChargedParticleTypes = 2;
+   ChargedParticles_#0 = 'Electrons';
+   ChargedParticles_#1 = 'Positrons';
+   
+   Group "BoundaryConditions" {	 
+      Type = 'PERIODIC';
+   }	 
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   
+   ! --------------------------------------------------------
+   Group "Electrons" {
+      Mass   = 1;
+      Charge = -1;
+      ! Initial number of particles
+      NumberOfParticles_Initial = 50000;
+      ! these parameters are read at RESTART<<<<<<
+      NumberOfParticles_Maximal = 49999;
+      NumberOfParticles_Optimum = 49000;
+      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      Group "InitialConditions" {	 
+	 NumberOfInitializedAttributes = 2;
+	 AttributeName_#0 = 'X';
+	 AttributeName_#1 = 'P_par';	 
+	 Group "X" {		
+            DistributionName='SinXPerturbedUniform';
+            Group "SinXPerturbedUniform" {		
+               Amplitude = 1e-10*NParam[GEOMETRY](LENGTH);
+               nk=1;
+
+	       a=0;
+	       b=NParam[GEOMETRY](LENGTH);	       	       
+            }
+	 }
+	 Group "P_par" {		
+	    DistributionName='SingleValue';
+	    Group "SingleValue" {		
+	       Value=10;
+	    }   
+	 }
+      }
+   }
+   ! --------------------------------------------------------
+
+   ! --------------------------------------------------------
+   Group "Positrons" {
+      Mass   = 1;
+      Charge = -1;
+      ! Initial number of particles
+      NumberOfParticles_Initial = 50000;
+      ! these parameters are read at RESTART<<<<<<
+      NumberOfParticles_Maximal = 59999;
+      NumberOfParticles_Optimum = 49500;
+      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      Group "InitialConditions" {	 
+	 NumberOfInitializedAttributes = 2;
+	 AttributeName_#0 = 'X';
+	 AttributeName_#1 = 'P_par';	 
+	 Group "X" {		
+            DistributionName='SinXPerturbedUniform';
+            Group "SinXPerturbedUniform" {		
+               Amplitude = 1e-10*NParam[GEOMETRY](LENGTH);
+               nk=1;
+
+	       a=0;
+	       b=NParam[GEOMETRY](LENGTH);	       	       
+            }
+	 }
+	 Group "P_par" {		
+	    DistributionName='SingleValue';
+	    Group "SingleValue" {		
+	       Value=-10;
+	    }   
+	 }
+      }
+   }
+   ! --------------------------------------------------------
+}
+
+
+
+Group "PAIRS" {
+   NumberOfParticles_Initial = 0;
+   ! these parameters are read at RESTART<<<<<<
+   NumberOfParticles_Maximal = 130000;
+   NumberOfParticles_Optimum = 90000;
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+}
+
+
+
+Group "LPT" {
+   ! using for tests: fix the seed of RNG
+   SetSeedForRandomNumberGenerator ? No;
+   ! the seed for RNG
+   Seed = 1234;
+}
+
+
+Group "MONTE_CARLO" {
+
+   MaxNumberOfPhotons = 150;	   
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 1e6;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 1000;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 50;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 360;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 120;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-7,10;
+	 Number_of_subintervals = 80;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+
+   Group "Gamma2Pair" {
+      ! smallest step in optical depth claculation	 
+      dX_ph =  5e-4;
+
+      ! smallest upper boundary for tau when photon propagation will
+      ! be considered
+      TAU_MIN = 1e-4;
+      ! admitted relative error in optical depth claculation
+      EPS_TAU = 1e-3;
+
+      ! number of Large steps
+      N_LS = 40;
+      ! estimated number of cross-section evaluation in Large Steps method
+      LS_N_SIGMA_EVAL = 60;
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+}
+
+
+Group "NS_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'ns_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}
+
+Group "LC_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'lc_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}
+

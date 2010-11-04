@@ -1,0 +1,16 @@
+;; Object PhysicsLib/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "PhysicsLib/"
+  :tables (list 
+   (semanticdb-table "small_functions.h"
+    :major-mode 'c++-mode
+    :tags '(("SMALL_FUNCTIONS_H" variable (:constant-flag t) nil [27 55]) ("cmath" include (:system-flag t) nil [54 70]) ("SF" type (:members (("SFConst" type (:members (("P_MIN_2BETA" variable (:constant-flag t :default-value "100" :type "double") (reparse-symbol namespacesubparts) [270 301]) ("P_MIN_2E" variable (:constant-flag t :default-value "5" :type "double") (reparse-symbol namespacesubparts) [307 333]) ("P_MAX_2E" variable (:constant-flag t :default-value "25" :type "double") (reparse-symbol namespacesubparts) [338 365]) ("E_MIN_2P" variable (:constant-flag t :default-value "5" :type "double") (reparse-symbol namespacesubparts) [371 397]) ("E_MAX_2P" variable (:constant-flag t :default-value "25" :type "double") (reparse-symbol namespacesubparts) [402 429])) :type "namespace") (reparse-symbol namespacesubparts) [243 433]) ("P2E" function (:typemodifiers ("inline") :arguments (("p" variable (:type "double") (reparse-symbol arg-sub-list) [590 599])) :type "double") (reparse-symbol namespacesubparts) [572 754]) ("E2P" function (:typemodifiers ("inline") :arguments (("e" variable (:type "double") (reparse-symbol arg-sub-list) [917 926])) :type "double") (reparse-symbol namespacesubparts) [899 1081]) ("P2Beta" function (:typemodifiers ("inline") :arguments (("p" variable (:type "double") (reparse-symbol arg-sub-list) [1243 1252])) :type "double") (reparse-symbol namespacesubparts) [1222 1434]) ("Sign" function (:typemodifiers ("inline") :arguments (("x" variable (:type "double") (reparse-symbol arg-sub-list) [1562 1572])) :type "double") (reparse-symbol namespacesubparts) [1542 1611])) :type "namespace") nil [226 1614]))
+    :file "small_functions.h"
+    :pointmax 1622
+    :unmatched-syntax 'nil
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )

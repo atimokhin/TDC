@@ -1,0 +1,190 @@
+! 2 particles oscillations
+
+Group "CALCULATION_START_CONTROL" {
+   ! Start new calculation or restart a previous one <-----------------
+   RestartCalculations ? No;
+
+   ! Start from CalcID
+   StartFromCalcId = 'test_osc_2e';
+   ! Start from Step ( -1 for start from the last step )
+   StartFromStep   = -1;
+}
+
+
+Group "OUTPUT_CONTROL" {
+   ! Identificator of calculation <------------------------------
+   CalcId = 'test_osc_2e';  
+
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 1;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 1;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 4;
+}
+
+	
+
+Group "CODE_CONTROL" {
+   
+   ! all optional <<<<<<<<<
+
+   ! Electrodynamics -------------
+   DoGatherRhoAndJ ? Yes;
+   DoMaxwell       ? Yes;
+
+   ! Particles -------------------
+   DoMoveParticles ? Yes;
+
+   ! Monte Carlo -----------------
+   DoMonteCarlo    ? No;
+
+   ! LPT -------------------------
+   DoLPT           ? No;
+}     
+
+
+Group "DIMENSIONAL_CONSTANTS" {
+   InitializerType='PSR_ConstsInitializer';
+
+   Group "PSR_ConstsInitializer" {
+       ! Magnetic field at the pole  [10^12 G]
+      B_12  = 1;
+      ! Period of pulsar [seconds]
+      P_SEC = 1;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1;
+
+      ! Inclination angle
+      CHI = 0;
+      ! NS radius [10^6 cm]
+      RNS_6 = 1;
+   }
+}
+
+Group "GEOMETRY" {
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
+   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   LENGTH = 1e-4;
+   ! Colatitude of the field line [ in units of \thepa_pc ]
+   THETA = 1;
+}
+
+
+Group "GRID" {
+   ! Number of Cells
+   NumberOfCells = 400;
+}
+
+
+Group "TIME" {
+   !  Timestep
+   dT =  8.749192e-04/200;
+   !  Number of timesteps
+   NumberOfTimeSteps = 32000;   
+}
+
+
+Group "ELECTRODYNAMICS" {
+   Type = 'Electrostatic_1D';
+
+   Group "Electrostatic_1D" {
+
+      ApplyDigitalFilter ? Yes;
+
+      Group "Electrostatic_1D_J" {
+         Type = 'Constant';
+         J0 = 0;
+      }
+      Group "BoundaryConditions_Phi" {
+         Type = 'Periodic';
+      }
+      Group "BoundaryConditions_E" {
+         Type = 'Periodic';
+      }
+   }
+}
+	
+
+
+
+Group "PARTICLES" {
+
+   ! these parameters are read at RESTART <<<<<<<<
+   ! Number of particles to provide \rho_{GJ}
+   NGJ = 2;
+
+   NumberOfChargedParticleTypes = 1;
+   ChargedParticles_#0 = 'Electrons';
+
+   Group "BoundaryConditions" {	 
+      Type = 'PERIODIC';
+   }	 
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   
+   Group "Electrons" {
+      Mass   = 1;
+      Charge = -1;
+      ! Initial number of particles
+      NumberOfParticles_Initial = 2;
+      ! these parameters are read at RESTART<<<<<<
+      NumberOfParticles_Maximal = 80000;
+      NumberOfParticles_Optimum = 50000;
+      F_Reduce_For_PairProduction = 2;
+      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      Group "InitialConditions" {	 
+	 NumberOfInitializedAttributes = 2;
+	 AttributeName_#0 = 'X';
+	 AttributeName_#1 = 'P_par';	 
+	 Group "X" {		
+	    DistributionName='Discrete';
+	    Group "Discrete" {		
+	       NumberOfValues = 2;
+	       Value_#0=0.2*NParam[GEOMETRY](LENGTH);
+	       Value_#1=0.8*NParam[GEOMETRY](LENGTH);
+	    }   
+	 }
+	 Group "P_par" {		
+	    DistributionName='SingleValue';
+	    Group "SingleValue" {		
+	       Value=0;
+	    }   
+	 }
+      }
+   }
+
+}
+
+
+
+Group "PAIRS" {
+   NumberOfParticles_Initial = 0;
+   ! these parameters are read at RESTART<<<<<<
+   NumberOfParticles_Maximal = 130000;
+   NumberOfParticles_Optimum = 90000;
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+}
+
+
+Group "PIC" {
+   Group "BoundaryConditions" {
+         Type = 'None';
+      }
+}
+
+
+Group "NS_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'ns_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}
+
+Group "LC_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'lc_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}
+

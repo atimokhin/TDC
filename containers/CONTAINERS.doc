@@ -1,0 +1,17 @@
+/**
+\addtogroup containers_grp Containers
+
+There are two family of containers:
+
+- My_Container and its children classes which allows to print out and save its contents 
+  to an HDF file. This type of containers can store
+  <B>heterogeneous</B> collection of objects. They are used in
+  stroring lists of saved attributes and Fields
+  in My_Particles and My_Fields classes
+
+- My_Map which simply allows to get a pointer to an arrays. This type of containers 
+  stores <B> homogeneous </B> collections of objects. They are used in
+  storing
+  map of Attributes in  My_Particles classes for easy initialization of Attributes. 	
+.
+************************************************/

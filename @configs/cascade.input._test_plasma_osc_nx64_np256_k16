@@ -1,0 +1,178 @@
+! plasma oscillations on coarse grid
+!
+! omega = cos( pi*k/nx )
+
+Group "CALCULATION_START_CONTROL" {
+   ! Start new calculation or restart a previous one <-----------------
+   RestartCalculations ? No;
+
+   ! Start from CalcID
+   StartFromCalcId = 'test_plasma_osc_nx64_np256_k16';
+   ! Start from Step ( -1 for start from the last step )
+   StartFromStep   = -1;
+}
+
+
+Group "OUTPUT_CONTROL" {
+   ! Identificator of calculation <------------------------------
+   CalcId = 'test_plasma_osc_nx64_np256_k16';  
+
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 1;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 1;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 2;
+}
+
+	
+
+Group "CODE_CONTROL" {
+   
+   ! all optional <<<<<<<<<
+
+   ! Electrodynamics -------------
+   DoGatherRhoAndJ ? Yes;
+   DoMaxwell       ? Yes;
+
+   ! Particles -------------------
+   DoMoveParticles ? Yes;
+
+   ! Monte Carlo -----------------
+   DoMonteCarlo    ? No;
+
+   ! LPT -------------------------
+   DoLPT           ? No;
+}     
+
+
+Group "PULSAR" {
+   ! Magnetic field at the pole  [10^12 G]
+   B_12 = 1;
+   ! Inclination angle
+   CHI = 0;
+   ! Period of pulsar [seconds]
+   P_SEC = 1;
+   ! NS radius [10^6 cm]
+   RNS_6 = 1;
+}
+
+Group "GEOMETRY" {
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
+   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   LENGTH = 1e-4;
+   ! Colatitude of the field line [ in units of \thepa_pc ]
+   THETA = 1;
+}
+
+
+Group "GRID" {
+   ! Number of Cells
+   NumberOfCells = 64;
+}
+
+
+Group "TIME" {
+   !  Timestep
+   dT =  2*8.748e-6;
+   !  Number of timesteps
+   NumberOfTimeSteps = 2000;   
+}
+
+
+Group "ELECTRODYNAMICS" {
+   Type = 'Electrostatic_1D';
+
+   Group "Electrostatic_1D" {
+      Group "Electrostatic_1D_J" {
+         Type = 'Constant';
+         J0 = 0;
+      }
+      Group "BoundaryConditions_Phi" {
+         Type = 'Periodic';
+      }
+      Group "BoundaryConditions_E" {
+         Type = 'Periodic';
+      }
+   }
+}
+	
+
+
+
+Group "PARTICLES" {
+
+   ! these parameters are read at RESTART <<<<<<<<
+   ! Number of particles to provide \rho_{GJ}
+   NGJ = 256;
+
+   NumberOfChargedParticleTypes = 1;
+   ChargedParticles_#0 = 'Electrons';
+   
+   Group "BoundaryConditions" {	 
+      Type = 'PERIODIC';
+   }	 
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   
+   Group "Electrons" {
+      Mass   = 1;
+      Charge = -1;
+      ! Initial number of particles
+      NumberOfParticles_Initial = 256;
+      ! these parameters are read at RESTART<<<<<<
+      NumberOfParticles_Maximal = 80000;
+      NumberOfParticles_Optimum = 50000;
+      F_Reduce_For_PairProduction = 2;
+      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      Group "InitialConditions" {	 
+	 NumberOfInitializedAttributes = 2;
+	 AttributeName_#0 = 'X';
+	 AttributeName_#1 = 'P_par';	 
+	 Group "X" {		
+            DistributionName='SinXPerturbedUniform';
+            Group "SinXPerturbedUniform" {		
+               Amplitude = 0.00005*NParam[GEOMETRY](LENGTH);
+               nk=16;
+
+	       a=0;
+	       b=NParam[GEOMETRY](LENGTH);	       	       
+            }
+	 }
+	 Group "P_par" {		
+	    DistributionName='SingleValue';
+	    Group "SingleValue" {		
+	       Value=0;
+	    }   
+	 }
+      }
+   }
+
+}
+
+
+
+Group "PAIRS" {
+   NumberOfParticles_Initial = 0;
+   ! these parameters are read at RESTART<<<<<<
+   NumberOfParticles_Maximal = 130000;
+   NumberOfParticles_Optimum = 90000;
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+}
+
+
+
+Group "NS_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'ns_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}
+
+Group "LC_PARTICLE_FLUX" {
+   ! results will be saved in this file   
+   OutputFilename = 'lc_particle_flux.h5';
+   ! size of the deque array
+   Size = 3;
+}
+

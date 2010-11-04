@@ -1,0 +1,15 @@
+;; Object ID/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "ID/"
+  :tables (list 
+   (semanticdb-table "particle_id.h"
+    :major-mode 'c++-mode
+    :tags '(("PARTICLE_ID_H" variable (:constant-flag t) nil [23 146]) ("ParticleID_Const" type (:members (("N_PATCH_BASE" variable (:constant-flag t :default-value "1000000" :type "int") (reparse-symbol namespacesubparts) [168 201])) :type "namespace") nil [137 203]) ("ParticleID" type (:members (("public" label nil (reparse-symbol classsubparts) [721 728]) ("SetStartTimestep" function (:arguments (("it_start" variable (:type "int") (reparse-symbol arg-sub-list) [754 767])) :type "void") (reparse-symbol classsubparts) [732 796]) ("SetPatch" function (:arguments (("patch" variable (:type "int") (reparse-symbol arg-sub-list) [838 848])) :type "void") (reparse-symbol classsubparts) [824 904]) ("NewTimestep" function (:prototype-flag t :arguments (("it" variable (:type "int") (reparse-symbol arg-sub-list) [981 988])) :type "void") (reparse-symbol classsubparts) [964 989]) ("GetIDTS" function (:type "int") (reparse-symbol classsubparts) [1035 1076]) ("GetID" function (:type "int") (reparse-symbol classsubparts) [1138 1187]) ("private" label nil (reparse-symbol classsubparts) [1189 1197]) ("_PATCH_BASE" variable (:type "int") (reparse-symbol classsubparts) [1203 1219]) ("_StartTimestep" variable (:typemodifiers ("static") :type "int") (reparse-symbol classsubparts) [1223 1249]) ("_Timestep" variable (:typemodifiers ("static") :type "int") (reparse-symbol classsubparts) [1252 1273]) ("_Counter" variable (:typemodifiers ("static") :type "int") (reparse-symbol classsubparts) [1277 1297])) :type "class") nil [702 1300]))
+    :file "particle_id.h"
+    :pointmax 1309
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre3"
+  :semanticdb-version "2.0pre3"
+  )
