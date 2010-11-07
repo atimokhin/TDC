@@ -90,8 +90,8 @@ Group "TIME" {
 Group "RHO_GJ" {
    Type = 'RhoGJFunctor_SCLF_lin2';
    ! RhoGJFunctor_SCLF_lin2 parameters
-   A  = 1;
-   X0 = 0.3*NParam[GEOMETRY](LENGTH);
+   A  = -1;
+   X0 = 0.5*NParam[GEOMETRY](LENGTH);
 }
 
 Group "MAGNETIC_FIELD" {

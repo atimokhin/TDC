@@ -1,4 +1,4 @@
-CXXFLAGS= -O3 -funroll-loops -march=$(ARCH) -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
+CXXFLAGS= -O3 -fPIC -funroll-loops -march=$(ARCH) -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
 #CXXFLAGS= -g
 #CXXFLAGS= -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
 
@@ -93,7 +93,8 @@ LIB_POOMA_FLAGS=-L$(POOMADIR)/lib/ -l pooma
 #LIB_HDF5_FLAGS=-D H5_USE_16_API $(HDFHOMEDIR)/lib/libhdf5_hl.a $(HDFHOMEDIR)/lib/libhdf5.a -lz -lm
 
 # ATbase *******************************
-ATBASE=$(MYHOMEDIR)/WORK/C++/ATbase2$(ATBASE_VERSION)/lib/
+ATBASE_DIR=$(MYHOMEDIR)/WORK/C++/ATbase2$(ATBASE_VERSION)
+ATBASE=$(ATBASE_DIR)/lib/
 ATBASE_INCLUDE= -I$(ATBASE)
 ATBASE_LIB= -L$(ATBASE) -lATbase -lstdc++
 
@@ -109,7 +110,7 @@ LOCAL_LIBS_INCLUDE=-I LIBS $(INCLUDE_RANDOM_LIB)
 
 # **************************************
 # list of source files
-# **************************************
+# **************************************	
 SRC_POOMA_FIX = \
 	inout/pooma_hdf/hdf5file.cmpl.cpp \
 	inout/pooma_hdf/my_hdf5file.cpp
@@ -123,7 +124,7 @@ SRC_SETUP_PARAMETERS = $(wildcard SetupParameters/*.cpp)
 SRC_SETUP_DIMENSIONAL_CONSTANTS = $(wildcard SetupDimensionalConstants/*.cpp)
 SRC_SETUP_PROPERTIES = $(wildcard SetupProperties/*.cpp) 
 
-SRC_RHO_GJ = $(wildcard _Environment/RhoGJ/*.cpp) 
+SRC_RHO_GJ = $(wildcard _Environment/RhoGJ/*.cpp)
 SRC_MAGNETIC_FIELD = $(wildcard _Environment/MagneticField/*.cpp) 
 
 SRC_MESH = $(wildcard _Mesh/*.cpp ) 
@@ -144,8 +145,9 @@ SRC_CONTROL = $(wildcard _Control/*.cpp)
 
 SRC_SOLUTION_PROPERTIES = $(wildcard _SolutionProperties/*.cpp) 
 
+SRC_CASCADE = cascade.cpp run_cascade.exe.cpp
 
-SRC_CASCADE= cascade.cpp  run_cascade.exe.cpp
+# **************************************
 
 
 
@@ -206,9 +208,12 @@ OBJ_PROPS=\
 
 
 OBJ=$(sort $(OBJ_CASCADE) )
+# ----------------------------------------
 
 
-.PHONY: all clean cleanall depend save_compiler_opts RandomLib
+
+
+.PHONY: all clean cleanall depend save_compiler_opts RandomLib plotting
 
 
 # <===========
@@ -264,6 +269,9 @@ $(OBJ):%.o:%.cpp
 
 # rules for test files 
 -include @tests/tests.mk
+
+# rules for plotting files 
+-include Plotting/plotting.mk
 
 
 
