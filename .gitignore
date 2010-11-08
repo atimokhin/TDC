@@ -1,6 +1,5 @@
-*.exe
-*.[oa]
-*.so
-*~
-*.pyc
 COMPILER_OPTS
+
+# Track this files -- data for K_5_1/3 function interpolation
+!_MC/Emission/Kcr.h5
+!_MC/Emission/Fcr.h5
