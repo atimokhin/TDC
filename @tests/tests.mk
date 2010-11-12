@@ -6,7 +6,7 @@ TEST_EXE_FILES=$(addprefix @tests/, $(FILES_TO_BUILD) )
 TEST_OBJ=$(addsuffix .o, $(TEST_EXE_FILES))
 
 
-.PHONY: tests
+.PHONY: tests clean_test
 
 tests: $(TEST_EXE_FILES)
 
@@ -103,3 +103,7 @@ $(DEP_TEST_OBJ): %.d : %.cpp
 	@perl -pi -e 's|ATbase.h||g' $@
 	@perl -pi -e 's|hdf5.h||g' $@
 	@echo >> $@ 
+
+
+clean_test:
+	-(cd @test; rm -f *~ *.o *.so *.exe)

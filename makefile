@@ -281,7 +281,7 @@ $(OBJ):%.o:%.cpp
 DEP_OBJ=$(patsubst %.o, %.d, $(OBJ) ) 
 
 
-depend: $(DEP_OBJ) $(DEP_TEST_OBJ)
+depend: $(DEP_OBJ) $(DEP_TEST_OBJ) $(DEP_PLOTTING_OBJ)
 	@cat $^ > make.depend
 	@-rm -f $^
 	@echo '>>>>>>>>' make.depend is created 
@@ -304,7 +304,7 @@ $(DEP_OBJ): %.d : %.cpp
 # <=========== clean
 # <===========
 # directories not related to the main code <<<<<<<<<<<<<<<
-NON_CODE_DIRS= LIBS MATLAB MATHEMATICA PYTHON
+NON_CODE_DIRS= LIBS MATHEMATICA
 
 # all directories i this project
 ALL_DIRS=$(shell  find -type d)
@@ -322,7 +322,7 @@ ALL_TMP_SUFFIXIES=*~ *.o *.exe *.d *.depend \#*\#
 ALL_TMP_FILENAMES=$(wildcard $(foreach SFX,$(ALL_TMP_SUFFIXIES),$(addsuffix /$(SFX),$(1)) ) )
 
 
-clean:
+clean: 
 	@echo '>>>>>>>>' start clean 
 	-rm -f $(call TMP_FILENAMES, $(CODE_DIRS))
 	-rm -f $(COMPILER_OPTS_FILENAME)
