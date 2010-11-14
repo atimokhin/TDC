@@ -3,6 +3,8 @@
 
 #include "Pooma/Particles.h"
 
+#include "LPT/lpt_data.h"
+
 template <class P>
 class My_Particles_Patch
 {
@@ -21,7 +23,7 @@ public:
     Origin(p.Origin.patchLocal(patch)),
     IDTS(p.IDTS.patchLocal(patch)),
     ID(p.ID.patchLocal(patch)),
-    N_MAX(p.N_MAX),N_OPT(p.N_OPT),N_BASE(p.N_BASE)
+    LptData(p.LptData),N_BASE(p.N_BASE)
   {};
 
   // size of the patch
@@ -29,8 +31,7 @@ public:
 
 public:
 
-  const int N_MAX;
-  const int N_OPT;
+  LPT_Data LptData;
   const int N_BASE;
 
   Patch_Scalar_t Weight;

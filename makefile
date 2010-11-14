@@ -132,7 +132,7 @@ SRC_MESH = $(wildcard _Mesh/*.cpp )
 SRC_FIELDS = $(wildcard _Fields/*.cpp) 
 
 SRC_PARTICLES=_Particles/particle_population.cpp \
-	_Particles/LPT/large_particles_tools.cpp \
+	$(wildcard _Particles/LPT/*.cpp) \
 	_Particles/ID/particle_id.cpp
 
 SRC_MC = $(filter-out %.exe.cpp,$(wildcard _MC/*.cpp)                \

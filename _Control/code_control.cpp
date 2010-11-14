@@ -45,7 +45,7 @@ void CodeControl::SetupFromConfig(FileInput &in)
 
   if ( in.answer_is_set("DoLPT") )
     _DoLPT = in.get_answer("DoLPT");
-  if ( in.answer_is_set("DoLPTforTimeLaterThan") )
+  if ( in.param_is_set("DoLPTforTimeLaterThan") )
     _T_LPT = in.get_param("DoLPTforTimeLaterThan");
 
   in.ChangeGroup(p_current_group);

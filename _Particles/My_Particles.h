@@ -19,6 +19,8 @@
 #include "InitialDistributions/initial_distribution_maker.h"
 #include "ID/particle_id.h"
 
+#include "LPT/lpt_data.h"
+
 #include "particle_population.h"
 
 
@@ -127,10 +129,8 @@ public:
 public:
 
   // Properties -----------------------------
-  //! Property: Maximum number of  particles
-  int N_MAX;
-  //! Property: Optimal number of  particles
-  int N_OPT;
+  //! Property: Large Particle Tool specific data
+  LPT_Data LptData;
   //! Property: Physically motivated characteristic number of  particles
   int N_BASE;
   // ----------------------------------------
@@ -199,8 +199,6 @@ My_Particles<PT>::My_Particles(const ParticleLayout_t &pl):
   AddSavedAttribute(  "ID", ID);
 
   // add properties
-  AddSavedProperty("N_MAX",N_MAX);
-  AddSavedProperty("N_OPT",N_OPT);
   AddSavedProperty("N_BASE",N_BASE);
 }
 
@@ -389,8 +387,10 @@ void My_Particles<PT>::SetupFromConfigGroup(FileInput& in, ParticleID& p_id)
   // ************************************************************
   // Particle number limits *************************************
   // ************************************************************
-  N_MAX = static_cast<int>(in.get_param("NumberOfParticles_Maximal"));
-  N_OPT = static_cast<int>(in.get_param("NumberOfParticles_Optimum"));
+  in.ChangeGroup("LPT");
+  LptData.SetupFromConfigGroup(in);
+  in.ChangeGroup("..");
+
 
   // Do setup only if at least one particle was created
   if ( number_of_particles>0 ) 
@@ -500,10 +500,6 @@ void My_Particles<PT>::SetupFromHDFFileAndConfigGroup(std::string Filename, File
 
   // Read data from HDF file
   ReadFromHDFFile(calc_start.StartFromTimeshot(), hdf);
-
-  // These properties can be overwritten from Config file ----
-  N_MAX = static_cast<int>(in.get_param("NumberOfParticles_Maximal"));
-  N_OPT = static_cast<int>(in.get_param("NumberOfParticles_Optimum"));
 }
 
 

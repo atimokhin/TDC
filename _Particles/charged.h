@@ -47,12 +47,9 @@ public:
 
 public:
   // Properties -----------------------------
-  using Base_t::N_MAX;
-  using Base_t::N_OPT;
+  using Base_t::LptData;
   using Base_t::N_BASE;
 
-  //! Property: by this amount particle number will be reduced if too many pairs are generated
-  double F_REDUCE_FOR_PAIR_PROD;
   //! Property: particle mass normalized to \f$ m_e \f$
   double M;
   //! Property: particle charge normalized to \f$ e \f$
@@ -96,7 +93,6 @@ Charged<PT>::Charged(const typename Base_t::ParticleLayout_t &pl):
   AddAttribute_Scalar("P_perp", P_perp);
   AddSavedAttribute(  "P_perp", P_perp);
 
-  Base_t::AddSavedProperty("F_REDUCE_FOR_PAIR_PROD",F_REDUCE_FOR_PAIR_PROD);
   Base_t::AddSavedProperty("Mass",M);
   Base_t::AddSavedProperty("Charge",Q);
 }
@@ -138,9 +134,6 @@ void Charged<PT>::SetupFromConfigGroup(FileInput& in, ParticleID& p_id)
 
   // GJ particle number
   N_BASE=ParticlesParams().NGJ();
-
-  // Pair overproduction deduction factor
-  F_REDUCE_FOR_PAIR_PROD = in.get_param("F_Reduce_For_PairProduction");
 
   // setup particle mass
   M = in.get_param("Mass");
