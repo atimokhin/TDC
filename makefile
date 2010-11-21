@@ -133,12 +133,12 @@ SRC_FIELDS = $(wildcard _Fields/*.cpp)
 
 SRC_PARTICLES=_Particles/particle_population.cpp \
 	$(wildcard _Particles/LPT/*.cpp) \
+	$(wildcard _Particles/ParticleCaches/*.cpp) \
 	_Particles/ID/particle_id.cpp
 
 SRC_MC = $(filter-out %.exe.cpp,$(wildcard _MC/*.cpp)                \
                                 $(wildcard _MC/Emission/*.cpp)       \
 				$(wildcard _MC/PairProduction/*.cpp) \
-				$(wildcard _MC/Photons/*.cpp)        \
 				$(wildcard _MC/Samples/*.cpp)  )
 
 SRC_CONTROL = $(wildcard _Control/*.cpp)

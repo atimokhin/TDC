@@ -2,7 +2,9 @@
 
 
 //! constructor
-MonteCarlo::MonteCarlo() 
+MonteCarlo::MonteCarlo():
+  _ElectronCache(ChargedParticleCache("Electrons")),
+  _PositronCache(ChargedParticleCache("Positrons"))
 {
   _DoOnTheSpotPairCreation_Flag   = false;
   _DoPairInjectionSmoothing_Flag  = false;
@@ -17,7 +19,10 @@ void MonteCarlo::SetupFromConfig(FileInput& in)
   // read config ---------------
   in.ChangeGroup("MONTE_CARLO");
 
-  int n_ph = static_cast<int>( in.get_param("MaxNumberOfPhotons") );
+  int n_ph   = static_cast<int>( in.get_param("PhotonCacheSize") );
+  int n_pair = static_cast<int>( in.get_param("PairCacheSize") );
+  int n_p    = static_cast<int>( in.get_param("PositronCacheSize") );
+  int n_e    = static_cast<int>( in.get_param("ElectronCacheSize") );
 
   if ( in.answer_is_set("DoOnTheSpotPairCreation") )
     _DoOnTheSpotPairCreation_Flag = in.get_answer("DoOnTheSpotPairCreation");
@@ -58,17 +63,21 @@ void MonteCarlo::SetupFromConfig(FileInput& in)
   in.ChangeGroup("..");
   // ---------------------------
 
-
-  // initialize photons container so it can store all photons
-  // produced by any single particle
-  int n_ph_max = _CR.MaxNumberOfPhotons();
-  if ( n_ph < n_ph_max )
+  // Initialize Caches *********
+  // check photon cache size
+  int n_ph_rad_processes = _CR.MaxNumberOfPhotons();
+  if ( n_ph < n_ph_rad_processes )
     {
       std::cout<<"Number of Photons n_ph="<<n_ph<<" is less than Maximum number of photons";
-      std::cout<<" in emission processes! n_ph_max="<<n_ph_max<<endl;
+      std::cout<<" in emission processes! <n_ph_rad_processes="<<n_ph_rad_processes<<endl;
       exit(1);
     }
   _Ph.Initialize(n_ph);
+
+  _PairCache.Initialize(n_pair);
+  _ElectronCache.Initialize(n_e);
+  _PositronCache.Initialize(n_p);
+  // ****************************
 }
 
 
@@ -78,4 +87,70 @@ void MonteCarlo::SetMagneticField(MagneticField* p_mf)
   _CR.SetMagneticField(p_mf);
 }
 
+
+/** 
+ * This fuction iterates over internal Photons list _Ph and for each photon
+ * - calls _G2P.IsAbsorbed(x_cr, psi_cr) for doing Monte Carlo sampling 
+ *   of photon absorption
+ * - if photon is absorbed it calculates injection time and creates new virtual pair.
+ * 
+ */
+bool MonteCarlo::CreatePairs(ParticleID& id)
+{
+  bool pairs_created = false;
+  double x_cr, psi_cr;
+
+  int e_sign = _Ph.Get_MomentumSign();
+
+  // iterate over all photons *********
+  for (int i=0; i<_Ph.Size(); i++)
+    {
+#ifdef TEST_GAMMA2PAIR
+      bool test_photon_absorbed = false;
+#endif
+
+      // setup photons parameters in Gamma2Pair class
+      _G2P.SetupPhoton(_Ph.E[i],_Ph.Get_X0(),_Ph.Get_Direction() );
+      // if absorbed - create pair
+      if ( _G2P.IsAbsorbed(x_cr, psi_cr) ) 
+	{
+	  if ( !pairs_created ) pairs_created = true;
+	  // pair injection time
+	  double t_cr = _Ph.Get_T0() + fabs( x_cr - _Ph.Get_X0() );
+
+	  // if requested use on the spot approximation <<============= (!!!)
+	  if ( _DoOnTheSpotPairCreation_Flag )
+	    {
+	      t_cr = _Ph.Get_T0();
+	      x_cr = _Ph.Get_X0();
+	    }	  
+          // ----------------------------------------------------------
+	  // if requested do pair creation position smoothing <<====== (!!!)
+	  if ( _DoPairInjectionSmoothing_Flag )
+	    {
+	      t_cr += _dX_Smooth * _Rand.Fixed();
+	    }	  
+          // ----------------------------------------------------------
+
+	  // add newly created pair
+	  _PairCache.Add(_Ph.Weight[i], 
+                         t_cr, x_cr, _Ph.Get_X0(), 
+                         e_sign*_Ph.E[i], psi_cr, 
+                         _Ph.Origin[i],
+                         _Ph.Get_IDTS(), _Ph.Get_ID(), id.GetIDTS(), id.GetID() );
+
+#ifdef TEST_GAMMA2PAIR
+	  test_photon_absorbed = true;
+	  std::cout<<"travelled l="<<x_cr - _Ph.Get_X0()<<"\n";
+	  std::cout<<">>>>>>>[ABSORBED]<<<<<<<\n\n";
+#endif
+	}
+
+#ifdef TEST_GAMMA2PAIR
+      if (!test_photon_absorbed)  std::cout<<".......[ESCAPED]........\n\n";
+#endif
+    }
+
+  return pairs_created;
+}
 

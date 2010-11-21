@@ -44,6 +44,10 @@ public:
   //! create new particle with specified attributes
   void AddParticle(double weight, double x, double p_par, double p_perp, 
 		   char origin, int idts, int id); 
+  //! set properties of already created particle with index "i"
+  void SetParticle(int i,
+                   double weight, double x, double p_par, double p_perp, 
+		   char origin, int idts, int id); 
 
 public:
   // Properties -----------------------------
@@ -172,6 +176,25 @@ void Charged<PT>::AddParticle(double weight,
   // create particles in the last patch
   this->create(1);
 
+  SetParticle(i, 
+              weight, 
+              x, p_par,  p_perp, 
+              origin,
+              idts,  id);
+}
+
+/**
+ *  Set parameters of already created particle with index "i"
+ * 
+ */
+template <class PT>
+void Charged<PT>::SetParticle(int i, 
+                              double weight, 
+			      double x, 
+			      double p_par, double p_perp, 
+			      char origin,
+			      int idts, int id)
+{
   Weight(i) = weight;
   Origin(i) = origin;
 

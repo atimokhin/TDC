@@ -257,6 +257,81 @@ Group "LPT" {
    Seed = 1234;
 }
 
+
+Group "MONTE_CARLO" {
+
+   PhotonCacheSize   = 150;
+
+   PairCacheSize     = 10000;
+   ElectronCacheSize = 10000;
+   PositronCacheSize = 10000;
+
+   ! On the spot pair creation (if not set - false)
+   DoOnTheSpotPairCreation  ? No;
+
+   ! Pair creation smoothing   (if not set - false)
+   ! smooth pair injection over several cells?
+   DoPairInjectionSmoothing ? Yes;
+   ! -------------------------------------
+   NSmoothCells = 75;
+   ! using for tests: fix the seed of RNG
+   SetSeedForRandomNumberGenerator ? No;
+   ! the seed for RNG
+   Seed = 1234;
+   ! -------------------------------------
+	   
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 5e5;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 20;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 50;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 360;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 120;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-7,10;
+	 Number_of_subintervals = 80;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+
+   Group "Gamma2Pair" {
+      ! smallest step in optical depth claculation	 
+      dX_Tau =  6e-4;
+
+      ! smallest upper boundary for tau when photon propagation will
+      ! be considered
+      TAU_MIN = 1e-4;
+      ! admitted relative error in optical depth claculation
+      EPS_TAU = 1e-3;
+
+      ! number of Large steps
+      N_LS = 40;
+      ! estimated number of cross-section evaluation in Large Steps method
+      LS_N_SIGMA_EVAL = 60;
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+}
+
 Group "NS_PARTICLE_FLUX" {
    ! results will be saved in this file   
    OutputFilename = 'ns_particle_flux.h5';

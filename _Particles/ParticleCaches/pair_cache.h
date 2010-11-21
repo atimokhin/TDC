@@ -1,6 +1,7 @@
 #ifndef PAIR_CACHE
 #define PAIR_CACHE 
 
+#include <iostream> 
 #include <string> 
 #include <vector> 
 
@@ -9,7 +10,9 @@
 class PairCache: public ParticleCache
 {
 public:
-  PairCache(string name, int size);
+  PairCache();
+
+  void Initialize(int n_max);
 
   void Add(double weight, 
            double t_cr, double x_cr, double x_em, 
@@ -17,20 +20,22 @@ public:
            char origin, 
            int idts_parent, int id_parent, int idts, int id );
 
+  virtual void Print(std::ostream& os) const;
+
 public:
-  vector<double> Weight;
-  vector<char>   Origin;
+  std::vector<double> Weight;
+  std::vector<char>   Origin;
 
-  vector<double> T_cr;
-  vector<double> X_cr;
-  vector<double> X_em;
-  vector<double> E;
-  vector<double> Psi;
+  std::vector<double> T_cr;
+  std::vector<double> X_cr;
+  std::vector<double> X_em;
+  std::vector<double> E;
+  std::vector<double> Psi;
 
-  vector<int> IDTS;
-  vector<int> ID; 
-  vector<int> IDTS_Parent;
-  vector<int> ID_Parent;
+  std::vector<int> IDTS;
+  std::vector<int> ID; 
+  std::vector<int> IDTS_Parent;
+  std::vector<int> ID_Parent;
 };
 
 
@@ -40,8 +45,8 @@ inline void PairCache::Add(double weight,
                            char origin, 
                            int idts_parent, int id_parent, int idts, int id )
 {
-  // increment index
-  ParticleCache::Add();
+  // check size
+  ParticleCache::CheckSize();
 
   Weight[_i] = weight;
   Origin[_i] = origin;
@@ -56,6 +61,9 @@ inline void PairCache::Add(double weight,
   ID[_i]   = id; 
   IDTS_Parent[_i] = idts_parent;
   ID_Parent[_i]   = id_parent; 
+
+  // increment index
+  ParticleCache::Add();
 }
 
 #endif

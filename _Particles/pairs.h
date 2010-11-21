@@ -62,6 +62,10 @@ public:
   //! create new pair with specified attributes
   void AddPair(double weight, double t_cr, double x_cr, double x_em, double e, double psi, 
 	       char origin, int idts_parent, int id_parent, int idts, int id );
+  //!  set properties of already created pair with index "i"
+  void SetPair(int i,
+               double weight, double t_cr, double x_cr, double x_em, double e, double psi, 
+	       char origin, int idts_parent, int id_parent, int idts, int id );
  
 public:
   // Properties -----------------------------
@@ -197,6 +201,25 @@ void Pairs<PT>::AddPair(double weight,
   // create particles in the last patch
   this->create(1);
 
+  SetPair(i,
+          weight, 
+          t_cr, x_cr, x_em, e, psi, 
+          origin, 
+          idts_parent, id_parent, idts, id);
+}
+
+
+/** 
+ *  Creates new pair: not save for parallel
+ */
+template <class PT>
+void Pairs<PT>::SetPair(int i,
+                        double weight, 
+                        double t_cr, double x_cr, double x_em, 
+                        double e, double psi, 
+			char origin, 
+                        int idts_parent, int id_parent, int idts, int id )
+{
   Weight(i) = weight;
   Origin(i) = origin;
 

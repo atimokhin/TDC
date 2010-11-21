@@ -1,9 +1,11 @@
-#ifndef PHOTONS_H
-#define PHOTONS_H
+#ifndef PHOTONS_CACHE_H
+#define PHOTONS_CACHE_H
 
 #include <iostream>
 
 #include "ATbase.h"
+
+#include "particle_cache.h"
 
 #include "../../utils/direction.h"
 #include "../../inout/save2hdf.h"
@@ -33,10 +35,11 @@
  * 
  */
 
-class Photons
+class PhotonCache: public ParticleCache
 {
 public:
-  
+  PhotonCache();
+
   //! do initialization
   void Initialize(int n_max);
 
@@ -68,40 +71,29 @@ public:
   //! Get emitting particle ID
   int  Get_ID() const;
 
-
   //! Set emission particle parameters common for all photons
   void SetInheritedParams( double x0, double t0, double p, int idts, int id );
 
   //! Add a photon to the list
   void Add(double weight, double e, double psi0, char origin);
 
-
-  //! Clear list of photons
-  void Clear();
-
-  //! Current number of photons in the list
-  int Size() const;
-
   //! Save photons to an HDF file
   void Save2HDFFile(Save2HDF &hdf);
   //! Print container content
-  void Print(ostream& os) const;
-
+  virtual void Print(ostream& os) const;
 
 public:
-
   //! Statistical weght of photons
-  vector<double> Weight;
+  std::vector<double> Weight;
   //! Emission angle relative to the magnetic field at X0
-  vector<double> Psi0;
+  std::vector<double> Psi0;
   //! Photon momentum
-  vector<double> E;
+  std::vector<double> E;
   
   //! Origin of Photons (mechanism by which photon was emitted)
-  vector<char>   Origin;
+  std::vector<char>   Origin;
   
 private:
-
   //! Emission point
   double _X0;
   //! Time of emission
@@ -113,35 +105,28 @@ private:
   int _IDTS;
   //! ID of emitting particle
   int _ID;
-
-  //! Number of Photons
-  int _N;
 };
 
 
-inline void   Photons::Set_X0( double x0 ) {_X0 = x0; }
-inline double Photons::Get_X0() const      { return _X0; }
+inline void   PhotonCache::Set_X0( double x0 ) {_X0 = x0; }
+inline double PhotonCache::Get_X0() const      { return _X0; }
 
-inline void      Photons::Set_Direction( double p ) { _Dir = ( p > 0  ? UP : DOWN ); }
-inline Direction Photons::Get_Direction() const     { return _Dir; }
+inline void      PhotonCache::Set_Direction( double p ) { _Dir = ( p > 0  ? UP : DOWN ); }
+inline Direction PhotonCache::Get_Direction() const     { return _Dir; }
 
-inline int Photons::Get_MomentumSign() const { return ( _Dir == DOWN ? -1 : 1 ); };
+inline int PhotonCache::Get_MomentumSign() const { return ( _Dir == DOWN ? -1 : 1 ); };
 
-inline void   Photons::Set_T0( double t0 ) { _T0 = t0; }
-inline double Photons::Get_T0() const      { return _T0; }
+inline void   PhotonCache::Set_T0( double t0 ) { _T0 = t0; }
+inline double PhotonCache::Get_T0() const      { return _T0; }
 
-inline void Photons::Set_IDTS( int idts ) { _IDTS = idts; }
-inline int  Photons::Get_IDTS() const     { return _IDTS; }
+inline void PhotonCache::Set_IDTS( int idts ) { _IDTS = idts; }
+inline int  PhotonCache::Get_IDTS() const     { return _IDTS; }
 
-inline void Photons::Set_ID( int id ) { _ID = id; }
-inline int  Photons::Get_ID() const   { return _ID; }
-
-inline void Photons::Clear() {_N=0; }
-
-inline int Photons::Size() const { return _N;}
+inline void PhotonCache::Set_ID( int id ) { _ID = id; }
+inline int  PhotonCache::Get_ID() const   { return _ID; }
 
 
-inline void Photons::SetInheritedParams( double x0, double t0, double p, int idts, int id )
+inline void PhotonCache::SetInheritedParams( double x0, double t0, double p, int idts, int id )
 {
   _X0 = x0;
   _T0 = t0;
@@ -151,22 +136,16 @@ inline void Photons::SetInheritedParams( double x0, double t0, double p, int idt
   _ID = id;
 }
 
-inline void Photons::Add(double weight, double e, double psi0, char origin )
+inline void PhotonCache::Add(double weight, double e, double psi0, char origin)
 {
-  Weight[_N] = weight;
-  Psi0[_N]   = psi0;
-  E[_N]      = e;
+  // increment index
+  ParticleCache::Add();
 
-  Origin[_N] = origin;
+  Weight[_i] = weight;
+  Psi0[_i]   = psi0;
+  E[_i]      = e;
 
-  _N++;
+  Origin[_i] = origin;
 }
-
-
-/**
- * output operator for Photons
- * 
- */
-std::ostream& operator<< (std::ostream& o, const Photons& ph);
 
 #endif

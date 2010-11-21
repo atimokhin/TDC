@@ -18,7 +18,7 @@
 #include "Fcr.h"
 #include "Kcr.h"
 #include "../Samples/Cutpoint.h"
-#include "../Photons/photons.h"
+#include "../../_Particles/ParticleCaches/photon_cache.h"
 
 
 
@@ -177,7 +177,7 @@ public:
 
   //! fill ph with curvature photons -  inline function 
   template<class Particles>
-  bool EmitPhotons(double dt, int i, Particles& p, Photons& ph);
+  bool EmitPhotons(double dt, int i, Particles& p, PhotonCache& ph);
 
   //! setup all parameters from config file group
   void SetupFromConfigGroup(FileInput& in);
@@ -195,7 +195,7 @@ public:
   double Get_EpsilonC();
 
  //! fill ph with curvature photons - main, "heavy", emission function
-  bool EmitPhotons(double dt, double weight, double x0, double& p_par, Photons& ph);
+  bool EmitPhotons(double dt, double weight, double x0, double& p_par, PhotonCache& ph);
 
 private:  
 
@@ -257,7 +257,7 @@ private:
  * @return true if emission occurs
  */
 template<class Particles>
-inline bool CR::EmitPhotons(double dt, int i, Particles& p, Photons& ph)
+inline bool CR::EmitPhotons(double dt, int i, Particles& p, PhotonCache& ph)
 {
   if ( fabs( p.P_par(i) ) < _E_PARTICLE_MIN ) 
     return false;

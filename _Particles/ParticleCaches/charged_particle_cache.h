@@ -1,6 +1,7 @@
 #ifndef CHARGED_PARTICLE_CACHE_H
 #define CHARGED_PARTICLE_CACHE_H 
 
+#include <iostream> 
 #include <string> 
 #include <vector>
 
@@ -9,24 +10,29 @@
 class ChargedParticleCache: public ParticleCache
 {
 public:
-  ChargedParticleCache(string name, int size);
-  
+  ChargedParticleCache(std::string name);
+
+  void Initialize(int n_max);
+ 
   void Add(double weight, 
            double x, 
            double p_par, double p_perp, 
            char origin,
            int  idts, int id);
 
+  //! Print container content
+  virtual void Print(std::ostream& os) const;
+
 public:
-  vector<double> Weight;
-  vector<char>   Origin;
+  std::vector<double> Weight;
+  std::vector<char>   Origin;
 
-  vector<double> X;
-  vector<double> P_par;
-  vector<double> P_perp;
+  std::vector<double> X;
+  std::vector<double> P_par;
+  std::vector<double> P_perp;
 
-  vector<int> IDTS;
-  vector<int> ID; 
+  std::vector<int> IDTS;
+  std::vector<int> ID; 
 };
 
 
@@ -36,8 +42,8 @@ inline void ChargedParticleCache::Add(double weight,
                                       char origin,
                                       int  idts, int id)
 {
-  // increment index
-  ParticleCache::Add();
+  // check size
+  ParticleCache::CheckSize();
 
   Weight[_i] = weight;
   Origin[_i] = origin;
@@ -48,6 +54,9 @@ inline void ChargedParticleCache::Add(double weight,
 
   IDTS[_i] = idts;
   ID[_i]   = id; 
+
+  // increment index
+  ParticleCache::Add();
 }
 
 #endif
