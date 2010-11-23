@@ -16,9 +16,9 @@
 #include "../_Environment/MagneticField/magnetic_field_maker.h"
 
 #include "../_Particles/pairs.h"
+#include "../_Particles/ParticleCaches/photon_cache.h"
 
 #include "../_MC/PairProduction/gamma2pair.h"
-#include "../_MC/Photons/photons.h"
 #include "../_MC/monte_carlo.h"
 
 
@@ -70,7 +70,7 @@ int main()
   out.Initialize();
 
   // setup photons ++++++++++++++++++++++++++++++
-  Photons ph;
+  PhotonCache ph;
   in.ChangeGroup("PHOTONS");
 
   int n_ph = static_cast<int>(in.get_param("NumberOfPhotons"));

@@ -386,11 +386,9 @@ void Cascade::RunSimulations()
       // ************************************
       if ( __code.DoLPT(t) ) 
 	{
-	  if ( _LPT.AdjustNumberOfParticles(*_pPairs) )  
+	  if ( _LPT.AdjustNumberOfPairs(*_pPairs) )  
 	    {
-	      LogEvent(it,"Pairs and Leptons numbers adjusted");
-	      _LPT.AdjustNumberOfParticlesForPairOverproduction(_PList);
-	      _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
+	      LogEvent(it,"Pairs numbers adjusted");
 	    }
 	}
 

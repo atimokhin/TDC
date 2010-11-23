@@ -104,7 +104,7 @@ int CR::MaxNumberOfPhotons()
  */
 bool CR::EmitPhotons(double dt, 
                      double Weight,  double X0, double& P_par,  
-                     Photons& ph)
+                     PhotonCache& ph)
 {
   // perpedicular momentum of emitted photon
   const double P_PERP_PH=0;

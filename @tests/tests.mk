@@ -1,4 +1,4 @@
-FILES_TO_BUILD= test_inout.exe test_absorption.exe test_emission.exe  test_limits.exe
+FILES_TO_BUILD= test_inout.exe test_absorption.exe test_emission.exe  test_limits.exe test_particles.exe
 
 
 TEST_EXE_FILES=$(addprefix @tests/, $(FILES_TO_BUILD) )
@@ -51,7 +51,7 @@ OBJ_ABSORPTION=\
 
 
 @tests/test_particles.exe: %.exe : %.exe.o  \
-	$(OBJ_CONTROL) $(OBJ_SETUP_DIMENSIONAL_CONSTANTS) $(OBJ_SETUP_PARAMETERS) $(OBJ_UTILS) $(OBJ_INOUT) $(OBJ_POOMA_FIX) $(OBJ_CONTAINERS) 
+	$(RANDOM_LIB_SRC) $(OBJ_PARTICLES) $(OBJ_CONTROL) $(OBJ_SETUP_DIMENSIONAL_CONSTANTS) $(OBJ_SETUP_PARAMETERS) $(OBJ_UTILS) $(OBJ_INOUT) $(OBJ_POOMA_FIX) $(OBJ_CONTAINERS) 
 	$(CXX)  -o $@ $^ \
 	$(CXXFLAGS)  \
 	$(TEST_OPTS) \

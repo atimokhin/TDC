@@ -17,10 +17,12 @@
 #include "../_Particles/charged_patch.h"
 #include "../_Particles/pairs_patch.h"
 #include "../_Particles/ID/particle_id.h"
+#include "../_Particles/ParticleCaches/photon_cache.h"
+#include "../_Particles/ParticleCaches/pair_cache.h"
+#include "../_Particles/ParticleCaches/charged_particle_cache.h"
 
 #include "../_Mesh/my_grid.h"
 
-#include "Photons/photons.h"
 #include "Emission/CR.h"
 #include "PairProduction/gamma2pair.h"
 
@@ -100,15 +102,20 @@ public:
   template<class Particles>
   bool SingleParticleEmission(double dt, int i, Particles& p);
   //! Create new pairs from Photons lists
-  template<class Pairs>
-  bool CreatePairs(Pairs& pairs, ParticleID& id);
+  bool CreatePairs(ParticleID& id);
 
   //! set photons (for test purpouses)
-  void SetPhotons(Photons& ph) { _Ph = ph; };
+  void SetPhotons(PhotonCache& ph) { _Ph = ph; };
 
 private:
   //! Internal container holding photons emitted by particles
-  Photons _Ph;
+  PhotonCache _Ph;
+  //! Cache for virtual pair creation
+  PairCache _PairCache;
+  //! Caches for particle injection
+  ChargedParticleCache _ElectronCache;
+  ChargedParticleCache _PositronCache;
+
   //! class for photon propagation and pair creation 
   Gamma2Pair _G2P;
 
@@ -185,14 +192,37 @@ bool MonteCarlo::Particles2Pairs(ParticleList<Particles>& pl,
 	      _Ph.SetInheritedParams( p.X(i)(0),t, p.P_par(i), p.IDTS(i),p.ID(i) );
 	      
 	      // Create pairs 
-	      pairs_created = CreatePairs(pairs,id) || pairs_created;
+	      pairs_created = CreatePairs(id) || pairs_created;
 
 	      // clean all photons container
 	      _Ph.Clear();
 	    }
 	}
     }
-  if ( pairs_created ) pairs.Swap();
+
+  if ( pairs_created ) 
+    {
+      int n_new_pairs = _PairCache.Size();
+      int n_old_pairs = pairs.size();
+      pairs.create(n_new_pairs);
+      for (int i=0; i<n_new_pairs; i++)
+        {
+          pairs.SetPair(n_old_pairs + i,
+                        _PairCache.Weight[i], 
+                        _PairCache.T_cr[i], 
+                        _PairCache.X_cr[i], 
+                        _PairCache.X_em[i], 
+                        _PairCache.E[i], 
+                        _PairCache.Psi[i], 
+                        _PairCache.Origin[i], 
+                        _PairCache.IDTS_Parent[i], 
+                        _PairCache.ID_Parent[i], 
+                        _PairCache.IDTS[i], 
+                        _PairCache.ID[i] );
+        }
+      pairs.Swap();
+      _PairCache.Clear();
+    }
 
   return pairs_created;
 }
@@ -266,10 +296,10 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
               p_perp = 0;
 
               // create particles
-              positrons.AddParticle(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
-                                    pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
-              electrons.AddParticle(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
-                                    pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
+              _PositronCache.Add(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
+                                 pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
+              _ElectronCache.Add(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
+                                 pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
             }
 
 	  // store destroy request for pair in any case
@@ -279,10 +309,37 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
 
   if ( particles_injected )
     {
+      int n_new_pairs = _PositronCache.Size();
+      int n_old_p = positrons.size();
+      int n_old_e = electrons.size();
+      positrons.create(n_new_pairs);
+      electrons.create(n_new_pairs);
+      for (int i=0; i<n_new_pairs; i++)
+        {
+          positrons.SetParticle(n_old_p + i,
+                                _PositronCache.Weight[i], 
+                                _PositronCache.X[i], 
+                                _PositronCache.P_par[i], 
+                                _PositronCache.P_perp[i] , 
+                                _PositronCache.Origin[i], 
+                                _PositronCache.IDTS[i], 
+                                _PositronCache.ID[i] );
+
+          electrons.SetParticle(n_old_e + i,
+                                _ElectronCache.Weight[i], 
+                                _ElectronCache.X[i], 
+                                _ElectronCache.P_par[i], 
+                                _ElectronCache.P_perp[i], 
+                                _ElectronCache.Origin[i], 
+                                _ElectronCache.IDTS[i], 
+                                _ElectronCache.ID[i] );
+        }
       pairs_global.performDestroy();
       pairs_global.Swap();
-
+      
       pl.Swap();
+      _PositronCache.Clear();
+      _ElectronCache.Clear();
     }
 
   return  particles_injected;
@@ -308,73 +365,7 @@ inline bool MonteCarlo::SingleParticleEmission(double dt, int i, Particles& p)
 };
 
 
-/** 
- * This fuction iterates over internal Photons list _Ph and for each photon
- * - calls _G2P.IsAbsorbed(x_cr, psi_cr) for doing Monte Carlo sampling 
- *   of photon absorption
- * - if photon is absorbed it calculates injection time and creates new virtual pair.
- * 
- * @param pairs reference to the Pairs object
- */
-template<class Pairs>
-bool MonteCarlo::CreatePairs(Pairs& pairs, ParticleID& id)
-{
-  bool pairs_created = false;
-  double x_cr, psi_cr;
 
-  int e_sign = _Ph.Get_MomentumSign();
-
-  // iterate over all photons *********
-  for (int i=0; i<_Ph.Size(); i++)
-    {
-#ifdef TEST_GAMMA2PAIR
-      bool test_photon_absorbed = false;
-#endif
-
-      // setup photons parameters in Gamma2Pair class
-      _G2P.SetupPhoton(_Ph.E[i],_Ph.Get_X0(),_Ph.Get_Direction() );
-      // if absorbed - create pair
-      if ( _G2P.IsAbsorbed(x_cr, psi_cr) ) 
-	{
-	  if ( !pairs_created ) pairs_created = true;
-	  // pair injection time
-	  double t_cr = _Ph.Get_T0() + fabs( x_cr - _Ph.Get_X0() );
-
-	  // if requested use on the spot approximation <<============= (!!!)
-	  if ( _DoOnTheSpotPairCreation_Flag )
-	    {
-	      t_cr = _Ph.Get_T0();
-	      x_cr = _Ph.Get_X0();
-	    }	  
-          // ----------------------------------------------------------
-	  // if requested do pair creation position smoothing <<====== (!!!)
-	  if ( _DoPairInjectionSmoothing_Flag )
-	    {
-	      t_cr += _dX_Smooth * _Rand.Fixed();
-	    }	  
-          // ----------------------------------------------------------
-
-	  // add newly created pair
-	  pairs.AddPair(_Ph.Weight[i], 
-                        t_cr, x_cr, _Ph.Get_X0(), 
-                        e_sign*_Ph.E[i], psi_cr, 
-                        _Ph.Origin[i],
-			_Ph.Get_IDTS(), _Ph.Get_ID(), id.GetIDTS(), id.GetID() );
-
-#ifdef TEST_GAMMA2PAIR
-	  test_photon_absorbed = true;
-	  std::cout<<"travelled l="<<x_cr - _Ph.Get_X0()<<"\n";
-	  std::cout<<">>>>>>>[ABSORBED]<<<<<<<\n\n";
-#endif
-	}
-
-#ifdef TEST_GAMMA2PAIR
-      if (!test_photon_absorbed)  std::cout<<".......[ESCAPED]........\n\n";
-#endif
-    }
-
-  return pairs_created;
-}
 
 
 #endif

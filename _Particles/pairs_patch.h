@@ -34,8 +34,7 @@ public:
 
 public:
 
-  using Base_t::N_MAX;
-  using Base_t::N_OPT;
+  using Base_t::LptData;
   using Base_t::N_BASE;
 
   using Base_t::Weight;

@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
   int n_ph = static_cast<int>(in.get_param("MaxNumberOfPhotons"));
   in.ChangeGroup();
 
-  Photons ph;
+  PhotonCache ph;
   ph.Initialize(n_ph);
   // +++++++++++++++++++++++++++++
 

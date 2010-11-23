@@ -89,6 +89,13 @@ Group "TIME" {
    NumberOfTimeSteps = 10000;   
 }
 
+Group "RHO_GJ" {
+   Type = 'RhoGJFunctor_Const';
+}
+
+Group "MAGNETIC_FIELD" {
+   Type = 'R6';
+}
 
 Group "ELECTRODYNAMICS" {
    Type = 'Electrostatic_1D';
@@ -135,9 +142,17 @@ Group "PARTICLES" {
       ! Initial number of particles
       NumberOfParticles_Initial = 25000;
       ! these parameters are read at RESTART<<<<<<
-      NumberOfParticles_Maximal = 100000;
-      NumberOfParticles_Optimum = 50000;
-      F_Reduce_For_PairProduction = 2;
+      Group "LPT" {
+         DoSplitting ? Yes;
+         DoMerging   ? Yes;
+         NumberOfParticles_Max = 80000;
+         NumberOfParticles_Min = 10000;
+         merge_f_reduce       = 0.5;   ! probability of particle merge
+         split_min_weight     = 1;     ! min weight  of splitted particle
+         split_f_dx           = 0.1;   ! fraction of cellsize 
+         split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
+         split_n_steps_min    = 50;    ! minimum # of time steps between splitting
+      }
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       Group "InitialConditions" {	 
 	 NumberOfInitializedAttributes = 2;
@@ -170,9 +185,17 @@ Group "PARTICLES" {
       ! Initial number of particles
       NumberOfParticles_Initial = 25000;
       ! these parameters are read at RESTART<<<<<<
-      NumberOfParticles_Maximal = 100000;
-      NumberOfParticles_Optimum = 50000;
-      F_Reduce_For_PairProduction = 2;
+      Group "LPT" {
+         DoSplitting ? Yes;
+         DoMerging   ? Yes;
+         NumberOfParticles_Max = 80000;
+         NumberOfParticles_Min = 10000;
+         merge_f_reduce       = 0.5;   ! probability of particle merge
+         split_min_weight     = 1;     ! min weight  of splitted particle
+         split_f_dx           = 0.1;   ! fraction of cellsize 
+         split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
+         split_n_steps_min    = 50;    ! minimum # of time steps between splitting
+      }
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       Group "InitialConditions" {	 
 	 NumberOfInitializedAttributes = 2;
@@ -204,8 +227,17 @@ Group "PARTICLES" {
 Group "PAIRS" {
    NumberOfParticles_Initial = 0;
    ! these parameters are read at RESTART<<<<<<
-   NumberOfParticles_Maximal = 130000;
-   NumberOfParticles_Optimum = 90000;
+   Group "LPT" {
+         DoSplitting ? Yes;
+         DoMerging   ? Yes;
+         NumberOfParticles_Max = 80000;
+         NumberOfParticles_Min = 10000;
+         merge_f_reduce       = 0.5;   ! probability of particle merge
+         split_min_weight     = 1;     ! min weight  of splitted particle
+         split_f_dx           = 0.1;   ! fraction of cellsize 
+         split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
+         split_n_steps_min    = 50;    ! minimum # of time steps between splitting
+   }
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }
 
