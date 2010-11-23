@@ -12,13 +12,13 @@ LPT_Data::LPT_Data()
 void LPT_Data::SetupFromConfigGroup(FileInput& in)
 {
   // merging params
-  if ( do_merging_flag = in.get_answer("DoMerging") );
+  if ( do_merging_flag = in.get_answer("DoMerging") )
   {
     n_max = static_cast<int>( in.get_param("NumberOfParticles_Max") );
     merge_f_reduce = in.get_param("merge_f_reduce");
   }
   // splitting params
-  if ( do_splitting_flag = in.get_answer("DoSplitting") );
+  if ( do_splitting_flag = in.get_answer("DoSplitting") )
   {
     GeometryParams geom;
     GridParams     grid;
