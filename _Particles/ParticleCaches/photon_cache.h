@@ -138,14 +138,15 @@ inline void PhotonCache::SetInheritedParams( double x0, double t0, double p, int
 
 inline void PhotonCache::Add(double weight, double e, double psi0, char origin)
 {
-  // increment index
-  ParticleCache::Add();
 
   Weight[_i] = weight;
   Psi0[_i]   = psi0;
   E[_i]      = e;
 
   Origin[_i] = origin;
+
+  // increment index
+  ParticleCache::Add();
 }
 
 #endif

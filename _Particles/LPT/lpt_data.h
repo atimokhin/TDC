@@ -3,6 +3,34 @@
 
 #include "ATbase.h"
 
+/**
+ * 
+ * \class LPT_Data
+ * Class which stores parameters of LPT manipulations
+ * in each individual Particles class
+ *
+ * config file example
+ *
+ \verbatim
+
+      Group "LPT" {
+         ! Required parameters
+         DoSplitting ? Yes;
+         DoMerging   ? Yes;
+         ! Optional parameters - required only if splitting/merging is requested
+         NumberOfParticles_Max = 350000;
+         NumberOfParticles_Min = 10000;
+         merge_f_reduce       = 0.5;   ! probability of particle merge
+         split_min_weight     = 1;     ! min weight  of splitted particle
+         split_f_dx           = 0.1;   ! fraction of cellsize 
+         split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
+         split_n_steps_min    = 100;   ! minimum # of time steps between splitting
+      }
+
+ \endverbatim
+ * 
+ */
+
 class LPT_Data
 {
 public:

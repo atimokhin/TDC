@@ -1,13 +1,10 @@
-!  relativistic 2 stream instability
-!  gamma=10
-!  test LPT
 
 Group "CALCULATION_START_CONTROL" {
    ! Start new calculation or restart a previous one <-----------------
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'test_2stream_g10_ymax';
+   StartFromCalcId = 'test_rs_s1';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -15,11 +12,11 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'test_2stream_g10_ymax';  
+   CalcId = 'test_rs_s1';  
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
-   TimeStepStdoutPrintInterval  = 50;
+   TimeStepStdoutPrintInterval  = 10;
    ! Number Of Timesteps after which timelabel is printed to logfile
    TimeStepLogFilePrintInterval = 50;
    ! Number Of Timesteps after which results are saved into HDF files
@@ -40,12 +37,10 @@ Group "CODE_CONTROL" {
    DoMoveParticles ? Yes;
 
    ! Monte Carlo -----------------
-   DoMonteCarlo    ? No;
+   DoMonteCarlo    ? Yes;
 
    ! LPT -------------------------
    DoLPT           ? Yes;
-   ! optional	   
-   DoLPTforTimeLaterThan = 55*8.7460e-04;   
 }     
 
 
@@ -55,9 +50,9 @@ Group "DIMENSIONAL_CONSTANTS" {
 
    Group "PSR_ConstsInitializer" {
       ! Magnetic field at the pole  [10^12 G]
-      B_12 = 1;
+      B_12 = -1;
       ! Period of pulsar [seconds]
-      P_SEC = 1;
+      P_SEC = 0.2;
       ! Radius of curvature of magnetic field lines [ 10^6 cm]
       Rcur_6 = 1;
 
@@ -72,7 +67,7 @@ Group "GEOMETRY" {
    !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
    WIDTH  = 1;
    !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
-   LENGTH = 0.0453;
+   LENGTH = 0.3;
    ! Colatitude of the field line [ in units of \thepa_pc ]
    THETA = 1;
 }
@@ -80,15 +75,15 @@ Group "GEOMETRY" {
 
 Group "GRID" {
    ! Number of Cells
-   NumberOfCells = 500;
+   NumberOfCells = 1000;
 }
 
 
 Group "TIME" {
    !  Timestep
-   dT =  0.0279/1000;
+   dT =  1e-4;
    !  Number of timesteps
-   NumberOfTimeSteps = 10000;   
+   NumberOfTimeSteps = 30000;   
 }
 
 Group "RHO_GJ" {
@@ -108,33 +103,33 @@ Group "ELECTRODYNAMICS" {
 
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
-         J0 = 0;
+         J0 = 1.0;
       }
       Group "BoundaryConditions_Phi" {
-         Type = 'Periodic';
+         Type = 'RS_1';
       }
       Group "BoundaryConditions_E" {
-         Type = 'Periodic';
+         Type = 'LooseEnds';
+         E_Damping_Coeff = 0;
       }
    }
 }
 	
 
 
-
 Group "PARTICLES" {
 
    ! these parameters are read at RESTART <<<<<<<<
    ! Number of particles to provide \rho_{GJ}
-   NGJ = 50000;
+   NGJ = 5000;
 
    NumberOfChargedParticleTypes = 2;
    ChargedParticles_#0 = 'Electrons';
    ChargedParticles_#1 = 'Positrons';
    
-   Group "BoundaryConditions" {	 
-      Type = 'PERIODIC';
-   }	 
+   Group "BoundaryConditions" {  
+      Type = 'RS_1';
+   }     
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    
    ! --------------------------------------------------------
@@ -142,40 +137,38 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 25000;
+      NumberOfParticles_Initial = 1;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
+         ! Required parameters
          DoSplitting ? Yes;
          DoMerging   ? Yes;
-         NumberOfParticles_Max = 53000;
-         NumberOfParticles_Min = 26000;
+         ! Optional parameters - required only if splitting/merging is requested
+         NumberOfParticles_Max = 350000;
+         NumberOfParticles_Min = 10000;
          merge_f_reduce       = 0.5;   ! probability of particle merge
-         split_min_weight     = .24;     ! min weight  of splitted particle
-         split_f_dx           = 0.3;   ! fraction of cellsize 
+         split_min_weight     = 1;     ! min weight  of splitted particle
+         split_f_dx           = 0.1;   ! fraction of cellsize 
          split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
-         split_n_steps_min    = 50;    ! minimum # of time steps between splitting
+         split_n_steps_min    = 100;   ! minimum # of time steps between splitting
       }
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      Group "InitialConditions" {	 
-	 NumberOfInitializedAttributes = 2;
-	 AttributeName_#0 = 'X';
-	 AttributeName_#1 = 'P_par';	 
-	 Group "X" {		
-            DistributionName='SinXPerturbedUniform';
-            Group "SinXPerturbedUniform" {		
-               Amplitude = 1e-10*NParam[GEOMETRY](LENGTH);
-               nk=1;
-
-	       a=0;
-	       b=NParam[GEOMETRY](LENGTH);	       	       
+      Group "InitialConditions" {        
+         NumberOfInitializedAttributes = 2;
+         AttributeName_#0 = 'X';
+         AttributeName_#1 = 'P_par';     
+         Group "X" {
+            DistributionName='SingleValue';
+            Group "SingleValue" {
+               Value=0.5*NParam[GEOMETRY](LENGTH);           
+            }   
+         }
+         Group "P_par" {
+            DistributionName='SingleValue';
+            Group "SingleValue" {
+               Value = 0;
             }
-	 }
-	 Group "P_par" {		
-	    DistributionName='SingleValue';
-	    Group "SingleValue" {		
-	       Value=10;
-	    }   
-	 }
+         }
       }
    }
    ! --------------------------------------------------------
@@ -183,42 +176,40 @@ Group "PARTICLES" {
    ! --------------------------------------------------------
    Group "Positrons" {
       Mass   = 1;
-      Charge = -1;
+      Charge = 1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 25000;
+      NumberOfParticles_Initial = 1;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
+         ! Required parameters
          DoSplitting ? Yes;
          DoMerging   ? Yes;
-         NumberOfParticles_Max = 50000;
-         NumberOfParticles_Min = 20000;
+         ! Optional parameters - required only if splitting/merging is requested
+         NumberOfParticles_Max = 350000;
+         NumberOfParticles_Min = 10000;
          merge_f_reduce       = 0.5;   ! probability of particle merge
          split_min_weight     = 1;     ! min weight  of splitted particle
          split_f_dx           = 0.1;   ! fraction of cellsize 
          split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
-         split_n_steps_min    = 50;    ! minimum # of time steps between splitting
+         split_n_steps_min    = 100;   ! minimum # of time steps between splitting
       }
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      Group "InitialConditions" {	 
-	 NumberOfInitializedAttributes = 2;
-	 AttributeName_#0 = 'X';
-	 AttributeName_#1 = 'P_par';	 
-	 Group "X" {		
-            DistributionName='SinXPerturbedUniform';
-            Group "SinXPerturbedUniform" {		
-               Amplitude = 1e-10*NParam[GEOMETRY](LENGTH);
-               nk=1;
-
-	       a=0;
-	       b=NParam[GEOMETRY](LENGTH);	       	       
+      Group "InitialConditions" {        
+         NumberOfInitializedAttributes = 2;
+         AttributeName_#0 = 'X';
+         AttributeName_#1 = 'P_par';     
+         Group "X" {
+            DistributionName='SingleValue';
+            Group "SingleValue" {
+               Value=0.5*NParam[GEOMETRY](LENGTH);           
+            }   
+         }
+         Group "P_par" {
+            DistributionName='SingleValue';
+            Group "SingleValue" {
+               Value = 0;
             }
-	 }
-	 Group "P_par" {		
-	    DistributionName='SingleValue';
-	    Group "SingleValue" {		
-	       Value=-10;
-	    }   
-	 }
+         }
       }
    }
    ! --------------------------------------------------------
@@ -230,15 +221,9 @@ Group "PAIRS" {
    NumberOfParticles_Initial = 0;
    ! these parameters are read at RESTART<<<<<<
    Group "LPT" {
-         DoSplitting ? No;
-         DoMerging   ? No;
-         NumberOfParticles_Max = 80000;
-         NumberOfParticles_Min = 0;
-         merge_f_reduce       = 0.5;   ! probability of particle merge
-         split_min_weight     = 1;     ! min weight  of splitted particle
-         split_f_dx           = 0.1;   ! fraction of cellsize 
-         split_f_splitted_min = 0.5;   ! minimum fraction of splitted particles
-         split_n_steps_min    = 50;    ! minimum # of time steps between splitting
+      ! Required parameters
+      DoSplitting ? No;
+      DoMerging   ? No;
    }
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }
@@ -246,7 +231,7 @@ Group "PAIRS" {
 
 Group "PIC" {
    Group "BoundaryConditions" {
-         Type = 'None';
+         Type = 'FreeFlowBothEnds';
       }
 }
 
@@ -273,7 +258,7 @@ Group "MONTE_CARLO" {
    ! smooth pair injection over several cells?
    DoPairInjectionSmoothing ? Yes;
    ! -------------------------------------
-   NSmoothCells = 75;
+   NSmoothCells = 50;
    ! using for tests: fix the seed of RNG
    SetSeedForRandomNumberGenerator ? No;
    ! the seed for RNG
@@ -311,7 +296,7 @@ Group "MONTE_CARLO" {
 
    Group "Gamma2Pair" {
       ! smallest step in optical depth claculation	 
-      dX_Tau =  6e-4;
+      dX_Tau =  2.5e-3;
 
       ! smallest upper boundary for tau when photon propagation will
       ! be considered
@@ -320,9 +305,9 @@ Group "MONTE_CARLO" {
       EPS_TAU = 1e-3;
 
       ! number of Large steps
-      N_LS = 40;
+      N_LS = 20;
       ! estimated number of cross-section evaluation in Large Steps method
-      LS_N_SIGMA_EVAL = 60;
+      LS_N_SIGMA_EVAL = 40;
 
       ! using for tests: fix the seed of RNG
       SetSeedForRandomNumberGenerator ? No;
@@ -336,13 +321,13 @@ Group "NS_PARTICLE_FLUX" {
    ! results will be saved in this file   
    OutputFilename = 'ns_particle_flux.h5';
    ! size of the deque array
-   Size = 3;
+   Size = 100;
 }
 
 Group "LC_PARTICLE_FLUX" {
    ! results will be saved in this file   
    OutputFilename = 'lc_particle_flux.h5';
    ! size of the deque array
-   Size = 3;
+   Size = 100;
 }
 

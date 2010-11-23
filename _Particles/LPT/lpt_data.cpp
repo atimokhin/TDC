@@ -11,20 +11,24 @@ LPT_Data::LPT_Data()
 
 void LPT_Data::SetupFromConfigGroup(FileInput& in)
 {
-  GeometryParams geom;
-  GridParams     grid;
-  double dx = geom.L()/grid.NumberOfCells();
+  // merging params
+  if ( do_merging_flag = in.get_answer("DoMerging") );
+  {
+    n_max = static_cast<int>( in.get_param("NumberOfParticles_Max") );
+    merge_f_reduce = in.get_param("merge_f_reduce");
+  }
+  // splitting params
+  if ( do_splitting_flag = in.get_answer("DoSplitting") );
+  {
+    GeometryParams geom;
+    GridParams     grid;
+    double dx = geom.L()/grid.NumberOfCells();
 
-  do_splitting_flag = in.get_answer("DoSplitting");
-  do_merging_flag   = in.get_answer("DoMerging");
-
-  n_max = static_cast<int>( in.get_param("NumberOfParticles_Max") );
-  n_min = static_cast<int>( in.get_param("NumberOfParticles_Min") );
-
-  merge_f_reduce    = in.get_param("merge_f_reduce");
-
-  split_min_weight     = in.get_param("split_min_weight");
-  split_dx             = dx*in.get_param("split_f_dx");
-  split_f_splitted_min = in.get_param("split_f_splitted_min");
-  split_n_steps_min    = static_cast<int>( in.get_param("split_n_steps_min") );
+    n_min = static_cast<int>( in.get_param("NumberOfParticles_Min") );
+    
+    split_min_weight     = in.get_param("split_min_weight");
+    split_dx             = dx*in.get_param("split_f_dx");
+    split_f_splitted_min = in.get_param("split_f_splitted_min");
+    split_n_steps_min    = static_cast<int>( in.get_param("split_n_steps_min") );
+  }
 }

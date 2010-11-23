@@ -70,7 +70,8 @@ inline bool LargeParticlesTools::AdjustNumberOfParticles(P& p)
 {
   p.LptData.n_steps_since_last_splitting++;
 
-  if ( p.size() < p.LptData.n_min ) 
+  // split particles ?
+  if ( p.LptData.do_splitting_flag && p.size() < p.LptData.n_min ) 
     {
       if ( p.LptData.f_splitted_last_time > p.LptData.split_f_splitted_min ||
            p.LptData.n_steps_since_last_splitting > p.LptData.split_n_steps_min )
@@ -81,16 +82,19 @@ inline bool LargeParticlesTools::AdjustNumberOfParticles(P& p)
       else
         return false;
     }
-  else if ( p.size() > p.LptData.n_max ) 
+  // merge particles ?
+  else if ( p.LptData.do_merging_flag && p.size() > p.LptData.n_max ) 
     {
       MergeParticles(p);
       return true;
     }
+  // nothing to be done
   else
     {
       return false;
     }    
 }
+
 
 /** 
  * This function checks particle number and if it exceeds the maximum
@@ -109,7 +113,8 @@ inline bool LargeParticlesTools::AdjustNumberOfPairs(P& p)
 {
   p.LptData.n_steps_since_last_splitting++;
 
-  if ( p.size() < p.LptData.n_min ) 
+  // split pairs ?
+  if ( p.LptData.do_splitting_flag && p.size() < p.LptData.n_min ) 
     {
       if ( p.LptData.f_splitted_last_time > p.LptData.split_f_splitted_min ||
            p.LptData.n_steps_since_last_splitting > p.LptData.split_n_steps_min )
@@ -120,11 +125,13 @@ inline bool LargeParticlesTools::AdjustNumberOfPairs(P& p)
       else
         return false;
     }
-  else if ( p.size() > p.LptData.n_max ) 
+  // merge pairs ?
+  else if ( p.LptData.do_merging_flag && p.size() > p.LptData.n_max ) 
     {
       MergeParticles(p);
       return true;
     }
+  // nothing to be done
   else
     {
       return false;
@@ -198,7 +205,7 @@ template<class P>
 void LargeParticlesTools::SplitParticles(P& p)
 {
   int n_particles  = p.size();
-  int n_unsplitted = 0;
+  int n_splitted = 0;
   p.create(n_particles);
   for ( int i=0; i<n_particles; i++ )
     {
@@ -215,17 +222,19 @@ void LargeParticlesTools::SplitParticles(P& p)
 
           p.Weight(i) *= 0.5;
           p.X(i)(0)   -= p.LptData.split_dx;
+
+          n_splitted++;
 	}
       else
         {
-          n_unsplitted++;
+          // cannot split particle -- delete it counterpart
 	  p.deferredDestroy( Loc<1>(i2) );
         }
     }
   p.performDestroy();
   p.Swap();
 
-  p.LptData.f_splitted_last_time = static_cast<double>(n_unsplitted)/n_particles;
+  p.LptData.f_splitted_last_time = static_cast<double>(n_splitted)/n_particles;
   p.LptData.n_steps_since_last_splitting = 0;
 }
 

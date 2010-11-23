@@ -296,10 +296,10 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
               p_perp = 0;
 
               // create particles
-              positrons.AddParticle(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
-                                    pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
-              electrons.AddParticle(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
-                                    pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
+              _PositronCache.Add(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
+                                 pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
+              _ElectronCache.Add(pairs.Weight(i), pairs.X_cr(i)(0), p_par, p_perp, 
+                                 pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
             }
 
 	  // store destroy request for pair in any case
@@ -309,10 +309,37 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
 
   if ( particles_injected )
     {
+      int n_new_pairs = _PositronCache.Size();
+      int n_old_p = positrons.size();
+      int n_old_e = electrons.size();
+      positrons.create(n_new_pairs);
+      electrons.create(n_new_pairs);
+      for (int i=0; i<n_new_pairs; i++)
+        {
+          positrons.SetParticle(n_old_p + i,
+                                _PositronCache.Weight[i], 
+                                _PositronCache.X[i], 
+                                _PositronCache.P_par[i], 
+                                _PositronCache.P_perp[i] , 
+                                _PositronCache.Origin[i], 
+                                _PositronCache.IDTS[i], 
+                                _PositronCache.ID[i] );
+
+          electrons.SetParticle(n_old_e + i,
+                                _ElectronCache.Weight[i], 
+                                _ElectronCache.X[i], 
+                                _ElectronCache.P_par[i], 
+                                _ElectronCache.P_perp[i], 
+                                _ElectronCache.Origin[i], 
+                                _ElectronCache.IDTS[i], 
+                                _ElectronCache.ID[i] );
+        }
       pairs_global.performDestroy();
       pairs_global.Swap();
-
+      
       pl.Swap();
+      _PositronCache.Clear();
+      _ElectronCache.Clear();
     }
 
   return  particles_injected;
