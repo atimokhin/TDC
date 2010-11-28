@@ -138,8 +138,9 @@ SRC_PARTICLES=_Particles/particle_population.cpp \
 
 SRC_MC = $(filter-out %.exe.cpp,$(wildcard _MC/*.cpp)                \
                                 $(wildcard _MC/Emission/*.cpp)       \
-				$(wildcard _MC/PairProduction/*.cpp) \
-				$(wildcard _MC/Samples/*.cpp)  )
+				$(wildcard _MC/PairProduction/*.cpp)  )
+
+SRC_MC_SAMPLES = $(filter-out %.exe.cpp, $(wildcard _MC/Samples/*.cpp)  )
 
 SRC_CONTROL = $(wildcard _Control/*.cpp)
 
@@ -169,6 +170,7 @@ OBJ_MAGNETIC_FIELD=$(patsubst %.cpp, %.o, $(sort $(SRC_MAGNETIC_FIELD) ) )
 OBJ_MESH=$(patsubst %.cpp, %.o, $(sort $(SRC_MESH) ) )
 OBJ_FIELDS=$(patsubst %.cpp, %.o, $(sort $(SRC_FIELDS) ) )
 OBJ_MC=$(patsubst %.cpp, %.o, $(sort $(SRC_MC) ) )
+OBJ_MC_SAMPLES=$(patsubst %.cpp, %.o, $(sort $(SRC_MC_SAMPLES) ) )
 OBJ_CONTROL=$(patsubst %.cpp, %.o, $(sort $(SRC_CONTROL) ) )
 OBJ_SOLUTION_PROPERTIES=$(patsubst %.cpp, %.o, $(sort $(SRC_SOLUTION_PROPERTIES) ) )
 
@@ -188,6 +190,7 @@ OBJ_CASCADE=\
 	$(OBJ_RHO_GJ)     \
 	$(OBJ_MAGNETIC_FIELD) \
 	$(OBJ_MC)         \
+	$(OBJ_MC_SAMPLES)         \
 	$(OBJ_FIELDS)     \
 	$(OBJ_PARTICLES)  \
 	$(OBJ_CONTROL)    \
@@ -195,6 +198,7 @@ OBJ_CASCADE=\
 
 OBJ_PROPS=\
 	$(OBJ_PARTICLES)  \
+	$(OBJ_MC_SAMPLES)         \
 	$(OBJ_CONTAINERS) \
 	$(OBJ_SETUP_PARAMETERS)       \
 	$(OBJ_SETUP_PROPERTIES) \
@@ -234,7 +238,7 @@ run_cascade.exe: $(RANDOM_LIB_SRC) $(OBJ_CASCADE)
 	$(LIB_POOMA_FLAGS) $(INCLUDE_POOMA_FLAGS) \
 	$(LIB_HDF5_FLAGS) $(INCLUDE_HDF5_FLAGS) 
 
-print_parameters.exe: %.exe : %.exe.cpp $(OBJ_SETUP_DIMENSIONAL_CONSTANTS) $(OBJ_SETUP_PARAMETERS) $(OBJ_SETUP_PROPERTIES) $(OBJ_MAGNETIC_FIELD) $(OBJ_MESH) $(OBJ_INOUT) $(OBJ_CONTROL) $(OBJ_UTILS) 
+print_parameters.exe: %.exe : %.exe.cpp $(OBJ_SETUP_DIMENSIONAL_CONSTANTS) $(OBJ_SETUP_PARAMETERS) $(OBJ_SETUP_PROPERTIES) $(OBJ_RHO_GJ) $(OBJ_MAGNETIC_FIELD) $(OBJ_MESH) $(OBJ_INOUT) $(OBJ_CONTROL) $(OBJ_UTILS) 
 	$(CXX)  -o $@ $^ \
 	$(CXXFLAGS)  \
 	$(MAGNETIC_FIELD_OPTS) \

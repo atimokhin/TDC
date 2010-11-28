@@ -16,12 +16,12 @@
 #include "initial_distribution.h"
 #include "single_value.h"
 #include "discrete.h"
-#include "random_uniform.h"
 #include "sinx.h"
 #include "cosx.h"
 #include "uniform.h"
 #include "sinx_perturbed_uniform.h"
-#include "lin_const.h"
+#include "random_uniform.h"
+#include "random_rho_gj.h"
 
 
 /**
@@ -36,12 +36,12 @@
   MACRO__MAKE_P_DISTR(Additive);	\
   MACRO__MAKE_P_DISTR(SingleValue);	\
   MACRO__MAKE_P_DISTR(Discrete);	\
-  MACRO__MAKE_P_DISTR(RandomUniform);   \
   MACRO__MAKE_P_DISTR(SinX);            \
   MACRO__MAKE_P_DISTR(CosX);            \
   MACRO__MAKE_P_DISTR(Uniform);         \
-  MACRO__MAKE_P_DISTR(SinXPerturbedUniform);	\
-  MACRO__MAKE_P_DISTR(LinConst);
+  MACRO__MAKE_P_DISTR(SinXPerturbedUniform);  \
+  MACRO__MAKE_P_DISTR(RandomUniform);   \
+  MACRO__MAKE_P_DISTR(RandomRhoGJ);
 // ******************************************************
 
 

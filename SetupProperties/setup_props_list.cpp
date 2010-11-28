@@ -7,6 +7,7 @@
 #include "grid_props.h"
 #include "pulsar_gap_props.h"
 
+#include "rho_gj_props.h"
 #include "RS_cascade_props.h"
 
 
@@ -28,6 +29,7 @@ SetupPropsList::SetupPropsList()
   _List.push_back( new PulsarGapProps() );
 
   _List.push_back( new RSCascadeProps() );
+  _List.push_back( new RhoGJProps() );
 }
 
 
@@ -44,10 +46,10 @@ SetupPropsList::~SetupPropsList()
 
 
 
-void SetupPropsList::Initialize()
+void SetupPropsList::Initialize(FileInput &in)
 {
   for ( CI p = _List.begin();  p != _List.end(); ++p )
-      (*p)->Initialize();  
+      (*p)->Initialize(in);  
 }
 
 

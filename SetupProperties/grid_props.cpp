@@ -15,7 +15,7 @@ double GridProps::_dX = 0;
 int GridProps::_NCells = 0;
 
 
-void GridProps::Initialize()
+void GridProps::Initialize(FileInput &in)
 {
   TimeParams     time;
   GeometryParams geom;

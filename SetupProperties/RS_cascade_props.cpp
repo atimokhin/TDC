@@ -16,7 +16,7 @@ double RSCascadeProps::_GammaMax;
  * Sets Ruderman-Sutherland cascade parameters
  * 
  */
-void RSCascadeProps::Initialize()
+void RSCascadeProps::Initialize(FileInput &in)
 {
   MagneticFieldConsts   mf; 
 

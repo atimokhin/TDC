@@ -23,7 +23,7 @@ class PulsarGapProps: public SetupProps
 {
 public:
 
-  void Initialize();
+  void Initialize(FileInput &in);
 
   //! Vacuum potential drops in statvolts
   double V_vac() const { return _Vvac; };

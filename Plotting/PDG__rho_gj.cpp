@@ -31,7 +31,7 @@ PlotData1D PDG__rho_gj(string inputfile_name, int n_points)
   in.ChangeGroup();
   // ********************************************
   
-  // PlotData1D
+  // setup PlotData1D ---------------------------
   PlotData1D pd(n_points);
   // fill PlotData1D
   for (int i=0; i<n_points; i++)
@@ -44,6 +44,9 @@ PlotData1D PDG__rho_gj(string inputfile_name, int n_points)
   pd.ylabel="x";
   pd.ylabel="RhoGJ";
   pd.title="Goldreich-Julian charge density";
+  // --------------------------------------------
 
+  
+  // return PlotData object
   return pd;
 }

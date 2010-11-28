@@ -24,7 +24,7 @@ class RSCascadeProps: public SetupProps
 {
 public:
 
-  void Initialize();
+  void Initialize(FileInput &in);
 
   //! gap height in cm
   double H_cm() const { return _H_cm; };

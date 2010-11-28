@@ -1,5 +1,5 @@
-#ifndef FMP_PROPS_H
-#define FMP_PROPS_H
+#ifndef RHO_GJ_PROPS_H
+#define RHO_GJ_PROPS_H
 
 #include "setup_props.h"
 
@@ -18,15 +18,13 @@
  * - Normalization Constants (NormConsts)
  */
 
-class FMPProps: public SetupProps
+class RhoGJProps: public SetupProps
 {
 public:
 
   void Initialize(FileInput &in);
 
-  double W0()    const { return _W0; };
-  double W_FMP() const { return _WFMP; };
-
+  double N_Total() const { return _N_Total; };
 
   void SaveToHDFFile(Save2HDF& hdf) const;
   void ReadFromHDFFile(Save2HDF& hdf);
@@ -35,8 +33,7 @@ public:
 
 private:
 
-  static double _W0;    //<! normalized charge of the FMP
-  static double _WFMP;  //<! number of real physical particles in one FMP
+  static double _N_Total;  //<! Total number of particles GJ charge
 };
 
 

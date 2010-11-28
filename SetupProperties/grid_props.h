@@ -23,7 +23,7 @@ class GridProps: public SetupProps
 {
 public:
 
-  void Initialize();
+  void Initialize(FileInput &in);
 
   void SaveToHDFFile(Save2HDF& hdf) const;
   void ReadFromHDFFile(Save2HDF& hdf);

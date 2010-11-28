@@ -33,7 +33,7 @@ class SetupProps
 public:
 
   //! Initialize static memebers
-  virtual void Initialize() = 0;
+  virtual void Initialize(FileInput &in) = 0;
 
   //! save properties into an hdf file
   virtual void SaveToHDFFile(Save2HDF& hdf) const = 0;

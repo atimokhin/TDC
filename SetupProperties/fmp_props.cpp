@@ -14,7 +14,7 @@ double FMPProps::_WFMP = 0;
  * Reads data from the input file and sets pulsar gap parameters
  * 
  */
-void FMPProps::Initialize()
+void FMPProps::Initialize(FileInput &in)
 {
   NormConsts  nc;
 

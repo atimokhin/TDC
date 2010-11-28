@@ -24,7 +24,7 @@ class PlasmaProps: public SetupProps
 {
 public:
 
-  void Initialize();
+  void Initialize(FileInput &in);
 
   //! plasma frequency 
   double OmegaPl() const { return _OmegaPl; };

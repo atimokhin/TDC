@@ -12,7 +12,7 @@ double PulsarGapProps::_n_GJ = 0;
  * Reads data from the input file and sets pulsar gap parameters
  * 
  */
-void PulsarGapProps::Initialize()
+void PulsarGapProps::Initialize(FileInput &in)
 {
   NormConsts nc;
 

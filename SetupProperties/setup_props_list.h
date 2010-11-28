@@ -24,7 +24,7 @@ public:
   ~SetupPropsList(); 
 
   // initialize all properties classes
-  void Initialize();
+  void Initialize(FileInput &in);
 
   // save all properties into HDF file
   void SaveToHDFFile() const;

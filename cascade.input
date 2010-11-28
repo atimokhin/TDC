@@ -20,7 +20,7 @@ Group "OUTPUT_CONTROL" {
    ! Number Of Timesteps after which timelabel is printed to logfile
    TimeStepLogFilePrintInterval = 50;
    ! Number Of Timesteps after which results are saved into HDF files
-   TimeStepHDFFileSaveInterval  = 50;
+   TimeStepHDFFileSaveInterval  = 2;
 }
 
 	
@@ -50,7 +50,7 @@ Group "DIMENSIONAL_CONSTANTS" {
 
    Group "PSR_ConstsInitializer" {
       ! Magnetic field at the pole  [10^12 G]
-      B_12 = -1;
+      B_12 = 1;
       ! Period of pulsar [seconds]
       P_SEC = 0.2;
       ! Radius of curvature of magnetic field lines [ 10^6 cm]
@@ -83,11 +83,14 @@ Group "TIME" {
    !  Timestep
    dT =  1e-4;
    !  Number of timesteps
-   NumberOfTimeSteps = 30000;   
+   NumberOfTimeSteps = 2;   
 }
 
 Group "RHO_GJ" {
-   Type = 'RhoGJFunctor_Const';
+   Type = 'RhoGJFunctor_SCLF_lin2';
+   ! RhoGJFunctor_SCLF_lin2 parameters
+   A  = .5;
+   X0 = NParam[GEOMETRY](LENGTH);
 }
 
 Group "MAGNETIC_FIELD" {
@@ -121,7 +124,7 @@ Group "PARTICLES" {
 
    ! these parameters are read at RESTART <<<<<<<<
    ! Number of particles to provide \rho_{GJ}
-   NGJ = 5000;
+   NGJ = 100000;
 
    NumberOfChargedParticleTypes = 2;
    ChargedParticles_#0 = 'Electrons';
@@ -137,7 +140,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 1;
+      NumberOfParticles_Initial = 250000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -158,9 +161,12 @@ Group "PARTICLES" {
          AttributeName_#0 = 'X';
          AttributeName_#1 = 'P_par';     
          Group "X" {
-            DistributionName='SingleValue';
-            Group "SingleValue" {
-               Value=0.5*NParam[GEOMETRY](LENGTH);           
+            DistributionName='RandomRhoGJ';
+            Group "RandomRhoGJ" {		
+               N_Positions = 300000;
+               N_Particles_Uniform = 0;
+               ! must be [Positive|Negative]
+               ChargeSign = 'Negative';
             }   
          }
          Group "P_par" {
@@ -178,7 +184,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = 1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 1;
+      NumberOfParticles_Initial = 175000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -199,9 +205,12 @@ Group "PARTICLES" {
          AttributeName_#0 = 'X';
          AttributeName_#1 = 'P_par';     
          Group "X" {
-            DistributionName='SingleValue';
-            Group "SingleValue" {
-               Value=0.5*NParam[GEOMETRY](LENGTH);           
+            DistributionName='RandomRhoGJ';
+            Group "RandomRhoGJ" {		
+               N_Positions = 300000;
+               N_Particles_Uniform = 0;
+               ! must be [Positive|Negative]
+               ChargeSign = 'Negative';
             }   
          }
          Group "P_par" {

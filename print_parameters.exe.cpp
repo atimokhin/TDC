@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   std::cout<<cc;
 
   SetupPropsList props;
-  props.Initialize();
+  props.Initialize(in);
   std::cout<<props;  
 
   return 0; 

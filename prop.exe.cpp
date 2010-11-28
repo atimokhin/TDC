@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
   // setup properties <<<
   SetupPropsList props;
-  props.Initialize();
+  props.Initialize(in);
 
 
   // --------------------------------

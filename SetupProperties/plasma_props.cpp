@@ -14,7 +14,7 @@ double PlasmaProps::_LambdaDebye = 0;
  * Reads data from the input file and sets pulsar gap parameters
  * 
  */
-void PlasmaProps::Initialize()
+void PlasmaProps::Initialize(FileInput &in)
 {
   NormConsts     nc;
   GeometryParams geom;
