@@ -1,12 +1,19 @@
 #!/bin/bash
 
-#PBS -N RS_nGJ2.5e4_nx2.5e3_s1
-#PBS -e a.err
-#PBS -o a.out
+#PBS -N SCLF_jp0.5_Ap0.3
+#PBS -e ../RESULTS/SCLF_jp0.5_Ap0.3.err
+#PBS -o ../RESULTS/SCLF_jp0.5_Ap0.3.out
+
 #PBS -l nodes=1:ppn=1,walltime=72:00:00
 #PBS -q queuename
 #PBS -V
-#
-#cd $PBS_O_WORKDIR
-#
+
+# if in on henyey cd to working directory 
+HOST=`hostname`
+if [ "$HOST" = "ln000" ]
+then
+    cd $PBS_O_WORKDIR
+fi
+
+# start simulations
 ./run_cascade.exe

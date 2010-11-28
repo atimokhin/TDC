@@ -89,7 +89,7 @@ bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   // injection point
   x_inj = - ( 1 -_E__Delta_inj )*dx;
   // create particles and set their parameters
-  Interval<1> Ie = p_E.Create( ceil(_E__N_inj) );
+  Interval<1> Ie = p_E.Create( static_cast<int>(ceil(_E__N_inj)) );
   p_E.Origin(Ie) = 'P';
   p_E.Weight(Ie) = ceil(_E__N_inj)/_E__N_inj;
   p_E.X(Ie)      = x_inj;
@@ -102,7 +102,7 @@ bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   // injection point
   x_inj = - ( 1 -_I__Delta_inj )*dx;
   // create particles and set their parameters  
-  Interval<1> Ii = p_I.Create( ceil(_I__N_inj) );
+  Interval<1> Ii = p_I.Create( static_cast<int>(ceil(_I__N_inj)) );
   p_I.Origin(Ii) = 'P';
   p_I.Weight(Ii) = ceil(_I__N_inj)/_I__N_inj;
   p_I.X(Ii)      = x_inj;

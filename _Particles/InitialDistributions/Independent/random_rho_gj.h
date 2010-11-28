@@ -111,8 +111,8 @@ void RandomRhoGJ<A,A1>::SetupFromConfigGroup(FileInput& in)
   ATbase::Group_t* p_g = in.Get_pCurrentGroup();
   // read this class configuration parameters
   in.ChangeGroup("RandomRhoGJ");
-  _N_Positions         = in.get_param("N_Positions");
-  _N_Particles_Uniform = in.get_param("N_Particles_Uniform");
+  _N_Positions         = static_cast<int>(in.get_param("N_Positions"));
+  _N_Particles_Uniform = static_cast<int>(in.get_param("N_Particles_Uniform"));
   string charge_sign   = in.get_name("ChargeSign");
   in.ChangeGroup();
 
