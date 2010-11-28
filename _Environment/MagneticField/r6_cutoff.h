@@ -1,16 +1,16 @@
-#ifndef R6_H
-#define R6_H
+#ifndef R6_CUTOFF_H
+#define R6_CUTOFF_H
 
 #include <cmath>
 #include <iostream>
 
-#include "magnetic_field.h"
+#include "r6.h"
 
 
 /**
  * \ingroup magnetic_field_grp
  *
- * \class  R6
+ * \class  R6_CutOff
  *
  * Constant magnetic field with constant (small) radius of curvature of magnetic field line
  *
@@ -29,23 +29,20 @@
  \verbatim
 
 Group "MAGNETIC_FIELD" {
-   Type = 'R6';
+   Type = 'R6_CutOff';
+   X_cutoff = 0.5*NParam[GEOMETRY](LENGTH);
 }
 
  \endverbatim
  */
-class R6: public MagneticField
+class R6_CutOff: public R6
 {
 public:
 
   //! constructor
-  R6();
+  R6_CutOff();
 
-  //! Radius of magnetic field line curvature
-  virtual double Rcur(double x ) const;
-
-  //! Angle between photon momentum and magnetic field
-  virtual double Psi( double x0, double l ) const;
+  virtual void SetupFromConfigGroup(FileInput& in);
 
   //! Perpendicular component of the magnetic field \f$ B_\perp/B_q \f$
   virtual double Bperp_x0_l( double x0, double l ) const;
@@ -58,19 +55,8 @@ public:
   virtual double XMax( double x0, Direction d ) const;
 
 protected:
-
-  double _SignB;       //!< Sign of the magnetic field (+1|0|-1)
   
-  double _Psi_Coeff;   //!< coeffcient in expression for psi
-  double _Rcur_Coeff;  //!< coefficient in formula for the radius of curvature
-  
-  double  _B0;           //!< coefficient for Bperp_x_psi
-  double  _B0_Psi_Coeff; //!< coefficient for Bperp_x0_l
-
-  double  _L;          //!< length of the system
+  double _X_cutoff;
 };
-
-
-
 
 #endif

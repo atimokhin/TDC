@@ -7,12 +7,12 @@
 
 #include "independent.h"
 
-#include "../../LIBS/RandomLib/Random.hpp"
-#include "../../_MC/Samples/Cutpoint.h"
+#include "../../../LIBS/RandomLib/Random.hpp"
+#include "../../../_MC/Samples/Cutpoint.h"
 
-#include "../../SetupParameters/geometry_params.h"
+#include "../../../SetupParameters/geometry_params.h"
 
-#include "../../_Environment/RhoGJ/rho_gj_maker.h"
+#include "../../../_Environment/RhoGJ/rho_gj_maker.h"
 
 
 

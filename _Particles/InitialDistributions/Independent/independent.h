@@ -5,7 +5,7 @@
 
 #include "ATbase.h"
 
-#include "initial_distribution.h"
+#include "../initial_distribution.h"
 
 
 /**

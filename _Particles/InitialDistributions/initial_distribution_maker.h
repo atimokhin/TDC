@@ -14,14 +14,16 @@
 // ******************************************************
 
 #include "initial_distribution.h"
-#include "single_value.h"
-#include "discrete.h"
-#include "sinx.h"
-#include "cosx.h"
-#include "uniform.h"
-#include "sinx_perturbed_uniform.h"
-#include "random_uniform.h"
-#include "random_rho_gj.h"
+
+#include "Independent/single_value.h"
+#include "Independent/discrete.h"
+#include "Independent/uniform.h"
+#include "Independent/sinx_perturbed_uniform.h"
+#include "Independent/random_uniform.h"
+#include "Independent/random_rho_gj.h"
+
+#include "Dependent/sinx.h"
+#include "Dependent/cosx.h"
 
 
 /**

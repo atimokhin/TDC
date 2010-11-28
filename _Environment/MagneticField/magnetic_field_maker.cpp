@@ -8,6 +8,7 @@
 // ******************************************************
 #include "dipole.h"
 #include "r6.h"
+#include "r6_cutoff.h"
 
 
 /**
@@ -20,7 +21,8 @@
  */
 #define MACRO__MAKE_P_MAGNETIC_FIELD_FOR_ALL	\
   MACRO__MAKE_P_MAGNETIC_FIELD(Dipole); \
-  MACRO__MAKE_P_MAGNETIC_FIELD(R6);
+  MACRO__MAKE_P_MAGNETIC_FIELD(R6);     \
+  MACRO__MAKE_P_MAGNETIC_FIELD(R6_CutOff);
 
 // ******************************************************
 

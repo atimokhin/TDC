@@ -15,7 +15,6 @@
  *
  * This class provides all information about pulsar magnetic field
  * used in the cascade calculations:
- * - Goldreich-Julian Charge density
  * - Radius of curvature of the magnetic field lines
  * - strength of the perpendicular component of the magntic field propagating photon sees
  *

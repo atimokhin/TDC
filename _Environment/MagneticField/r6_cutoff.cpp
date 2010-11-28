@@ -1,4 +1,4 @@
-#include "r6.h"
+#include "r6_cutoff.h"
 
 #include "../../SetupDimensionalConstants/norm_consts.h"
 #include "../../SetupDimensionalConstants/magnetic_field_consts.h"
@@ -10,49 +10,16 @@
  * Constructor. Setup parameters and coefficients
  * 
  */
-R6::R6()
+R6_CutOff::R6_CutOff():
+  R6()
 {
-  _ClassName="R6";
-
-  MagneticFieldConsts   mf;
-  NormConsts            nc;
-  GeometryParams        geom;
-
-  _Rcur_Coeff = mf.Rcur_6();
-
-  _Psi_Coeff  = nc.X0()/( _Rcur_Coeff * 1e6 );
-
-  // magnetic field strength coefficients
-  _SignB        = mf.SignB();
-  _B0           = mf.B_12();
-  _B0_Psi_Coeff = _B0 * _Psi_Coeff;
-
-  _L = geom.L();
+  _ClassName="R6_CutOff";
 }
 
-
-/**
- * Magnetic field line radius of curvature
- * 
- * @param x hight above the NS surface
- */
-double R6::Rcur(double x ) const
-{ 
-  return _Rcur_Coeff; 
-}
-
-
-/**
- * Angle between photon momnetum and magnetic field.
- * Photon is emitted at point x0 and has propagated distance l.
- * 
- * @param x0 emission point
- * @param l  distance from the emission point along photon path
- */
-double R6::Psi( double x0, double l ) const
-{   
-  return  _Psi_Coeff * fabs(l);
-}
+void R6_CutOff::SetupFromConfigGroup(FileInput& in) 
+{
+  _X_cutoff = in.get_param("X_cutoff");
+};
 
 
 /**
@@ -64,9 +31,9 @@ double R6::Psi( double x0, double l ) const
  * @param x   current point
  * @param psi angle to the magntic field line
  */
-double R6::Bperp_x_psi( double x, double psi ) const
+double R6_CutOff::Bperp_x_psi( double x, double psi ) const
 {   
-  return  _B0 * psi;
+  return  ( x < _X_cutoff ? _B0 * psi : 0 );
 }
 
 
@@ -78,9 +45,9 @@ double R6::Bperp_x_psi( double x, double psi ) const
  * @param x0 emission point
  * @param l  distance from the emission point along photon path
  */
-double R6::Bperp_x0_l( double x0, double l ) const
+double R6_CutOff::Bperp_x0_l( double x0, double l ) const
 {   
-  return  _B0_Psi_Coeff * fabs(l);
+  return  ( x0+l < _X_cutoff ? _B0_Psi_Coeff * fabs(l) : 0);
 }
 
 
@@ -90,7 +57,7 @@ double R6::Bperp_x0_l( double x0, double l ) const
  * @param x0 emission point
  * @param d  direction of photon propagation
  */
-double R6::BperpMax( double x0, Direction d ) const
+inline double R6_CutOff::BperpMax( double x0, Direction d ) const
 {   
   // downward propagating photon - Bmax at NS surface
   if ( d == DOWN )
@@ -100,7 +67,7 @@ double R6::BperpMax( double x0, Direction d ) const
   // upward propagating photon - Bmax at upper boundary
   else 
     {
-      return Bperp_x0_l( x0, _L-x0 );
+      return Bperp_x0_l( x0, _X_cutoff-x0 );
     }
 }
 
@@ -112,7 +79,7 @@ double R6::BperpMax( double x0, Direction d ) const
  * @param x0 emission point
  * @param d  direction of photon propagation
  */
-double R6::XMax( double x0, Direction d ) const
+inline double R6_CutOff::XMax( double x0, Direction d ) const
 {   
 
   if ( d == DOWN )
@@ -120,5 +87,5 @@ double R6::XMax( double x0, Direction d ) const
     return 0;
   else 
     // upward propagating photon - Bmax at upper boundary
-    return _L;
+    return _X_cutoff;
 }
