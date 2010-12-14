@@ -64,6 +64,8 @@ public:
   //! save results to HDF file&
   bool DoSaveToHDFFiles(int i_time) const;
 
+  void CreateResultsDir();
+
   //! Print physical paramneters
   std::ostream& Print(std::ostream& s) const;
 

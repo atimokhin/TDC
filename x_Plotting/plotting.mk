@@ -1,12 +1,12 @@
 
 PYTHON_INCLUDE=-I /usr/include/python2.6/ -I /usr/lib/python2.6/site-packages/numpy/core/include/numpy/
 
-cpp_plotting_files = $(wildcard Plotting/*.cpp)
+cpp_plotting_files = $(wildcard x_Plotting/*.cpp)
 OBJ_PLOTTING  = $(cpp_plotting_files:.cpp=.o)
 
-MODULES=$(patsubst %.cpp, %.so, $(wildcard Plotting/_py_*.cpp))
+MODULES=$(patsubst %.cpp, %.so, $(wildcard x_Plotting/_py_*.cpp))
 
-TEST_EXE_FILES=$(patsubst  %.cpp, %, $(wildcard Plotting/*.exe.cpp))
+TEST_EXE_FILES=$(patsubst  %.cpp, %, $(wildcard x_Plotting/*.exe.cpp))
 
 
 .PHONY: plotting clean_plotting
@@ -18,12 +18,12 @@ $(OBJ_PLOTTING):%.o:%.cpp
 	$(ATBASE_INCLUDE) -I$(ATBASE_DIR)/lib_python $(PYTHON_INCLUDE)
 
 # Python modules --------------------
-Plotting/_py_PDG__rho_gj.so:%.so:%.o Plotting/PDG__rho_gj.o \
+x_Plotting/_py_PDG__rho_gj.so:%.so:%.o x_Plotting/PDG__rho_gj.o \
 	$(OBJ_RHO_GJ) $(OBJ_SETUP_PARAMETERS) $(OBJ_SETUP_DIMENSIONAL_CONSTANTS)
 	$(CXX) $(CXXFLAGS) $^ -shared -o $@ -L$(ATBASE_DIR)/lib -lATbase -lhdf5 
 
 # C++ test files (test PlotData generating functions)
-$(TEST_EXE_FILES):%.exe:%.exe.o Plotting/PDG__rho_gj.o \
+$(TEST_EXE_FILES):%.exe:%.exe.o x_Plotting/PDG__rho_gj.o \
 	$(OBJ_RHO_GJ) $(OBJ_SETUP_PARAMETERS) $(OBJ_SETUP_DIMENSIONAL_CONSTANTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@  -L$(ATBASE_DIR)/lib -lATbase -lhdf5
 
@@ -44,4 +44,4 @@ $(DEP_PLOTTING_OBJ): %.d : %.cpp
 
 
 clean_plotting:
-	-(cd Plotting; rm -f *~ *.o *.so *.exe) 
+	-(cd x_Plotting; rm -f *~ *.o *.so *.exe) 

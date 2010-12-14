@@ -99,6 +99,10 @@ void OutputControl::Initialize()
     }
 }
 
+void OutputControl::CreateResultsDir()
+{
+  ATbase::filesys_utils::makedir(OutputDirName());  
+}
 
 
 /** 
@@ -110,7 +114,7 @@ void OutputControl::Initialize()
 int OutputControl::SetupResultsDir()
 {
   using namespace ATbase::filesys_utils;
-  makedir(OutputDirName());
+  CreateResultsDir();
   copyfile(InOut::SetupFile,OutputDirName()+InOut::SetupFile);
   copyfile(InOut::CompilerOptsFile,OutputDirName()+InOut::CompilerOptsFile);
   return 0;

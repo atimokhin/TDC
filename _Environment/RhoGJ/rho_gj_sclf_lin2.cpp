@@ -13,13 +13,14 @@ RhoGJFunctor_SCLF_lin2::RhoGJFunctor_SCLF_lin2()
 //! Setup particle boundary conditions from config file group
 void RhoGJFunctor_SCLF_lin2::SetupFromConfigGroup(FileInput& in)
 {
-  _A  = in.get_param("A");
+  _A1 = in.get_param("A1");
+  _A2 = in.get_param("A2");
   _X0 = in.get_param("X0");
 }
 
 double RhoGJFunctor_SCLF_lin2::operator() (double x) const
 {
-  return -_SignB*( 1 - _A*std::min(1e0,x/_X0) );
+  return -_SignB*( _A1 - _A2*std::min(1e0,x/_X0) );
 }
 
 

@@ -13,7 +13,8 @@
 
 
 //! config fielname
-const string config_file ="@tests/test_emission.input";
+const string config_file ="test_emission.input";
+const string tests_dir="x_Tests/";
 
 
 int main(int argc, char *argv[])
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
   double weight = 1;
 
   FileInput in;
-  in.ReadFile( config_file );
+  in.ReadFile(tests_dir+config_file);
 
   DimensionalConstsSetup consts;
   consts.SetupFromConfig(in);
@@ -33,11 +34,13 @@ int main(int argc, char *argv[])
 
   OutputControl out;
   out.SetupFromConfig(in);
-  out.Initialize();
+  out.CreateResultsDir();
+  ATbase::filesys_utils::copyfile(tests_dir+config_file, out.OutputDirName()+config_file);
+
 
   // Photons +++++++++++++++++++++
   in.ChangeGroup("TEST__Photons");
-  int n_ph = static_cast<int>(in.get_param("MaxNumberOfPhotons"));
+  int n_ph = static_cast<int>(in.get_param("PhotonCacheSize"));
   in.ChangeGroup();
 
   PhotonCache ph;
@@ -56,6 +59,7 @@ int main(int argc, char *argv[])
   in.ChangeGroup();
   std::cout<<*p_magnetic_field;
   // ********************************************
+
   // Curvature radiation +++++++++
   CR  cr;
   cr.SetMagneticField(p_magnetic_field);

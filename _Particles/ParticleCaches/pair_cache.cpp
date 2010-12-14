@@ -25,6 +25,27 @@ void PairCache::Initialize(int n_max)
   ID_Parent.resize(_N_max);
 }
 
+//! Save photons to an HDF file
+void PairCache::Save2HDFFile(Save2HDF &hdf) 
+{
+  ParticleCache::Save2HDFFile(hdf);
+
+  hdf.SaveSTLContainer("Weight",Weight);
+  hdf.SaveSTLContainer("Origin",Origin);
+
+  hdf.SaveSTLContainer("T_cr",T_cr);
+  hdf.SaveSTLContainer("X_cr",X_cr);
+  hdf.SaveSTLContainer("X_em",X_em);
+  hdf.SaveSTLContainer("E",E);
+  hdf.SaveSTLContainer("Psi",Psi);
+
+  hdf.SaveSTLContainer("IDTS",IDTS);
+  hdf.SaveSTLContainer("ID",ID);
+  hdf.SaveSTLContainer("IDTS_Parent",IDTS_Parent);
+  hdf.SaveSTLContainer("ID_Parent",ID_Parent);
+}
+
+
 //! Print container content
 void PairCache::Print(std::ostream& os) const
 {

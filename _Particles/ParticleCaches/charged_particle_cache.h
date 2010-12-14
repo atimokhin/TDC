@@ -20,10 +20,12 @@ public:
            char origin,
            int  idts, int id);
 
-  //! Print container content
+  virtual void Save2HDFFile(Save2HDF &hdf);
+
   virtual void Print(std::ostream& os) const;
 
 public:
+
   std::vector<double> Weight;
   std::vector<char>   Origin;
 

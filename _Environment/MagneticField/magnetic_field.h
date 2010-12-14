@@ -47,7 +47,7 @@ public:
 
 
   //! Print physical paramneters
-  std::ostream& Print(std::ostream& s) const;
+  virtual std::ostream& Print(std::ostream& s) const;
 
 protected:
 

@@ -67,7 +67,7 @@ inline double R6_CutOff::BperpMax( double x0, Direction d ) const
   // upward propagating photon - Bmax at upper boundary
   else 
     {
-      return Bperp_x0_l( x0, _X_cutoff-x0 );
+      return ( x0 < _X_cutoff ? _B0_Psi_Coeff*(_X_cutoff-x0) : 0 );
     }
 }
 
@@ -89,3 +89,11 @@ inline double R6_CutOff::XMax( double x0, Direction d ) const
     // upward propagating photon - Bmax at upper boundary
     return _X_cutoff;
 }
+
+std::ostream& R6_CutOff::Print(std::ostream& s) const
+{
+  MagneticField::Print(s);
+  s<<"  X_cutoff : "<<_X_cutoff<<"\n\n";
+  return s;
+}
+

@@ -10,7 +10,6 @@ Group "CODE_CONTROL" {
 }     
 
 
-
 Group "IntegratedQuantities" {
 
    NumberOfPoints=5000;
@@ -20,7 +19,8 @@ Group "IntegratedQuantities" {
 
 
 Group "PHOTONS" {
-   NumberOfPhotons = 2500;
+
+   PhotonCacheSize   = 25000;
 
    X0   = 0.6;
    T0   = 0;
@@ -89,20 +89,24 @@ Group "MAGNETIC_FIELD" {
 }
 
 
-Group "PAIRS" {
-   NumberOfParticles_Initial = 0;
-   ! these parameters are read at RESTART<<<<<<
-   NumberOfParticles_Maximal = 130000;
-   NumberOfParticles_Optimum = 90000;
-   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-}
-
-
-
 
 Group "MONTE_CARLO" {
 
-   MaxNumberOfPhotons = 150;	   
+   PhotonCacheSize   = 250;
+
+   PairCacheSize     = 250000;
+   ElectronCacheSize = 250000;
+   PositronCacheSize = 250000;
+
+   ! On the spot pair creation (if not set - false)
+   DoOnTheSpotPairCreation  ? No;
+   ! Pair creation smoothing   (if not set - false)
+   ! smooth pair injection over several cells?
+   DoPairInjectionSmoothing ? No;
+   ! -------------------------------------
+   ! using for tests: fix the seed of RNG
+   SetSeedForRandomNumberGenerator ? No;
+   ! -------------------------------------
 
    Group "Gamma2Pair" {
       ! smallest step in the optical depth integration	 

@@ -20,9 +20,12 @@ public:
            char origin, 
            int idts_parent, int id_parent, int idts, int id );
 
+  virtual void Save2HDFFile(Save2HDF &hdf);
+
   virtual void Print(std::ostream& os) const;
 
 public:
+
   std::vector<double> Weight;
   std::vector<char>   Origin;
 

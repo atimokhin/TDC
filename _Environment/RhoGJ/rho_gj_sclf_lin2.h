@@ -16,7 +16,8 @@
 Group "RHO_GJ" {
    Type = 'RhoGJFunctor_SCLF_lin2';
    ! RhoGJFunctor_SCLF_lin2 parameters
-   A  = -.5;
+   A1 = 1;
+   A2 = -.5;
    X0 = 0.3*NParam[GEOMETRY](LENGTH);
 }
 
@@ -34,7 +35,8 @@ public:
 
 private:
   double _SignB;
-  double _A;
+  double _A1;
+  double _A2;
   double _X0;
 };
 

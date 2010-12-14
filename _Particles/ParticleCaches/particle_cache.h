@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include "../../inout/save2hdf.h"
 
 class ParticleCache
 {
@@ -24,6 +25,8 @@ public:
   // check size and abort when exceeded
   void CheckSize();
 
+  //! Save particles into an HDF file
+  virtual void Save2HDFFile(Save2HDF &hdf);
   //! Print container content
   virtual void Print(std::ostream& os) const;
 

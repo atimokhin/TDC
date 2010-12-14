@@ -1,10 +1,9 @@
-
 Group "CALCULATION_START_CONTROL" {
    ! Start new calculation or restart a previous one <-----------------
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'SCLF_jm0.5_P0.05_L0.5_nGJ2e4_nx1e3_dt1e-4__RhoLin2_A0.3_X0.7_Xb0.5';
+   StartFromCalcId = 'single_particle_acceleration';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -12,15 +11,15 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'SCLF_jp0.5_P0.05_L0.5_nGJ2e4_nx1e3_dt1e-4__RhoLin2_A0.3_X0.7_Xb0.5';  
+   CalcId = 'single_particle_acceleration';  
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
-   TimeStepStdoutPrintInterval  = 50;
+   TimeStepStdoutPrintInterval  = 5;
    ! Number Of Timesteps after which timelabel is printed to logfile
-   TimeStepLogFilePrintInterval = 50;
+   TimeStepLogFilePrintInterval = 5;
    ! Number Of Timesteps after which results are saved into HDF files
-   TimeStepHDFFileSaveInterval  = 200;
+   TimeStepHDFFileSaveInterval  = 5;
 }
 
 	
@@ -30,36 +29,32 @@ Group "CODE_CONTROL" {
    ! all optional <<<<<<<<<
 
    ! Electrodynamics -------------
-   DoGatherRhoAndJ ? Yes;
+   DoGatherRhoAndJ ? No;
    DoMaxwell       ? Yes;
 
    ! Particles -------------------
    DoMoveParticles ? Yes;
 
    ! Monte Carlo -----------------
-   DoMonteCarlo    ? Yes;
+   DoMonteCarlo    ? No;
 
    ! LPT -------------------------
-   DoLPT           ? Yes;
+   DoLPT           ? No;
 }     
 
-
-
 Group "DIMENSIONAL_CONSTANTS" {
-   InitializerType='PSR_ConstsInitializer';
-
-   Group "PSR_ConstsInitializer" {
+   InitializerType='PcfX0_ConstsInitializer';
+   
+   Group "PcfX0_ConstsInitializer" {
+      ! Pcf -- characteristic Lorentz factor of electrons 
+      Pcf = 1e9;
+      ! X0  -- characteristic domain length
+      X0 = 1e4;
+      
       ! Magnetic field at the pole  [10^12 G]
       B_12 = 1;
-      ! Period of pulsar [seconds]
-      P_SEC = 0.05;
       ! Radius of curvature of magnetic field lines [ 10^6 cm]
       Rcur_6 = 1;
-
-      ! Inclination angle
-      CHI = 0;
-      ! NS radius [10^6 cm]
-      RNS_6 = 1;
    }
 }
 
@@ -67,35 +62,34 @@ Group "GEOMETRY" {
    !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
    WIDTH  = 1;
    !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
-   LENGTH = 0.5;
+   LENGTH = 1;
    ! Colatitude of the field line [ in units of \thepa_pc ]
    THETA = 1;
 }
 
-
 Group "GRID" {
    ! Number of Cells
-   NumberOfCells = 1000;
+   NumberOfCells = 500;
 }
-
 
 Group "TIME" {
    !  Timestep
-   dT =  1e-4;
+   dT =  8e-4;
    !  Number of timesteps
-   NumberOfTimeSteps = 50000;   
+   NumberOfTimeSteps = 1500;   
 }
 
 Group "RHO_GJ" {
    Type = 'RhoGJFunctor_SCLF_lin2';
    ! RhoGJFunctor_SCLF_lin2 parameters
-   A  = .3;
-   X0 = 0.7*NParam[GEOMETRY](LENGTH);
+   A1 = 0.1;
+   A2 = 0.1;
+   X0 = 0.5*NParam[GEOMETRY](LENGTH);
 }
 
 Group "MAGNETIC_FIELD" {
    Type = 'R6_CutOff';
-   X_cutoff = 0.5*NParam[GEOMETRY](LENGTH);
+   X_cutoff = 0.7*NParam[GEOMETRY](LENGTH);
 }
 
 Group "ELECTRODYNAMICS" {
@@ -107,7 +101,7 @@ Group "ELECTRODYNAMICS" {
 
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
-         J0 = 0.5;
+         J0 = 0;
       }
       Group "BoundaryConditions_Phi" {
          Type = 'RS_1';
@@ -127,25 +121,11 @@ Group "PARTICLES" {
    ! Number of particles to provide \rho_GJ
    NGJ = 20000;
       
-   NumberOfChargedParticleTypes = 3;
+   NumberOfChargedParticleTypes = 1;
    ChargedParticles_#0 = 'Electrons';
-   ChargedParticles_#1 = 'Positrons';
-   ChargedParticles_#2 = 'Protons';
    
    Group "BoundaryConditions" {	 
-      Type = 'SCLF_2';
-      ! Electron parameters ******
-      E__N_inj = 5;
-      E__P_inj = 0.01;
-      ! must be < 0.5  <----------
-      E__Delta_inj = 0.499999;
-      ! **************************
-      ! Proton parameters ********
-      I__N_inj = 5;
-      I__P_inj = 0.01;
-      ! must be < 0.5  <<---------
-      I__Delta_inj = 0.499999;
-      ! **************************
+      Type = 'RS_1';
    }	 
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    
@@ -154,7 +134,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 26100;
+      NumberOfParticles_Initial = 1;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -167,13 +147,10 @@ Group "PARTICLES" {
          AttributeName_#0 = 'X';
          AttributeName_#1 = 'P_par';     
          Group "X" {
-            DistributionName='RandomRhoGJ';
-            Group "RandomRhoGJ" {		
-               N_Positions = 30000;
-               N_Particles_Uniform = 0;
-               ! must be [Positive|Negative]
-               ChargeSign = 'Negative';
-            }   
+            DistributionName='SingleValue';
+            Group "SingleValue" {
+               Value = 0;
+            }
          }
          Group "P_par" {
             DistributionName='SingleValue';
@@ -182,62 +159,9 @@ Group "PARTICLES" {
             }
          }
       }
-   }
-   ! --------------------------------------------------------
-
-   ! --------------------------------------------------------
-   Group "Positrons" {
-      Mass   = 1;
-      Charge = 1;
-      ! Initial number of particles
-      NumberOfParticles_Initial = 10000;
-      ! these parameters are read at RESTART<<<<<<
-      Group "LPT" {
-         ! Required parameters
-         DoSplitting ? No;
-         DoMerging   ? No;
-      } 
-      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      Group "InitialConditions" {        
-         NumberOfInitializedAttributes = 2;
-         AttributeName_#0 = 'X';
-         AttributeName_#1 = 'P_par';     
-         Group "X" {
-            DistributionName='RandomRhoGJ';
-            Group "RandomRhoGJ" {		
-               N_Positions = 30000;
-               N_Particles_Uniform = 0;
-               ! must be [Positive|Negative]
-               ChargeSign = 'Negative';
-            }   
-         }
-         Group "P_par" {
-            DistributionName='SingleValue';
-            Group "SingleValue" {
-               Value = 0;
-            }
-         }
-      }
-   }
-   ! --------------------------------------------------------
-
-   ! --------------------------------------------------------
-   Group "Protons" {
-      Mass   = 1832;
-      Charge = 1;
-      ! Initial number of particles
-      NumberOfParticles_Initial = 0;
-      ! these parameters are read at RESTART<<<<<<
-      Group "LPT" {
-         ! Required parameters
-         DoSplitting ? No;
-         DoMerging   ? No;
-      } 
-      !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    }
    ! --------------------------------------------------------
 }
-
 
 
 Group "PAIRS" {
@@ -266,79 +190,6 @@ Group "LPT" {
 }
 
 
-Group "MONTE_CARLO" {
-
-   PhotonCacheSize   = 250;
-
-   PairCacheSize     = 20000;
-   ElectronCacheSize = 20000;
-   PositronCacheSize = 20000;
-
-   ! On the spot pair creation (if not set - false)
-   DoOnTheSpotPairCreation  ? No;
-
-   ! Pair creation smoothing   (if not set - false)
-   ! smooth pair injection over several cells?
-   DoPairInjectionSmoothing ? Yes;
-   ! -------------------------------------
-   NSmoothCells = 50;
-   ! using for tests: fix the seed of RNG
-   SetSeedForRandomNumberGenerator ? No;
-   ! the seed for RNG
-   Seed = 1234;
-   ! -------------------------------------
-	   
-
-   Group "CR" {
-      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
-      E_particle_min = 5e5;      
-      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
-      E_photons_min = 20;      
-
-      ! maximum number of single photon emission attempts
-      N_single_emission_max = 50;
-
-      ! Discrete CR emission: number of points in table of Gcr
-      N_Gcr_table_points    = 360;
-      ! Discrete CR emission: number of cutpoints in table of Gcr
-      N_Gcr_table_cutpoints = 120;
-
-      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
-      Interval "Eta" {
-	 Points = 1e-7,10;
-	 Number_of_subintervals = 80;
-	 Division_method = Log;
-      }
-
-      ! using for tests: fix the seed of RNG
-      SetSeedForRandomNumberGenerator ? No;
-      ! the seed for RNG
-      Seed = 1234;
-   }
-
-
-   Group "Gamma2Pair" {
-      ! smallest step in optical depth claculation	 
-      dX_Tau =  5e-3;
-
-      ! smallest upper boundary for tau when photon propagation will
-      ! be considered
-      TAU_MIN = 1e-4;
-      ! admitted relative error in optical depth claculation
-      EPS_TAU = 1e-3;
-
-      ! number of Large steps
-      N_LS = 15;
-      ! estimated number of cross-section evaluation in Large Steps method
-      LS_N_SIGMA_EVAL = 40;
-
-      ! using for tests: fix the seed of RNG
-      SetSeedForRandomNumberGenerator ? No;
-      ! the seed for RNG
-      Seed = 1234;
-   }
-
-}
 
 Group "NS_PARTICLE_FLUX" {
    ! results will be saved in this file   
@@ -353,4 +204,3 @@ Group "LC_PARTICLE_FLUX" {
    ! size of the deque array
    Size = 250;
 }
-

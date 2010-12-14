@@ -46,6 +46,7 @@ protected:
   static double _Vvac;     //!< Vacuum potential drops in statvolts
   static double _Pcf;      //!< Coefficient in the equation of particle motion
   static double _n_GJ;     //!< Goldreich-Julian particle number density
+  static double _P;        //!< Pulsar period
 };
 
 
