@@ -15,19 +15,22 @@ void PhotonCache::Initialize(int n_max)
   E.resize(_N_max);
 }
 
+
 //! Save photons to an HDF file
 void PhotonCache::Save2HDFFile(Save2HDF &hdf) 
 {
+  ParticleCache::Save2HDFFile(hdf);
+
   hdf.SaveSTLContainer("Weight",Weight);
   hdf.SaveSTLContainer("Psi0",Psi0);
   hdf.SaveSTLContainer("E",E);
 
-  hdf.writeScalar("N",_i);
   hdf.writeScalar("X0",_X0);
   hdf.writeScalar("Direction",static_cast<int>(_Dir));
 
   hdf.SaveSTLContainer("Origin",Origin);
 }
+
 
 //! Print PhotonCache content
 void PhotonCache::Print(std::ostream& os) const

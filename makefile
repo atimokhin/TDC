@@ -115,38 +115,35 @@ SRC_POOMA_FIX = \
 	inout/pooma_hdf/hdf5file.cmpl.cpp \
 	inout/pooma_hdf/my_hdf5file.cpp
 
-SRC_CONTAINERS = $(wildcard containers/*.cmpl.cpp)
-SRC_INOUT = $(wildcard inout/*.cpp ) 
-SRC_UTILS = $(wildcard utils/*.cpp) 
-SRC_STOP_AND_SAVE = $(wildcard stop_and_save/*.cpp) 
+SRC_CONTAINERS=$(wildcard containers/*.cmpl.cpp)
+SRC_INOUT=$(wildcard inout/*.cpp ) 
+SRC_UTILS=$(wildcard utils/*.cpp) 
+SRC_STOP_AND_SAVE=$(wildcard stop_and_save/*.cpp) 
 
-SRC_SETUP_PARAMETERS = $(wildcard SetupParameters/*.cpp)
-SRC_SETUP_DIMENSIONAL_CONSTANTS = $(wildcard SetupDimensionalConstants/*.cpp)
-SRC_SETUP_PROPERTIES = $(wildcard SetupProperties/*.cpp) 
+SRC_SETUP_PARAMETERS=$(wildcard SetupParameters/*.cpp)
+SRC_SETUP_DIMENSIONAL_CONSTANTS=$(wildcard SetupDimensionalConstants/*.cpp)
+SRC_SETUP_PROPERTIES=$(wildcard SetupProperties/*.cpp) 
 
-SRC_RHO_GJ = $(wildcard _Environment/RhoGJ/*.cpp)
-SRC_MAGNETIC_FIELD = $(wildcard _Environment/MagneticField/*.cpp) 
+SRC_RHO_GJ=$(wildcard _Environment/RhoGJ/*.cpp)
+SRC_MAGNETIC_FIELD=$(wildcard _Environment/MagneticField/*.cpp) 
 
-SRC_MESH = $(wildcard _Mesh/*.cpp ) 
+SRC_MESH=$(wildcard _Mesh/*.cpp ) 
+SRC_FIELDS=$(wildcard _Fields/*.cpp) 
 
-SRC_FIELDS = $(wildcard _Fields/*.cpp) 
+SRC_PARTICLES=_Particles/particle_population.cpp $(wildcard _Particles/LPT/*.cpp) 
+SRC_PARTICLE_CACHES=$(wildcard _Particles/ParticleCaches/*.cpp)
+SRC_PARTICLE_ID=_Particles/ID/particle_id.cpp
 
-SRC_PARTICLES=_Particles/particle_population.cpp \
-	$(wildcard _Particles/LPT/*.cpp) \
-	$(wildcard _Particles/ParticleCaches/*.cpp) \
-	_Particles/ID/particle_id.cpp
+SRC_MC=$(filter-out %.exe.cpp,$(wildcard _MC/*.cpp)                \
+                              $(wildcard _MC/Emission/*.cpp)       \
+			      $(wildcard _MC/PairProduction/*.cpp)   )
+SRC_MC_SAMPLES=$(filter-out %.exe.cpp, $(wildcard _MC/Samples/*.cpp)  )
 
-SRC_MC = $(filter-out %.exe.cpp,$(wildcard _MC/*.cpp)                \
-                                $(wildcard _MC/Emission/*.cpp)       \
-				$(wildcard _MC/PairProduction/*.cpp)  )
+SRC_CONTROL=$(wildcard _Control/*.cpp)
 
-SRC_MC_SAMPLES = $(filter-out %.exe.cpp, $(wildcard _MC/Samples/*.cpp)  )
+SRC_SOLUTION_PROPERTIES=$(wildcard _SolutionProperties/*.cpp) 
 
-SRC_CONTROL = $(wildcard _Control/*.cpp)
-
-SRC_SOLUTION_PROPERTIES = $(wildcard _SolutionProperties/*.cpp) 
-
-SRC_CASCADE = cascade.cpp run_cascade.exe.cpp
+SRC_CASCADE=cascade.cpp run_cascade.exe.cpp
 
 # **************************************
 
@@ -169,12 +166,17 @@ OBJ_MAGNETIC_FIELD=$(patsubst %.cpp, %.o, $(sort $(SRC_MAGNETIC_FIELD) ) )
 
 OBJ_MESH=$(patsubst %.cpp, %.o, $(sort $(SRC_MESH) ) )
 OBJ_FIELDS=$(patsubst %.cpp, %.o, $(sort $(SRC_FIELDS) ) )
+
 OBJ_MC=$(patsubst %.cpp, %.o, $(sort $(SRC_MC) ) )
 OBJ_MC_SAMPLES=$(patsubst %.cpp, %.o, $(sort $(SRC_MC_SAMPLES) ) )
+
+OBJ_PARTICLES=$(patsubst %.cpp, %.o, $(sort $(SRC_PARTICLES))) 
+OBJ_PARTICLE_CACHES=$(patsubst %.cpp, %.o, $(sort $(SRC_PARTICLE_CACHES)))
+OBJ_PARTICLE_ID=$(patsubst %.cpp, %.o, $(sort $(SRC_PARTICLE_ID)))
+
 OBJ_CONTROL=$(patsubst %.cpp, %.o, $(sort $(SRC_CONTROL) ) )
 OBJ_SOLUTION_PROPERTIES=$(patsubst %.cpp, %.o, $(sort $(SRC_SOLUTION_PROPERTIES) ) )
 
-OBJ_PARTICLES=$(patsubst %.cpp, %.o, $(sort $(SRC_PARTICLES))) 
 
 # cascade related object files
 OBJ_CASCADE=\
@@ -193,14 +195,18 @@ OBJ_CASCADE=\
 	$(OBJ_MC_SAMPLES)         \
 	$(OBJ_FIELDS)     \
 	$(OBJ_PARTICLES)  \
+	$(OBJ_PARTICLE_CACHES) \
+	$(OBJ_PARTICLE_ID) \
 	$(OBJ_CONTROL)    \
 	$(OBJ_SOLUTION_PROPERTIES) 
 
 OBJ_PROPS=\
 	$(OBJ_PARTICLES)  \
+	$(OBJ_PARTICLE_ID) \
 	$(OBJ_MC_SAMPLES)         \
 	$(OBJ_CONTAINERS) \
 	$(OBJ_SETUP_PARAMETERS)       \
+	$(OBJ_SETUP_DIMENSIONAL_CONSTANTS) \
 	$(OBJ_SETUP_PROPERTIES) \
 	$(OBJ_INOUT)      \
 	$(OBJ_UTILS)      \
@@ -208,6 +214,7 @@ OBJ_PROPS=\
 	$(OBJ_RHO_GJ)     \
 	$(OBJ_MAGNETIC_FIELD) \
 	$(OBJ_FIELDS) \
+	$(OBJ_CONTROL)    \
 	$(OBJ_SOLUTION_PROPERTIES) 
 
 
@@ -248,7 +255,7 @@ print_parameters.exe: %.exe : %.exe.cpp $(OBJ_SETUP_DIMENSIONAL_CONSTANTS) $(OBJ
 	$(LIB_POOMA_FLAGS) $(INCLUDE_POOMA_FLAGS) \
 	$(LIB_HDF5_FLAGS) $(INCLUDE_HDF5_FLAGS) 
 
-prop.exe: %.exe : %.exe.cpp   $(RANDOM_LIB_SRC) $(OBJ_SETUP_DIMENSIONAL_CONSTANTS) $(OBJ_PROPS) $(OBJ_CONTROL) $(OBJ_UTILS) 
+prop.exe: %.exe : %.exe.cpp   $(RANDOM_LIB_SRC)  $(OBJ_PROPS) 
 	$(CXX)  -o $@ $^ \
 	$(CXXFLAGS)  \
 	$(TEST_OPTS) \
@@ -271,12 +278,14 @@ $(OBJ):%.o:%.cpp
 	$(INCLUDE_POOMA_FLAGS) $(INCLUDE_HDF5_FLAGS) $(INCLUDE_ARGTABLE2_FLAG) $(ATBASE_INCLUDE) $(LOCAL_LIBS_INCLUDE)
 
 
-# rules for test files 
--include @tests/tests.mk
+# rules for assist files 
+-include x_Assist/assist.mk
 
 # rules for plotting files 
--include Plotting/plotting.mk
+-include x_Plotting/plotting.mk
 
+# rules for test files 
+-include x_Tests/tests.mk
 
 
 # <===========
@@ -349,6 +358,3 @@ COMPILER_OPTS_FILENAME=COMPILER_OPTS
 save_compiler_opts:
 	@echo TEST_OPTS= $(TEST_OPTS) >  $(COMPILER_OPTS_FILENAME)
 	@echo CXXFLAGS = $(CXXFLAGS)  >> $(COMPILER_OPTS_FILENAME)
-	@echo ============================================  >> $(COMPILER_OPTS_FILENAME)
-	@echo MAGNETIC_FIELD_OPTS = $(MAGNETIC_FIELD_OPTS)  >> $(COMPILER_OPTS_FILENAME)
-	@echo ============================================  >> $(COMPILER_OPTS_FILENAME)

@@ -1,0 +1,159 @@
+Group "EMITTING_TIME" {
+  dT = 10;
+}
+
+Group "OUTPUT_CONTROL" {
+   ! Identificator of calculation <------------------------------
+   CalcId = 'pairs_from_single_particle_5e6';  
+
+   ! -> zero or negative output intervals means no output <--
+   ! Number Of Timesteps after which timelabel is printed to cout
+   TimeStepStdoutPrintInterval  = 0;
+   ! Number Of Timesteps after which timelabel is printed to logfile
+   TimeStepLogFilePrintInterval = 0;
+   ! Number Of Timesteps after which results are saved into HDF files
+   TimeStepHDFFileSaveInterval  = 0;
+}
+
+Group "DIMENSIONAL_CONSTANTS" {
+   InitializerType='PcfX0_ConstsInitializer';
+   
+   Group "PcfX0_ConstsInitializer" {
+      ! Pcf -- characteristic Lorentz factor of electrons 
+      Pcf = 1e8;
+      ! X0  -- characteristic domain length
+      X0 = 1e4;
+
+      ! Magnetic field at the pole  [10^12 G]
+      B_12 = -1;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1;
+   }
+}
+
+Group "GEOMETRY" {
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
+   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   LENGTH = 1;
+   ! Colatitude of the field line [ in units of \thepa_pc ]
+   THETA = 1;
+}
+
+Group "GRID" {
+   ! Number of Cells
+   NumberOfCells = 1000;
+}
+
+Group "MAGNETIC_FIELD" {
+   Type = 'R6_CutOff';
+   X_cutoff = 0.5*NParam[GEOMETRY](LENGTH);
+}
+
+! --------------------------------------------------------
+Group "Particle" {
+   Mass   = 1;
+   Charge = -1;
+   ! Initial number of particles
+   NumberOfParticles_Initial = 1;
+   ! these parameters are read at RESTART<<<<<<
+   Group "LPT" {
+      ! Required parameters
+      DoSplitting ? No;
+      DoMerging   ? No;
+   }
+   !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   Group "InitialConditions" {        
+      NumberOfInitializedAttributes = 2;
+      AttributeName_#0 = 'X';
+      AttributeName_#1 = 'P_par';     
+      Group "X" {
+         DistributionName='SingleValue';
+         Group "SingleValue" {
+            Value = 0.25*NParam[GEOMETRY](LENGTH);
+         }
+      }
+      Group "P_par" {
+         DistributionName='SingleValue';
+         Group "SingleValue" {
+            Value = 5e6;
+         }
+      }
+   }
+}
+! --------------------------------------------------------
+
+
+Group "MONTE_CARLO" {
+
+   PhotonCacheSize   = 50000;
+
+   PairCacheSize     = 50000;
+   ElectronCacheSize = 2000;
+   PositronCacheSize = 2000;
+
+   ! On the spot pair creation (if not set - false)
+   DoOnTheSpotPairCreation  ? No;
+
+   ! Pair creation smoothing   (if not set - false)
+   ! smooth pair injection over several cells?
+   DoPairInjectionSmoothing ? No;
+   ! -------------------------------------
+   NSmoothCells = 50;
+   ! using for tests: fix the seed of RNG
+   SetSeedForRandomNumberGenerator ? No;
+   ! the seed for RNG
+   Seed = 1234;
+   ! -------------------------------------
+	   
+
+   Group "CR" {
+      ! The lowest energy of particles emitting curvature photons (E^{min}_e)
+      E_particle_min = 5e5;      
+      ! The lowest energy of emitted CR photon ( \epsilon_{min} )
+      E_photons_min = 20;      
+
+      ! maximum number of single photon emission attempts
+      N_single_emission_max = 50000;
+
+      ! Discrete CR emission: number of points in table of Gcr
+      N_Gcr_table_points    = 360;
+      ! Discrete CR emission: number of cutpoints in table of Gcr
+      N_Gcr_table_cutpoints = 120;
+
+      ! Continuous CR emission: spectrum intervals (eta_min,eta_max) 
+      Interval "Eta" {
+	 Points = 1e-7,10;
+	 Number_of_subintervals = 80;
+	 Division_method = Log;
+      }
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+
+   Group "Gamma2Pair" {
+      ! smallest step in optical depth claculation	 
+      dX_Tau =  1e-4;
+
+      ! smallest upper boundary for tau when photon propagation will
+      ! be considered
+      TAU_MIN = 1e-4;
+      ! admitted relative error in optical depth claculation
+      EPS_TAU = 1e-3;
+
+      ! number of Large steps
+      N_LS = 30;
+      ! estimated number of cross-section evaluation in Large Steps method
+      LS_N_SIGMA_EVAL = 40;
+
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
+   }
+
+}

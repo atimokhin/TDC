@@ -90,9 +90,12 @@ void MonteCarlo::SetMagneticField(MagneticField* p_mf)
 
 /** 
  * This fuction iterates over internal Photons list _Ph and for each photon
+ *
  * - calls _G2P.IsAbsorbed(x_cr, psi_cr) for doing Monte Carlo sampling 
- *   of photon absorption
- * - if photon is absorbed it calculates injection time and creates new virtual pair.
+ *    of photon absorption
+ *
+ * - if photon is absorbed it calculates injection time and creates 
+ *    a new virtual pair in _PairCache
  * 
  */
 bool MonteCarlo::CreatePairs(ParticleID& id)

@@ -31,8 +31,9 @@
 
 
 
-const string SETUP_FILE="@tests/test_inout.input";
-
+//! config fielname
+const string config_file ="test_inout.input";
+const string tests_dir="x_Tests/";
 
 
 //! Main function for cascade simulation
@@ -44,12 +45,13 @@ int main(int argc, char *argv[])
   // setup parameters from input file                   
   // *********************************************************
   FileInput in;
-  in.ReadFile( SETUP_FILE );
+  in.ReadFile(tests_dir+config_file);
 
   OutputControl out;
   out.SetupFromCommandLine(argc,argv);
   out.SetupFromConfig(in);
-  out.Initialize();
+  out.CreateResultsDir();
+  ATbase::filesys_utils::copyfile(tests_dir+config_file, out.OutputDirName()+config_file);
 
   StartControl calc_start;
   calc_start.SetupFromConfig(in);

@@ -5,7 +5,7 @@
 #PBS -o ../RESULTS/SCLF_jp0.5_Ap0.3.out
 
 #PBS -l nodes=1:ppn=1,walltime=72:00:00
-#PBS -q queuename
+#PBS -q henyey_serial 
 #PBS -V
 
 # if in on henyey cd to working directory 

@@ -4,7 +4,7 @@ Test_EnergyLosses ? Yes;
 
 
 Group "TEST__Photons" {
-   MaxNumberOfPhotons = 3e5;
+   PhotonCacheSize   = 3e5;
 }
 
 Group "OUTPUT_CONTROL" {

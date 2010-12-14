@@ -32,7 +32,9 @@ filename=fn.get_full_filename(filename)
 #initialize PlotData1D object
 pd=AT.PlotData1D(_py_PDG__rho_gj.PDG__rho_gj( filename, 100) )
 
-ax = plt.subplot(111)
+fig=plt.figure()
+
+ax = fig.add_subplot(111)
 ax.plot(pd.x,pd.y)
 ax.set_xlim(pd.xlim)
 ax.set_ylim([-2.1,2.1])

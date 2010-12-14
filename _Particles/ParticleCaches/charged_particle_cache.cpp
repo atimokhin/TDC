@@ -21,6 +21,23 @@ void ChargedParticleCache::Initialize(int n_max)
   ID.resize(_N_max); 
 }
 
+//! Save photons to an HDF file
+void ChargedParticleCache::Save2HDFFile(Save2HDF &hdf) 
+{
+  ParticleCache::Save2HDFFile(hdf);
+
+  hdf.SaveSTLContainer("Weight",Weight);
+  hdf.SaveSTLContainer("Origin",Origin);
+
+  hdf.SaveSTLContainer("X",X);
+  hdf.SaveSTLContainer("P_par",P_par);
+  hdf.SaveSTLContainer("P_perp",P_perp);
+
+  hdf.SaveSTLContainer("IDTS",IDTS);
+  hdf.SaveSTLContainer("ID",ID);
+}
+
+
 //! Print container content
 void ChargedParticleCache::Print(std::ostream& os) const
 {

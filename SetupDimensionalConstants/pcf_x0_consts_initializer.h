@@ -13,6 +13,27 @@
  * \class PcfX0_Consts
  * \brief Constants Initializer: initialized all constants using Pcf and \f$ x_0 \f$
  * 
+ * configuration file example:
+ \verbatim
+
+   Group "DIMENSIONAL_CONSTANTS" {
+      InitializerType='PcfX0_ConstsInitializer';
+   
+      Group "PcfX0_ConstsInitializer" {
+         ! Pcf -- characteristic Lorentz factor of electrons 
+         Pcf = 1e8;
+         ! X0  -- characteristic domain length
+         X0 = 1e4;
+
+         ! Magnetic field at the pole  [10^12 G]
+         B_12 = -1;
+         ! Radius of curvature of magnetic field lines [ 10^6 cm]
+         Rcur_6 = 1;
+      }
+   }
+
+ \ednverbatim
+ *
  */
 class PcfX0_ConstsInitializer: public ConstsInitializer,
                                public NormConsts, 

@@ -1,10 +1,12 @@
 #include "pulsar_gap_props.h"
 
 #include "../SetupDimensionalConstants/norm_consts.h"
+#include "../SetupDimensionalConstants/magnetic_field_consts.h"
 
 double PulsarGapProps::_Vvac = 0;
 double PulsarGapProps::_Pcf = 0;
 double PulsarGapProps::_n_GJ = 0;
+double PulsarGapProps::_P = 0;
 
 
 
@@ -15,12 +17,15 @@ double PulsarGapProps::_n_GJ = 0;
 void PulsarGapProps::Initialize(FileInput &in)
 {
   NormConsts nc;
+  MagneticFieldConsts mf;
 
   _Vvac = nc.Phi0();
   
   _Pcf = nc.Pcf();
 
   _n_GJ = nc.Rho0()/4.8032e-10;
+
+  _P = sqrt( 1.28855e7*mf.B_12()/_Pcf );
 }
 
 
@@ -31,6 +36,7 @@ void PulsarGapProps::SaveToHDFFile(Save2HDF& hdf) const
   hdf.writeScalar("Vvac",_Vvac);
   hdf.writeScalar("Pcf",_Pcf);
   hdf.writeScalar("n_GJ",_n_GJ);
+  hdf.writeScalar("P",_P);
 
   hdf.popLoc();
 }
@@ -42,6 +48,7 @@ void PulsarGapProps::ReadFromHDFFile(Save2HDF& hdf)
   hdf.readScalar("Vvac",_Vvac);
   hdf.readScalar("Pcf",_Pcf);
   hdf.readScalar("n_GJ",_n_GJ);
+  hdf.readScalar("P",_P);
 
   hdf.popLoc();
 }
@@ -65,6 +72,7 @@ ostream& PulsarGapProps::Print(ostream& s) const
   s<<"          Pcf (e*V_vac/mc^2) = "<<setw(13)<<_Pcf<<"\n\n";
 
   s<<" GJ particle number density n_GJ = "<<setw(13)<<_n_GJ<<endl;
+  s<<"                   Pulsar Period = "<<setw(13)<<_P<<endl;
   s<<separator<<"\n";
   s<<std::flush;
 

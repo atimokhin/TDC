@@ -15,6 +15,13 @@ void ParticleCache::Initialize(int n_max)
   _N_max=n_max; 
 };
 
+//! Save particles into an HDF file
+void ParticleCache::Save2HDFFile(Save2HDF &hdf) 
+{
+  hdf.writeScalar("CacheName",_Name);
+  hdf.writeScalar("N",_i);
+}
+
 //! Print container content
 void ParticleCache::Print(std::ostream& os) const
 {

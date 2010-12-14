@@ -204,18 +204,18 @@ bool Gamma2Pair::LargeSteps_Method(double X_max, double Sigma_max,
 						  double Tau_absorb, 
 						  double &X, double &Psi )
 {
-  double d_tau;  // optical depth increment
-  double tau1;   // estimated optical depth
-  double tau;    // actual optical depth
+  double d_tau;    // optical depth increment
+  double tau1;     // estimated optical depth
+  double tau;      // actual optical depth
 
   double sigma_up; // maximum sigma in large step segments
 
-  double l_max; // maximum distance
+  double l_max;    // maximum distance
 
   int i_ls, n_ls;  // counter and number of large steps
-  double dx_ls; // size of Large Step
+  double dx_ls;    // size of Large Step
 
-  double a, b; // integration limits
+  double a, b;     // integration limits
   
   double delta_tau = _EPS_TAU*Tau_absorb;
   

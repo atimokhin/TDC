@@ -1,14 +1,15 @@
 #ifndef PHOTONS_CACHE_H
 #define PHOTONS_CACHE_H
 
-#include <iostream>
+#include <iostream> 
+#include <string> 
+#include <vector>
 
 #include "ATbase.h"
 
 #include "particle_cache.h"
 
 #include "../../utils/direction.h"
-#include "../../inout/save2hdf.h"
 
 #include "../../PhysicsLib/small_functions.h"
 
@@ -78,7 +79,7 @@ public:
   void Add(double weight, double e, double psi0, char origin);
 
   //! Save photons to an HDF file
-  void Save2HDFFile(Save2HDF &hdf);
+  virtual void Save2HDFFile(Save2HDF &hdf);
   //! Print container content
   virtual void Print(ostream& os) const;
 

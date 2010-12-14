@@ -104,8 +104,16 @@ public:
   //! Create new pairs from Photons lists
   bool CreatePairs(ParticleID& id);
 
-  //! set photons (for test purpouses)
-  void SetPhotons(PhotonCache& ph) { _Ph = ph; };
+  /**
+   * Functions used in tests
+   */
+  //! set caches 
+  void Set_PhotonCache(PhotonCache& ph) { _Ph = ph; };
+  //! get caches
+  PhotonCache&   Get_PhotonCache()   { return _Ph; };
+  PairCache&     Get_PairCache()     { return _PairCache; };
+  ChargedParticleCache& Get_ElectronCache() { return _ElectronCache; };
+  ChargedParticleCache& Get_PositronCache() { return _PositronCache; };
 
 private:
   //! Internal container holding photons emitted by particles
@@ -185,11 +193,13 @@ bool MonteCarlo::Particles2Pairs(ParticleList<Particles>& pl,
       int n = p.size();
       for ( int i=0; i<n; i++)
 	{
+          // particle momentum before emission
+          double p_par_init = p.P_par(i);
 	  // If this particle emits photons then:
 	  if ( SingleParticleEmission(dt, i, p) )
 	    {
 	      // set common photons parameters
-	      _Ph.SetInheritedParams( p.X(i)(0),t, p.P_par(i), p.IDTS(i),p.ID(i) );
+	      _Ph.SetInheritedParams( p.X(i)(0),t, p_par_init, p.IDTS(i),p.ID(i) );
 	      
 	      // Create pairs 
 	      pairs_created = CreatePairs(id) || pairs_created;
