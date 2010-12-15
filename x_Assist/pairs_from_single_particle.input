@@ -4,7 +4,7 @@ Group "EMITTING_TIME" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'pairs_from_single_particle_5e6';  
+   CalcId = 'pairs_from_single_particle';  
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
@@ -20,7 +20,7 @@ Group "DIMENSIONAL_CONSTANTS" {
    
    Group "PcfX0_ConstsInitializer" {
       ! Pcf -- characteristic Lorentz factor of electrons 
-      Pcf = 1e8;
+      Pcf = 8e8;
       ! X0  -- characteristic domain length
       X0 = 1e4;
 
@@ -70,13 +70,13 @@ Group "Particle" {
       Group "X" {
          DistributionName='SingleValue';
          Group "SingleValue" {
-            Value = 0.25*NParam[GEOMETRY](LENGTH);
+            Value = 0.45*NParam[GEOMETRY](LENGTH);
          }
       }
       Group "P_par" {
          DistributionName='SingleValue';
          Group "SingleValue" {
-            Value = 5e6;
+            Value = 8e6;
          }
       }
    }

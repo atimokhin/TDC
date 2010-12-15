@@ -15,17 +15,15 @@ import ATbase as AT
 # parse command line arguments and get input filename --------
 import argparse
 import tdc_main_filenames
-# setting object responsible fo directory names
+# setting object responsible for directory names
 fn = tdc_main_filenames.tdc_main_Filenames()
 # parse command line for filename
 parser = argparse.ArgumentParser()
-parser.add_argument('--filename', nargs='?', type=str, help='name of config file')
+parser.add_argument('--configfile', nargs='?', type=str, help='name of config file')
 args = parser.parse_known_args()
-if args[0].filename:
-    filename=args[0].filename
-else:
-    filename='cascade.input'
-filename=fn.get_full_filename(filename)
+# set filename
+filename = args[0].configfile if args[0].configfile else 'cascade.input'
+filename = fn.get_full_filename(filename)
 # ------------------------------------------------------------ 
 
 

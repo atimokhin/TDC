@@ -47,7 +47,7 @@ Group "DIMENSIONAL_CONSTANTS" {
    
    Group "PcfX0_ConstsInitializer" {
       ! Pcf -- characteristic Lorentz factor of electrons 
-      Pcf = 1e9;
+      Pcf = 8e8;
       ! X0  -- characteristic domain length
       X0 = 1e4;
       
@@ -84,7 +84,7 @@ Group "RHO_GJ" {
    ! RhoGJFunctor_SCLF_lin2 parameters
    A1 = 0.1;
    A2 = 0.1;
-   X0 = 0.5*NParam[GEOMETRY](LENGTH);
+   X0 = 0.65*NParam[GEOMETRY](LENGTH);
 }
 
 Group "MAGNETIC_FIELD" {
@@ -101,6 +101,7 @@ Group "ELECTRODYNAMICS" {
 
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
+         ! current density in units of |\rho_{GJ}^0|
          J0 = 0;
       }
       Group "BoundaryConditions_Phi" {

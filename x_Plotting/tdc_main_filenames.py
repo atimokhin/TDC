@@ -9,16 +9,13 @@ class tdc_main_Filenames:
     def __init__(self):
         import argparse
         parser = argparse.ArgumentParser()
-        parser.add_argument('--results_dir', nargs='?', type=str, help='RESULTS directory')
-        parser.add_argument('--id', nargs='?', type=str, help='calculation ID')
+        parser.add_argument('--dir', nargs='?', type=str, help='RESULTS directory')
+        parser.add_argument('--id',  nargs='?', type=str, help='calculation ID')
         args = parser.parse_known_args()
 
         if args[0].id:
             self.__id_dir=args[0].id
-            if args[0].results_dir:
-                self.__results_dir=args[0].results_dir
-            else:
-                self.__results_dir=self.__default_ResultsDir
+            self.__results_dir=args[0].dir if args[0].dir else self.__default_ResultsDir
         else:
             self.__id_dir=None
             self.__results_dir=None
