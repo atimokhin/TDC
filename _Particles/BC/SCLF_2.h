@@ -95,6 +95,7 @@ bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   p_E.X(Ie)      = x_inj;
   p_E.P_par(Ie)  = _E__P_inj;
   p_E.P_perp(Ie) = 0;
+  p_E.Swap(); // swap because new particles are created <<<
   // --------------------------------------
 
   // inject ions --------------------------
@@ -108,6 +109,7 @@ bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   p_I.X(Ii)      = x_inj;
   p_I.P_par(Ii)  = _I__P_inj;
   p_I.P_perp(Ii) = 0;
+  p_I.Swap(); // swap because new particles are created <<<
   // --------------------------------------
       
   return true;

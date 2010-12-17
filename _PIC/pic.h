@@ -216,12 +216,11 @@ void ParticleInCell<EM,P>::MoveAndScatterParticles( ParticleList<P>& plist, EM& 
 
 
   // Collect particle flux trough the boundaries **************
-  // particles leaving computation domain are destroyed here !!
   for (int i=0; i<plist.Size(); i++)
     CollectParticleSpecieFlux(*plist[i], ns_flux,lc_flux, t);
 
-  // swap
-  plist.Swap();
+  // sync: particles leaving computation domain are destroyed here !!
+  plist.Sync();
 
   if ( cc.DoGatherRhoAndJ() ) 
     {
@@ -430,8 +429,8 @@ void ParticleInCell<EM,P>::CollectParticleSpecieFlux(P& p,
   ns_flux.UpdateFlux(idx_ns_flux, p, t);
   lc_flux.UpdateFlux(idx_lc_flux, p, t);
   
-  // destroy particles leaving domains
-  p.performDestroy();
+  // // destroy particles leaving domains
+  // p.performDestroy();
 }
 
 

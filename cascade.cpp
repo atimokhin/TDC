@@ -396,8 +396,11 @@ void Cascade::RunSimulations()
       // ************************************
       // <Output> Save results to HDF file 
       // ************************************
-      if ( __output.DoSaveToHDFFiles(it) ) this->SaveToHDFFile(t, it);
-
+      if ( __output.DoSaveToHDFFiles(it) ) 
+        {
+          SaveToHDFFile(t, it);
+          FlushHDFFile();
+        }
 
       // ************************************
       // <Control> Pause program to see results?
