@@ -9,8 +9,7 @@
 #PBS -V
 
 # if in on henyey cd to working directory 
-HOST=`hostname`
-if [ "$HOST" = "ln000" ]
+if [ "$MY_HOST" = "henyey" ]
 then
     cd $PBS_O_WORKDIR
 fi
