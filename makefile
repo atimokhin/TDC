@@ -27,6 +27,7 @@ else ifeq ($(HOST),ln000)
 ON_HENYEY_UCB=true
 endif
 
+HDFHOMEDIR=$(HDF5DIR)
 
 # desktop @ UCB++++++++++++++++++++++++
 ifdef ON_DESKTOP_UCB
@@ -38,7 +39,6 @@ LIB_ARGTABLE2_FLAG=$(EXTERNAL_LIBS_DIR)/argtable2/lib/libargtable2.a
 ARCH=athlon64
 
 POOMA_VERSION=my_freepooma_fast_debug
-HDFHOMEDIR=$(EXTERNAL_LIBS_DIR)/hdf5-1.8.3/
 ATBASE_VERSION= 
 # HDF5 
 INCLUDE_HDF5_FLAGS=-D H5_USE_16_API -I$(HDFHOMEDIR)/include/ 
@@ -54,7 +54,6 @@ LIB_ARGTABLE2_FLAG=$(EXTERNAL_LIBS_DIR)/argtable2/lib/libargtable2.a
 ARCH=core2
 
 POOMA_VERSION=freepooma_serial
-HDFHOMEDIR=$(HDF5DIR)
 ATBASE_VERSION= 
 # HDF5 
 INCLUDE_HDF5_FLAGS=-I$(HDFHOMEDIR)/include/    -D H5_USE_16_API  
@@ -70,7 +69,6 @@ LIB_ARGTABLE2_FLAG= -largtable2
 ARCH=pentium-m 
 
 POOMA_VERSION=freepooma_serial
-HDFHOMEDIR=$(HDF5DIR)
 ATBASE_VERSION=
 # HDF5 
 INCLUDE_HDF5_FLAGS=-D H5_USE_16_API 
