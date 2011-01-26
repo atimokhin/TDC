@@ -101,7 +101,7 @@ Group "ELECTRODYNAMICS" {
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
          ! current density in units of |\rho_{GJ}^0|
-         J0 = 0.5;
+         J0 = -0.5;
       }
       Group "BoundaryConditions_Phi" {
          Type = 'RS_1';
