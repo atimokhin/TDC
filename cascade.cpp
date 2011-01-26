@@ -342,6 +342,12 @@ void Cascade::RunSimulations()
       if ( __code.DoMaxwell() ) 
 	{
 	  _PIC.SolveFieldEquations(*_pEM, t,dt);
+
+          // if asked enforce Gaull law
+          if ( __code.DoEnforceGaussLaw(it) )
+            {
+	      _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
+            }
 	}
       // ************************************
 

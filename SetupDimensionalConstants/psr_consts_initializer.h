@@ -5,6 +5,7 @@
 #include "consts_initializer.h"
 #include "norm_consts.h"
 #include "magnetic_field_consts.h"
+#include "ns_consts.h"
 
 
 /**
@@ -20,15 +21,17 @@
       InitializerType='PSR_ConstsInitializer';
    
       Group "PSR_ConstsInitializer" {
-         ! Magnetic field at the pole  [10^12 G]
-         B_12 = -1;
          ! Period of pulsar [seconds]
          P_SEC = .2;
+         ! Inclination angle
+         CHI = 0;
+
+         ! Magnetic field at the pole  [10^12 G]
+         B_12 = -1;
          ! Radius of curvature of magnetic field lines [ 10^6 cm]
          Rcur_6 = 1;
    
-         ! Inclination angle
-         CHI = 0;
+         ! Optional:
          ! NS radius [10^6 cm]
          RNS_6 = 1;
       }
@@ -39,7 +42,8 @@
  */
 class PSR_ConstsInitializer: public ConstsInitializer,
                              public NormConsts, 
-                             public MagneticFieldConsts
+                             public MagneticFieldConsts,
+                             public NSConsts
 {
 public:
   //! Setup from config file group
@@ -49,16 +53,12 @@ public:
   double P() const { return _P; };
   //! inclination angle
   double Chi() const { return _Chi; };
-  //! Radius of the NS \f$ R_{6} \f$ [\f$ 10^{6} \f$ cm ]
-  double RNS_6() const { return _RNS_6; };  
 
 private:
   //! Pulsar period \f$ P \f$ in seconds
   static double _P;
   //! inclination angle - between \f$ \vec{\Omega} \f$ and \f$ \mu \f$
   static double _Chi;
-  //! Radius of the NS \f$ R_{6} \f$ in [\f$ 10^{6} \f$ cm ]   
-  static double _RNS_6; 
 };
 
 #endif

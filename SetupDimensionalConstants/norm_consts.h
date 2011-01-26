@@ -1,6 +1,8 @@
 #ifndef NORM_CONSTS_H
 #define NORM_CONSTS_H
 
+#include "ATbase.h"
+
 /**
  * \defgroup setup_consts_grp Setup Constants
  * Contains all normalization constants.

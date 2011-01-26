@@ -123,7 +123,7 @@ int OutputControl::SetupResultsDir()
 
 
 /** 
- * Print Pulsar Gap parameters
+ * Print OutputControl parameters
  * 
  */
 std::ostream& OutputControl::Print(std::ostream& s) const

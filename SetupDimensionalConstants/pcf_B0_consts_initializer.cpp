@@ -1,22 +1,16 @@
-#include "psr_consts_initializer.h"
+#include "pcf_B0_consts_initializer.h"
 
 #include "../PhysicsLib/constants.h"
-#include "../PhysicsLib/small_functions.h"
 
    		     
-double PSR_ConstsInitializer::_P=1;   
-double PSR_ConstsInitializer::_Chi=0;
-
-
-void PSR_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
+void PcfB0_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
 {
   // Read parameters from "PULSAR" group *****
   ATbase::Group_t *p_current_group = in.Get_pCurrentGroup();
-  in.ChangeGroup("PSR_ConstsInitializer");
+  in.ChangeGroup("PcfB0_ConstsInitializer");
 
   //parameters local to this class -----------
-  _P     = in.get_param("P_SEC");
-  _Chi   = in.get_param("CHI");
+  _Pcf = in.get_param("Pcf");
   //------------------------------------------
 
   // parameters from  MagneticFieldConsts
@@ -30,15 +24,15 @@ void PSR_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
 
 
   // Setup normalization constants -----------
-  _X0 = 1.448e4 * pow(_RNS_6, 1.5)/sqrt(_P);
+  // pulsar period - derive from magnetic field stegth and voltage
+  double Period = sqrt( 1.29e7 * pow(_RNS_6, 3) * _B_12/_Pcf );
+
+  _X0 = 1.448e4 * pow(_RNS_6, 1.5)/sqrt(Period);
   _T0 = _X0/Constants::C;
 
-  _Rho0 = 33.3667 * _B_12/_P;  
-
-  _E0   = Constants::PI * _Rho0 * _X0;
-  _Phi0 = _E0 * _X0;
-
-  _Pcf  = _Phi0/1705e0;
+  _Phi0 = 1705 * _Pcf;
+  _E0   = _Phi0/_X0;
+  _Rho0 = _E0/( Constants::PI * _X0 );  
   //------------------------------------------
 }
 

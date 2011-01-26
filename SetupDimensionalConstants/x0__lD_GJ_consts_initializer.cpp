@@ -12,13 +12,7 @@ void X0__lD_GJ_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
   in.ChangeGroup("X0__lD_GJ_ConstsInitializer");
 
   // parameters from  MagneticFieldConsts
-  _B_12  = abs(in.get_param("B_12"));
-
-  _SignB = SF::Sign( in.get_param("B_12") );
-  if ( _B_12 == 0 ) _SignB = 0;
-
-  _Rcur_6 = in.get_param("Rcur_6");
-  //------------------------------------------
+  MagneticFieldConsts::SetupFromConfigGroup(in);
 
   in.ChangeGroup(p_current_group);
   // ******************************************

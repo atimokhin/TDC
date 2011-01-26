@@ -597,13 +597,7 @@ template<class Field_t>
 void Electrostatic_1D<Field_t>::SolvePoissonEquation()
 {
   // initialize RHS 
-#ifndef ELECTROSTATIC_1D__TEST_NO_RHOGJ
-  // NORMAL MODE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   d(_L) = - 2*( Rho(_L) - RhoGJ(_L) );
-#else
-  // TEST MODE: without GJ charge density
-  d(_L) = - 2*Rho(_L);
-#endif
 
   // Apply boundary conditions to RHS
   ApplyBoundaryConditionsToRHS();

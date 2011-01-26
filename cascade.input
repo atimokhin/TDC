@@ -3,7 +3,7 @@ Group "CALCULATION_START_CONTROL" {
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'SCLF_jp0.3_Pcf8e8_L1_nGJ8e4_nx4e3_dt6.25e-5__RhoLin2_1.0_m0.15_0.65__R6C_Xb0.5__inj8';
+   StartFromCalcId = 'E_acc_SCLF_jm0.5_Pcf2e8_L1_nGJ1.6e5_nx8e3_dt3.125e-5__RhoGJConst__R6C_Xb0.7__inj16';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -11,15 +11,15 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'SCLF_jp0.3_Pcf8e8_L1_nGJ8e4_nx4e3_dt6.25e-5__RhoLin2_1.0_m0.15_0.65__R6C_Xb0.5__inj8'; 
+   CalcId = 'E_acc_SCLF_jm0.5_Pcf1e8_L1_nGJ1.6e5_nx8e3_dt3.125e-5__RhoGJConst__R6C_Xb0.7__inj16'; 
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
-   TimeStepStdoutPrintInterval  = 50;
+   TimeStepStdoutPrintInterval  = 100;
    ! Number Of Timesteps after which timelabel is printed to logfile
-   TimeStepLogFilePrintInterval = 50;
+   TimeStepLogFilePrintInterval = 100;
    ! Number Of Timesteps after which results are saved into HDF files
-   TimeStepHDFFileSaveInterval  = 200;
+   TimeStepHDFFileSaveInterval  = 500;
 }
 
 Group "CODE_CONTROL" {
@@ -29,6 +29,10 @@ Group "CODE_CONTROL" {
    ! Electrodynamics -------------
    DoGatherRhoAndJ ? Yes;
    DoMaxwell       ? Yes;
+
+   ! Enforce Gauss Law -----------
+   DoEnforceGaussLaw ? Yes;
+   NSteps_EnforceGaussLaw = 50;
 
    ! Particles -------------------
    DoMoveParticles ? Yes;
@@ -41,18 +45,19 @@ Group "CODE_CONTROL" {
 }     
 
 Group "DIMENSIONAL_CONSTANTS" {
-   InitializerType='PcfX0_ConstsInitializer';
-   
-   Group "PcfX0_ConstsInitializer" {
+   InitializerType='PcfB0_ConstsInitializer';
+         
+   Group "PcfB0_ConstsInitializer" {
       ! Pcf -- characteristic Lorentz factor of electrons 
-      Pcf = 8e8;
-      ! X0  -- characteristic domain length
-      X0 = 1e4;
+      Pcf = 1e8;
       
       ! Magnetic field at the pole  [10^12 G]
       B_12 = 1;
       ! Radius of curvature of magnetic field lines [ 10^6 cm]
       Rcur_6 = 1;
+
+      ! Radius of Neutron Star [ 10^6 cm]
+      RNS_6 = 1;
    }
 }
 
@@ -67,27 +72,23 @@ Group "GEOMETRY" {
 
 Group "GRID" {
    ! Number of Cells
-   NumberOfCells = 4000;
+   NumberOfCells = 8000;
 }
 
 Group "TIME" {
    !  Timestep
-   dT =  6.25e-5;
+   dT =  3.125e-5;
    !  Number of timesteps
-   NumberOfTimeSteps = 180000;   
+   NumberOfTimeSteps = 1500000;   
 }
 
 Group "RHO_GJ" {
-   Type = 'RhoGJFunctor_SCLF_lin2';
-   ! RhoGJFunctor_SCLF_lin2 parameters
-   A1 = 1;
-   A2 = -0.15;
-   X0 = 0.65*NParam[GEOMETRY](LENGTH);
+   Type = 'RhoGJFunctor_Const';
 }
 
 Group "MAGNETIC_FIELD" {
    Type = 'R6_CutOff';
-   X_cutoff = 0.5*NParam[GEOMETRY](LENGTH);
+   X_cutoff = 0.7*NParam[GEOMETRY](LENGTH);
 }
 
 Group "ELECTRODYNAMICS" {
@@ -100,7 +101,7 @@ Group "ELECTRODYNAMICS" {
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
          ! current density in units of |\rho_{GJ}^0|
-         J0 = 0.3;
+         J0 = 0.5;
       }
       Group "BoundaryConditions_Phi" {
          Type = 'RS_1';
@@ -118,7 +119,7 @@ Group "PARTICLES" {
 
    ! these parameters are read at RESTART <<<<<<<<
    ! Number of particles to provide \rho_GJ
-   NGJ = 80000;
+   NGJ = 160000;
       
    NumberOfChargedParticleTypes = 3;
    ChargedParticles_#0 = 'Electrons';
@@ -128,14 +129,14 @@ Group "PARTICLES" {
    Group "BoundaryConditions" {	 
       Type = 'SCLF_2';
       ! Electron parameters ******
-      E__N_inj = 8;
-      E__P_inj = 0.01;
+      E__N_inj = 16;
+      E__P_inj = 0;
       ! must be < 0.5  <----------
       E__Delta_inj = 0.499999;
       ! **************************
       ! Proton parameters ********
-      I__N_inj = 8;
-      I__P_inj = 0.01;
+      I__N_inj = 16;
+      I__P_inj = 0;
       ! must be < 0.5  <<---------
       I__Delta_inj = 0.499999;
       ! **************************
@@ -147,7 +148,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 131900;
+      NumberOfParticles_Initial = 240000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -183,7 +184,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = 1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 60000;
+      NumberOfParticles_Initial = 80000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters

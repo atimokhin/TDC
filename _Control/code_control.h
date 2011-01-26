@@ -31,6 +31,10 @@
         DoGatherRhoAndJ ? Yes;
         DoMaxwell       ? Yes;
 
+        ! Enforce Gauss Law -----------
+        DoEnforceGaussLaw ? Yes;
+        NSteps_EnforceGaussLaw = 50;
+
 	! Particles -------------------
         DoMoveParticles ? Yes;
 
@@ -56,6 +60,9 @@ public:
 
   //! Evolve Electromagnetic field?
   bool DoMaxwell() const;
+
+  //! Enforce Gauss Law at iteration# it?
+  bool DoEnforceGaussLaw(int it) const;
 
   //! Do "Gather" and "Maxwell" parts?
   bool DoMoveParticles() const;
@@ -84,6 +91,9 @@ private:
 
   static bool _DoGatherRhoAndJ;
   static bool _DoMaxwell;
+
+  static bool _DoEnforceGaussLaw;
+  static int  _NSteps_EnforceGaussLaw;
 
   static bool _DoMoveParticles;
 
@@ -115,6 +125,13 @@ inline bool CodeControl::DoMaxwell() const
 
   return _DoMaxwell; 
 };
+
+//! Evolve Electromagnetic field?
+inline bool CodeControl::DoEnforceGaussLaw(int it) const
+{
+  return _DoEnforceGaussLaw && ( it % _NSteps_EnforceGaussLaw == 0 );
+}
+
 
 //! Do "Gather" and "Maxwell" parts?
 inline bool CodeControl::DoMoveParticles() const 

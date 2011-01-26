@@ -3,6 +3,10 @@
 
 bool CodeControl::_DoGatherRhoAndJ = true;
 bool CodeControl::_DoMaxwell       = true;
+
+bool CodeControl::_DoEnforceGaussLaw = false;
+int  CodeControl::_NSteps_EnforceGaussLaw = 1;
+
 bool CodeControl::_DoMoveParticles = true;
 
 bool CodeControl::_DoMonteCarlo    = true;
@@ -30,6 +34,11 @@ void CodeControl::SetupFromConfig(FileInput &in)
 
   if ( in.answer_is_set("DoMaxwell"))
     _DoMaxwell = in.get_answer("DoMaxwell");
+
+  if ( in.answer_is_set("DoEnforceGaussLaw"))
+    _DoEnforceGaussLaw = in.get_answer("DoEnforceGaussLaw");
+  if ( _DoEnforceGaussLaw )
+    _NSteps_EnforceGaussLaw = in.get_param("NSteps_EnforceGaussLaw");
 
   if ( in.answer_is_set("DoMoveParticles"))
     _DoMoveParticles = in.get_answer("DoMoveParticles");
@@ -62,6 +71,9 @@ std::ostream& CodeControl::Print(std::ostream& s) const
   s<<std::boolalpha;
   s<<" Gather charge and current densities ? "<<DoGatherRhoAndJ()<<"\n";
   s<<"             Solve Maxwell Equations ? "<<DoMaxwell()<<"\n";
+  s<<"                   Enforce Gauss Law ? "<<_DoEnforceGaussLaw;
+  if (_DoEnforceGaussLaw) s<<"  : every "<<_NSteps_EnforceGaussLaw<<" steps ";
+  s<<"\n";
   s<<"                      Move Particles ? "<<DoMoveParticles()<<"\n";
   s<<"                      Do Monte-Carlo ? "<<DoMonteCarlo()<<"\n";
   s<<"                     Do Create Pairs ? "<<DoCreatePairs()<<"\n";

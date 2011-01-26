@@ -10,6 +10,7 @@ using namespace std;
 // ******************************************************
 
 #include "psr_consts_initializer.h"
+#include "pcf_B0_consts_initializer.h"
 #include "pcf_x0_consts_initializer.h"
 #include "x0__lD_GJ_consts_initializer.h"
 
@@ -23,6 +24,7 @@ using namespace std;
  */
 #define MACRO__MAKE_P_CONSTS_INITIALIZER_FOR_ALL     \
   MACRO__MAKE_P_CONSTS_INITIALIZER(PSR_ConstsInitializer); \
+  MACRO__MAKE_P_CONSTS_INITIALIZER(PcfB0_ConstsInitializer); \
   MACRO__MAKE_P_CONSTS_INITIALIZER(PcfX0_ConstsInitializer); \
   MACRO__MAKE_P_CONSTS_INITIALIZER(X0__lD_GJ_ConstsInitializer);
 // ******************************************************
