@@ -61,6 +61,8 @@ public:
   //! Evolve Electromagnetic field?
   bool DoMaxwell() const;
 
+  //! Enforce Gauss Law?
+  bool DoEnforceGaussLaw() const;
   //! Enforce Gauss Law at iteration# it?
   bool DoEnforceGaussLaw(int it) const;
 
@@ -126,7 +128,14 @@ inline bool CodeControl::DoMaxwell() const
   return _DoMaxwell; 
 };
 
-//! Evolve Electromagnetic field?
+
+//! Enforse Gauss Law?
+inline bool CodeControl::DoEnforceGaussLaw() const
+{
+  return _DoEnforceGaussLaw;
+}
+
+//! Enforse Gauss Law at step <b>it</b>?
 inline bool CodeControl::DoEnforceGaussLaw(int it) const
 {
   return _DoEnforceGaussLaw && ( it % _NSteps_EnforceGaussLaw == 0 );
@@ -180,9 +189,7 @@ return _DoMonteCarlo && _DoInjectPairs;
 
 
 /** 
- * Do Particle Number adjustment? (if  t>=_T_LPT)
- * 
- * @param t current time
+ * Do Particle Number adjustment?
  */
 inline bool CodeControl::DoLPT() const 
 { 
@@ -198,7 +205,6 @@ return _DoLPT;
  * 
  * @param t current time
  */
-
 inline bool CodeControl::DoLPT(double t) const 
 { 
 #ifdef TEST_CODE

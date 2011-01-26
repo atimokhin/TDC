@@ -3,7 +3,7 @@ Group "CALCULATION_START_CONTROL" {
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'E_acc_SCLF_jm0.5_Pcf2e8_L1_nGJ1.6e5_nx8e3_dt3.125e-5__RhoGJConst__R6C_Xb0.7__inj16';
+   StartFromCalcId = 'SCLF_jm0.5_Pcf1e8_L1_nGJ1.6e5_nx8e3_dt3.125e-5__RhoGJConst__R6C_Xb0.7__inj16_Gauss';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -11,7 +11,7 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'E_acc_SCLF_jm0.5_Pcf1e8_L1_nGJ1.6e5_nx8e3_dt3.125e-5__RhoGJConst__R6C_Xb0.7__inj16'; 
+   CalcId = 'SCLF_jm0.5_Pcf1e8_L1_nGJ1.6e5_nx8e3_dt3.125e-5__RhoGJConst__R6C_Xb0.7__inj16_Gauss'; 
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
@@ -104,7 +104,7 @@ Group "ELECTRODYNAMICS" {
          J0 = -0.5;
       }
       Group "BoundaryConditions_Phi" {
-         Type = 'RS_1';
+         Type = 'SCLF_PHI';
       }
       Group "BoundaryConditions_E" {
          Type = 'LooseEnds';
@@ -130,13 +130,13 @@ Group "PARTICLES" {
       Type = 'SCLF_2';
       ! Electron parameters ******
       E__N_inj = 16;
-      E__P_inj = 0;
+      E__P_inj = 0.01;
       ! must be < 0.5  <----------
       E__Delta_inj = 0.499999;
       ! **************************
       ! Proton parameters ********
       I__N_inj = 16;
-      I__P_inj = 0;
+      I__P_inj = 0.01;
       ! must be < 0.5  <<---------
       I__Delta_inj = 0.499999;
       ! **************************
@@ -148,7 +148,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 240000;
+      NumberOfParticles_Initial = 260000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -163,7 +163,7 @@ Group "PARTICLES" {
          Group "X" {
             DistributionName='RandomRhoGJ';
             Group "RandomRhoGJ" {		
-               N_Positions = 140000;
+               N_Positions = 800000;
                N_Particles_Uniform = 0;
                ! must be [Positive|Negative]
                ChargeSign = 'Negative';
@@ -184,7 +184,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = 1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 80000;
+      NumberOfParticles_Initial = 100000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -199,7 +199,7 @@ Group "PARTICLES" {
          Group "X" {
             DistributionName='RandomRhoGJ';
             Group "RandomRhoGJ" {		
-               N_Positions = 140000;
+               N_Positions = 800000;
                N_Particles_Uniform = 0;
                ! must be [Positive|Negative]
                ChargeSign = 'Negative';
@@ -338,12 +338,12 @@ Group "NS_PARTICLE_FLUX" {
    ! results will be saved in this file   
    OutputFilename = 'ns_particle_flux.h5';
    ! size of the deque array
-   Size = 250;
+   Size = 501;
 }
 
 Group "LC_PARTICLE_FLUX" {
    ! results will be saved in this file   
    OutputFilename = 'lc_particle_flux.h5';
    ! size of the deque array
-   Size = 250;
+   Size = 501;
 }

@@ -59,6 +59,9 @@ public:
   //! Electromagnetic field at calculation start
   void InitialField();
 
+  //! adjust Phi boundary conditions to follow the current state on the system
+  void InitializeEnforceGaussLaw();
+  //! solve Poisson Equation fo the current state of the system
   void EnforceGaussLaw(double t, double dt);
 
   //! currenct mismatch for getting E(i) = e_i_nextstep 
@@ -188,9 +191,9 @@ Electrostatic_1D<Field_t>::Electrostatic_1D()
  *
  * -# "FixedPotentialDrop" :  \f$ \phi(L)-\phi(0)=\Delta V\f$ 
  *
- * -# "SCLF_1" : Space Charge Limited Flow \f$ E_{||}(0) = 0; \phi(L)=0 \f$ 
+ * -# "SCLF_PHI" : Space Charge Limited Flow \f$ E_{||}(0) = 0; \phi(L)=0 \f$ 
  *
- * -# "RS_1" : Ruderman Sutherland \f$ E_{||}(0) = 0; \phi(L)=0 \f$ 
+ * -# "RS_PHI" : Ruderman Sutherland \f$ E_{||}(L) = 0; \phi(0)=0 \f$ 
  * 
  *
  * - supported types of boundary conditions for \f$ E_{||} \f$:
@@ -233,12 +236,12 @@ void Electrostatic_1D<Field_t>::SetupFromConfigGroup(FileInput& in)
       _Phi_BC1Type=_Phi_BC2Type = BC__DIRICHLET;
       _V1=in.get_param("dV");      
     }
-  else if ( bc_name == "SCLF_1" ) // SCLF_1 <<<<<<<<<<<<<<<<<<<<<<
+  else if ( bc_name == "SCLF_PHI" ) // SCLF_PHI <<<<<<<<<<<<<<<<<<<<<<
     {
       _Phi_BC1Type = BC__NEUMANN;
       _Phi_BC2Type = BC__DIRICHLET;
     }
-  else if ( bc_name == "RS_1" )   // RS_1 <<<<<<<<<<<<<<<<<<<<<<<<
+  else if ( bc_name == "RS_PHI" )   // RS_PHI <<<<<<<<<<<<<<<<<<<<<<<<
     {
       _Phi_BC1Type = BC__DIRICHLET;
       _Phi_BC2Type = BC__NEUMANN;
@@ -433,6 +436,12 @@ void Electrostatic_1D<Field_t>::InitialField()
 
 
 template<class Field_t>
+void Electrostatic_1D<Field_t>::InitializeEnforceGaussLaw()
+{
+  TiePhiToE();
+}
+
+template<class Field_t>
 void Electrostatic_1D<Field_t>::EnforceGaussLaw(double t, double dt)
 {
   SolvePoissonEquation();
@@ -492,6 +501,13 @@ void Electrostatic_1D<Field_t>::EvolveElectroMagneticField(double t, double dt)
 };
 
 
+/**
+ * Set coefficients in numerical Poisson equation in the way it
+ * follows the current state of the electric field
+ * 
+ * - set _Phi_BC{1,2}Type = BC__FOLLOW_E
+ * - SetupPoissonEquationCoeff
+ */
 template<class Field_t>
 void Electrostatic_1D<Field_t>::TiePhiToE()
 {
