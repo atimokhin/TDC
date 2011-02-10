@@ -1,5 +1,5 @@
-#ifndef PCF_X0_CONSTS_H
-#define PCF_X0_CONSTS_H
+#ifndef TAU_PL_CONSTS_H
+#define TAU_PL_CONSTS_H
 
 
 #include "consts_initializer.h"
@@ -10,22 +10,21 @@
 /**
  * \ingroup setup_consts_grp
  *
- * \class PcfX0_Consts
- * \brief Constants Initializer: initialized all constants using Pcf and \f$ x_0 \f$
+ * \class TauPl_ConstsInitializer
+ * \brief Constants Initializer: initialized all constants using priod of
+ *        GJ plasma oscillations
  *
- * Set normalization of the distance and the final four-velocity of the particle
+ * Set normalization of the the time to the period of GJ plasma oscillations
  * 
  * configuration file example:
  \verbatim
 
    Group "DIMENSIONAL_CONSTANTS" {
-      InitializerType='PcfX0_ConstsInitializer';
+      InitializerType='TauPl_ConstsInitializer';
    
-      Group "PcfX0_ConstsInitializer" {
-         ! Pcf -- characteristic Lorentz factor of electrons 
-         Pcf = 1e8;
-         ! X0  -- characteristic domain length
-         X0 = 1e4;
+      Group "TauPl_ConstsInitializer" {
+         ! T0 -- characteristic time in periods of GJ plasma oscillations
+         T0 = 1;
 
          ! Magnetic field at the pole  [10^12 G]
          B_12 = -1;
@@ -37,7 +36,7 @@
  \ednverbatim
  *
  */
-class PcfX0_ConstsInitializer: public ConstsInitializer,
+class TauPl_ConstsInitializer: public ConstsInitializer,
                                public NormConsts, 
                                public MagneticFieldConsts
 {

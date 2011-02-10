@@ -75,16 +75,17 @@ public:
   //! setup from config file
   void SetupFromConfig(FileInput& in);
 
-  //! Move particles, scatter Rho & J, and collect particle flux (top level function)
+  //! Move particles, scatter Rho & J, and collect particle flux \b [top-level]
   void MoveAndScatterParticles(ParticleList<P>& plist, EM& em,  
 			       ParticleFlux& ns_flux, ParticleFlux& lc_flux,
 			       double t, double dt);
 
-  //! Solve field equations
+  //! Solve field equations \b [top-level]
   void SolveFieldEquations(EM& em, double t, double dt);
+
+
   //! Enforce Gauss law after merging particles
   void EnforceGaussLaw(ParticleList<P>& pl, EM& em, double t, double dt );
-
 
   //! Initial Electromagnetic field configuration
   void CalculateInitialField(EM& em, double dt);
@@ -93,7 +94,6 @@ public:
 
   //! scatter charge density to mesh points (top level fuction)
   void ScatterRho( EM& em, ParticleList<P>& plist);
-
 
 private:
 
@@ -139,7 +139,7 @@ template<class EM, class P>
 ParticleInCell<EM,P>::ParticleInCell()
 {
   _P_CF = NormConsts().Pcf();
-  _L = GeometryParams().L();
+  _L    = GeometryParams().L();
 };
 
 
@@ -155,8 +155,9 @@ ParticleInCell<EM,P>::ParticleInCell()
  *
  * - "FreeFlowBothEnds" -- particles flow freely in both boundary cells
  *
- * - "None"             -- particles feel the boundary electric field
- * 
+ * - "None"             -- particles \b feel the boundary electric field
+ * .
+ *
  * @param in  -- FileInput object associated with config file
  *
  */
@@ -197,41 +198,57 @@ void ParticleInCell<EM,P>::SetupFromConfig(FileInput& in)
 }
 
 
-
+/**
+ * \fn MoveAndScatterParticles
+ *
+ * One of the main PIC function,
+ * It is called in the main cycle of code by Cascade class
+ * 
+ * This is an interface to several functions, which are called inside it
+ *
+ * - moves particles by solving equation of motion
+ * - collects Rho and J
+ * - applied boundary conditions to particles
+ * - collects particle fluxes through domain ends
+ * - deletes particles leaving the domain
+ * - properly normalize Rho and J
+ */
 template<class EM, class P>
 void ParticleInCell<EM,P>::MoveAndScatterParticles( ParticleList<P>& plist, EM& em, 
 						    ParticleFlux& ns_flux, ParticleFlux& lc_flux,
 						    double t, double dt)
 {
-  FMPProps fmp;
-
+  FMPProps    fmp;
   CodeControl cc;
 
+  // set Rho and J to zero
   em.ClearRho();
   em.ClearJ();
 
   // Move each particle specie ********************************
+  // >>>> Rho and J are calculated here
   for (int i=0; i<plist.Size(); i++)
     MoveAndScatterParticleSpecie(*plist[i], em, dt);
 
-
   // Collect particle flux trough the boundaries **************
+  // >>>> particles leaving computation domain are destroyed here
   for (int i=0; i<plist.Size(); i++)
     CollectParticleSpecieFlux(*plist[i], ns_flux,lc_flux, t);
 
-  // sync: particles leaving computation domain are destroyed here !!
+  // sync
   plist.Sync();
 
   if ( cc.DoGatherRhoAndJ() ) 
     {
       em.ApplyBoundaryConditionsToRhoAndJ();  
       em.ApplyDigitalFilter();
-      // normalization of current and charge density
+      // normalize current and charge density
       em.Rho(em.Rho.totalDomain()) *= fmp.W0()/Pooma::cellVolumes(em.Rho).comp(0).read(0);
       em.J(em.J.totalDomain())     *= fmp.W0()/dt;
     }
   else
     {
+      // if here, Rho and J are not nedeed - set them to zero
       em.ClearRho();
       em.ClearJ();
     }
@@ -260,7 +277,7 @@ inline void ParticleInCell<EM,P>::MoveAndScatterParticleSpecie( P& p, EM& em, do
  * Iterates over individual particles:
  * - gather electric field to the particle's old location
  * - move the particle and scatter Rho and J
- * 
+ * .
  */
 template<class EM, class P>
 template<class InterpolatorFunctor>
@@ -274,7 +291,6 @@ void ParticleInCell<EM,P>::MoveAndScatter_Itr( P& particles, EM& em_fields, doub
   Charged_Patch<P>   p(particles,i_patch);
   // local patch of fields
   EMFields_Patch<EM> em(em_fields,i_patch);
-
 
   double h =  em.X.mesh().spacings()(0); 
   double p_coeff = dt * _P_CF * p.Q/p.M ;
@@ -429,8 +445,8 @@ void ParticleInCell<EM,P>::CollectParticleSpecieFlux(P& p,
   ns_flux.UpdateFlux(idx_ns_flux, p, t);
   lc_flux.UpdateFlux(idx_lc_flux, p, t);
   
-  // // destroy particles leaving domains
-  // p.performDestroy();
+  // destroy particles leaving domains
+  p.performDestroy();
 }
 
 
@@ -449,6 +465,8 @@ void ParticleInCell<EM,P>::CalculateInitialMomentum( ParticleList<P>& plist, EM&
 template<class EM, class P>
 void ParticleInCell<EM,P>::CalculateInitialMomentum_Itr( P& particles, EM& em_fields, double dt )
 {
+  Pooma::blockAndEvaluate();
+
   // patch number
   int i_patch = 0;
   // local patch of particles
@@ -507,13 +525,14 @@ template<class EM, class P>
 template<class InterpolatorFunctor>
 void ParticleInCell<EM,P>::ScatterRho_Itr( EM& em_fields, P& particles)
 {
+  Pooma::blockAndEvaluate();
+
   // patch number
   int i_patch = 0;
   // local patch of particles
   Charged_Patch<P>   p(particles,i_patch);
   // local patch of fields
   EMFields_Patch<EM> em(em_fields,i_patch);
-
 
   double h =  em.X.mesh().spacings()(0); 
 
@@ -549,7 +568,7 @@ inline void ParticleInCell<EM,P>::EnforceGaussLaw( ParticleList<P>& pl,
 						   EM& em, 
 						   double t, double dt ) 
 {
-  ScatterRho( em, pl );
+  // ScatterRho( em, pl );
   em.EnforceGaussLaw(t,dt);
 }
 

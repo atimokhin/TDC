@@ -1,10 +1,9 @@
-! test single particle acceleration by the constant electric field
-! A =2/3:  q=2, m=3, dV = -7.752e-8
-! A =1000: q=1, m=1, dV = -7.752e-5
+! modified 01/28/2011
 !
-! in makefile:
-! TEST_OPTS := $(TEST_OPTS) -D ELECTROSTATIC_1D__TEST_NO_RHOGJ
-
+! test single particle acceleration by the constant electric field
+!
+! try to test quadratic convergence with dT
+!
 
 Group "CALCULATION_START_CONTROL" {
    ! Start new calculation or restart a previous one <-----------------
@@ -21,14 +20,14 @@ Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
    CalcId = 'test_single_particle_acceleration';  
 
+   ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
-   TimeStepStdoutPrintInterval  = 1;
+   TimeStepStdoutPrintInterval  = 100;
    ! Number Of Timesteps after which timelabel is printed to logfile
-   TimeStepLogFilePrintInterval = 1;
+   TimeStepLogFilePrintInterval = 100;
    ! Number Of Timesteps after which results are saved into HDF files
-   TimeStepHDFFileSaveInterval  = 1;
+   TimeStepHDFFileSaveInterval  = 100;
 }
-
 
 
 Group "CODE_CONTROL" {
@@ -38,6 +37,10 @@ Group "CODE_CONTROL" {
    ! Electrodynamics -------------
    DoGatherRhoAndJ ? No;
    DoMaxwell       ? Yes;
+
+   ! Enforce Gauss Law -----------
+   DoEnforceGaussLaw ? No;
+   NSteps_EnforceGaussLaw = 50;
 
    ! Particles -------------------
    DoMoveParticles ? Yes;
@@ -49,17 +52,23 @@ Group "CODE_CONTROL" {
    DoLPT           ? No;
 }     
 
+Group "DIMENSIONAL_CONSTANTS" {
+   InitializerType='PcfX0_ConstsInitializer';
 
-Group "PULSAR" {
-   ! Magnetic field at the pole  [10^12 G]
-   B_12 = 1;
-   ! Inclination angle
-   CHI = 0;
-   ! Period of pulsar [seconds]
-   P_SEC = 1;
-   ! NS radius [10^6 cm]
-   RNS_6 = 1;
+   Group "PcfX0_ConstsInitializer" {
+      ! Pcf -- characteristic Lorentz factor of electrons 
+      Pcf = 50;
+      ! X0  -- characteristic domain length
+      X0 = 1e4;
+
+      ! Magnetic field at the pole  [10^12 G]
+      B_12 = 0;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1;
+   }
 }
+
+
 
 Group "GEOMETRY" {
    !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
@@ -79,28 +88,39 @@ Group "GRID" {
 
 Group "TIME" {
    !  Timestep
-   dT =  0.001;
+   dT =  4e-5;
    !  Number of timesteps
-   NumberOfTimeSteps = 1003;   
+   NumberOfTimeSteps = 25000;   
 }
 
+Group "RHO_GJ" {
+   Type = 'RhoGJFunctor_Const';
+}
 
+Group "MAGNETIC_FIELD" {
+   Type = 'R6';
+}
 	
 Group "ELECTRODYNAMICS" {
    Type = 'Electrostatic_1D';
 
    Group "Electrostatic_1D" {
+
+      ApplyDigitalFilter ? Yes;
+
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
+         ! current density in units of |\rho_{GJ}^0|
          J0 = 0;
       }
       Group "BoundaryConditions_Phi" {	 
 	 Type = 'FixedPotentialDrop';
-	 dV = -7.752e-5;
+	 dV = 1;
       }	 
-      Group "BoundaryConditions_E" {	 
-	 Type = 'LooseEnds';
-      }	
+      Group "BoundaryConditions_E" {
+         Type = 'LooseEnds';
+         E_Damping_Coeff = 1;
+      }
    } 
 }
 	
@@ -122,14 +142,16 @@ Group "PARTICLES" {
    
 
    Group "Electrons" {
-      Mass   = 1;
-      Charge = 1;
+      Mass   =  1;
+      Charge =  -1;
       ! Initial number of particles
       NumberOfParticles_Initial = 1;
-      ! these parameters are read at RESTART <<<<<
-      NumberOfParticles_Maximal = 80000;
-      NumberOfParticles_Optimum = 50000;
-      F_Reduce_For_PairProduction = 2;
+      ! these parameters are read at RESTART<<<<<<
+      Group "LPT" {
+         ! Required parameters
+         DoSplitting ? No;
+         DoMerging   ? No;
+      }
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       Group "InitialConditions" {	 
 	 NumberOfInitializedAttributes = 2;
@@ -138,13 +160,13 @@ Group "PARTICLES" {
 	 Group "X" {		
 	    DistributionName='SingleValue';
 	    Group "SingleValue" {		
-	       Value=0;
+	       Value=0.1;
 	    }   
 	 }
         Group "P_par" {
 	    DistributionName='SingleValue';
 	    Group "SingleValue" {		
-	       Value=0;
+	       Value=0.1;
 	    }   
          }
       }
@@ -156,9 +178,18 @@ Group "PARTICLES" {
 Group "PAIRS" {
    NumberOfParticles_Initial = 0;
    ! these parameters are read at RESTART<<<<<<
-   NumberOfParticles_Maximal = 130000;
-   NumberOfParticles_Optimum = 90000;
+   Group "LPT" {
+      ! Required parameters
+      DoSplitting ? No;
+      DoMerging   ? No;
+   }
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+}
+
+Group "PIC" {
+   Group "BoundaryConditions" {
+         Type = 'None';
+      }
 }
 
 

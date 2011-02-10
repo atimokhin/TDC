@@ -1,3 +1,8 @@
+! modified 02/04/2011
+!
+! 80 particles plasma oscillation
+!
+
 Group "CALCULATION_START_CONTROL" {
    ! Start new calculation or restart a previous one <-----------------
    RestartCalculations ? No;
@@ -13,12 +18,13 @@ Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
    CalcId = 'test_osc_cos4x';
 
+   ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
    TimeStepStdoutPrintInterval  = 1;
    ! Number Of Timesteps after which timelabel is printed to logfile
    TimeStepLogFilePrintInterval = 1;
    ! Number Of Timesteps after which results are saved into HDF files
-   TimeStepHDFFileSaveInterval  = 4;
+   TimeStepHDFFileSaveInterval  = 1;
 }
 
 
@@ -29,6 +35,10 @@ Group "CODE_CONTROL" {
    ! Electrodynamics -------------
    DoGatherRhoAndJ ? Yes;
    DoMaxwell       ? Yes;
+
+   ! Enforce Gauss Law -----------
+   DoEnforceGaussLaw ? No;
+   NSteps_EnforceGaussLaw = 20;
 
    ! Particles -------------------
    DoMoveParticles ? Yes;
@@ -42,46 +52,48 @@ Group "CODE_CONTROL" {
 
 
 Group "DIMENSIONAL_CONSTANTS" {
-   InitializerType='PSR_ConstsInitializer';
-   Group "PSR_ConstsInitializer" {
+   InitializerType='TauPl_ConstsInitializer';
+   
+   Group "TauPl_ConstsInitializer" {
+      ! T0 -- characteristic time in periods of GJ plasma oscillations
+      T0 = 1;
+
       ! Magnetic field at the pole  [10^12 G]
-      B_12  = 1;
-      ! Period of pulsar [seconds]
-      P_SEC = 1;
+      B_12 = 1;
       ! Radius of curvature of magnetic field lines [ 10^6 cm]
       Rcur_6 = 1;
-
-      ! Inclination angle
-      CHI = 0;
-      ! NS radius [10^6 cm]
-      RNS_6 = 1;
    }
 }
 
 
 Group "GEOMETRY" {
-   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
-   WIDTH  = 1;
-   !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   ! Lengh of the domain
    LENGTH = 1e-4;
+   ! Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
    ! Colatitude of the field line [ in units of \thepa_pc ]
    THETA = 1;
 }
-
 
 Group "GRID" {
    ! Number of Cells
    NumberOfCells = 800;
 }
 
-
 Group "TIME" {
    !  Timestep
-   dT =  8.748e-7;
+   dT =  0.005;
    !  Number of timesteps
-   NumberOfTimeSteps = 8000;   
+   NumberOfTimeSteps = 4000;   
 }
 
+Group "RHO_GJ" {
+   Type = 'RhoGJFunctor_Const';
+}
+
+Group "MAGNETIC_FIELD" {
+   Type = 'R6';
+}
 
 	
 Group "ELECTRODYNAMICS" {
@@ -89,19 +101,19 @@ Group "ELECTRODYNAMICS" {
 
    Group "Electrostatic_1D" {
 
-      ApplyDigitalFilter ? Yes;
+      ApplyDigitalFilter ? No;
 
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
          J0 = 0;
       }
-      Group "BoundaryConditions_Phi" {	 
-	 Type = 'Periodic';
-      }	 
-      Group "BoundaryConditions_E" {	 
-	 Type = 'Periodic';
-      }	
-   } 
+      Group "BoundaryConditions_Phi" {
+         Type = 'Periodic';
+      }
+      Group "BoundaryConditions_E" {
+         Type = 'Periodic';
+      }
+   }
 }
 	
 
@@ -114,8 +126,6 @@ Group "PARTICLES" {
 
    NumberOfChargedParticleTypes = 1;
    ChargedParticles_#0 = 'Electrons';
-   ChargedParticles_#1 = 'Positrons';
-
 
    Group "BoundaryConditions" {	 
       Type = 'PERIODIC';
@@ -128,9 +138,11 @@ Group "PARTICLES" {
       ! Initial number of particles
       NumberOfParticles_Initial = 80;
       ! these parameters are read at RESTART<<<<<<
-      NumberOfParticles_Maximal = 80000;
-      NumberOfParticles_Optimum = 50000;
-      F_Reduce_For_PairProduction = 2;
+      Group "LPT" {
+         ! Required parameters
+         DoSplitting ? No;
+         DoMerging   ? No;
+      }
       !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       Group "InitialConditions" {	 
 	 NumberOfInitializedAttributes = 2;
@@ -147,7 +159,7 @@ Group "PARTICLES" {
             DependsOnAttribute='X';
             DistributionName='CosX';
             Group "CosX" {
-               Amplitude = 0.008;
+               Amplitude = 1e-5;
                nk=4;
 
                a=0;
@@ -162,8 +174,11 @@ Group "PARTICLES" {
 Group "PAIRS" {
    NumberOfParticles_Initial = 0;
    ! these parameters are read at RESTART<<<<<<
-   NumberOfParticles_Maximal = 130000;
-   NumberOfParticles_Optimum = 90000;
+   Group "LPT" {
+      ! Required parameters
+      DoSplitting ? No;
+      DoMerging   ? No;
+   }
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }
 

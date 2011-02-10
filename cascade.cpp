@@ -298,10 +298,6 @@ void Cascade::RunSimulations()
       // save initial electromagnetic fields 
       _pEM->SaveToHDFFile(t, 0);
     }
-  // if asked for Gauss Law enforcement - initialize it
-  // (change Poisson BC to follow E)
-  if ( __code.DoEnforceGaussLaw() )
-    _pEM->InitializeEnforceGaussLaw();
   // ************************************
 
 
@@ -347,11 +343,11 @@ void Cascade::RunSimulations()
 	{
 	  _PIC.SolveFieldEquations(*_pEM, t,dt);
 
-          // if asked enforce Gauss law
-          if ( __code.DoEnforceGaussLaw(it) )
-            {
-	      _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
-            }
+          // // if asked enforce Gauss law
+          // if ( __code.DoEnforceGaussLaw(it) )
+          //   {
+	  //     _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
+          //   }
 	}
       // ************************************
 

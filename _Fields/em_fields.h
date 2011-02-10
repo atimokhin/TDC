@@ -41,9 +41,8 @@ public:
   //! Get initial field configuration (solve Poisson equation)
   virtual void InitialField() = 0;
 
-  virtual void InitializeEnforceGaussLaw() = 0;
+  //! Enforce Gauss Law if asked
   virtual void EnforceGaussLaw(double t, double dt) = 0;
-
 
   //! Rho and J at the boundaries
   virtual void ApplyBoundaryConditionsToRhoAndJ() = 0;

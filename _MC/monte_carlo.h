@@ -215,6 +215,9 @@ bool MonteCarlo::Particles2Pairs(ParticleList<Particles>& pl,
       int n_new_pairs = _PairCache.Size();
       int n_old_pairs = pairs.size();
       pairs.create(n_new_pairs);
+
+      Pooma::blockAndEvaluate();
+
       for (int i=0; i<n_new_pairs; i++)
         {
           pairs.SetPair(n_old_pairs + i,
@@ -324,6 +327,9 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
       int n_old_e = electrons.size();
       positrons.create(n_new_pairs);
       electrons.create(n_new_pairs);
+
+      Pooma::blockAndEvaluate();
+
       for (int i=0; i<n_new_pairs; i++)
         {
           positrons.SetParticle(n_old_p + i,

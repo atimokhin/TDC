@@ -59,8 +59,6 @@ public:
   //! Electromagnetic field at calculation start
   void InitialField();
 
-  //! adjust Phi boundary conditions to follow the current state on the system
-  void InitializeEnforceGaussLaw();
   //! solve Poisson Equation fo the current state of the system
   void EnforceGaussLaw(double t, double dt);
 
@@ -79,6 +77,9 @@ public:
   //! calculate Potential from the electric field  
   void CalculatePhiFromE();
 
+  //! claculate E_Gauss from Gauss' Law
+  void CalculateGaussField();
+
 public:
 
   using Base_t::E;
@@ -90,10 +91,8 @@ public:
   //! electric potential - specific for this class variable
   Field_t Phi;
 
-#ifdef ELECTROSTATIC_1D__TEST_GAUSS_LAW
-  //! auxiliary electric field for test purpouses
-  Field_t E_Poisson;
-#endif
+  //! electric field from the Gauss Law for test purpouses
+  Field_t E_Gauss;
 
 private:
 
@@ -164,9 +163,7 @@ Electrostatic_1D<Field_t>::Electrostatic_1D()
   PAssert( static_cast<int>(Field_t::dimensions) == 1 );
   AddSavedField("Phi",Phi);
 
-#ifdef ELECTROSTATIC_1D__TEST_GAUSS_LAW
-  AddSavedField("E_Poisson",E_Poisson);
-#endif
+  AddSavedField("E_Gauss",E_Gauss);
 
   // set all boundary quantities to zero
   _V0=_V1=_Phi_E0=_Phi_E1=0;
@@ -292,11 +289,6 @@ void Electrostatic_1D<Field_t>::SetupFromConfigGroup(FileInput& in)
       _E_E0=in.get_param("E1");      
       _E_E1=in.get_param("E2");      
     }
-  else if ( bc_name == "SCLF_2" ) // E_ns=0; loose upper Ends <<<<<<<<<<<<<<<
-    {
-      _E_BC1Type = BC__ZERO_AT_LOWER_END;      
-      _E_BC2Type = BC__LOOSE_UPPER_END;      
-    }
   else
     {
       cout<<"Wrong boundary condition type for E :"<<bc_name<<"!\n";
@@ -322,11 +314,6 @@ void Electrostatic_1D<Field_t>::SetupFromHDFFilesAndConfigGroup(FileInput& in)
   SetupFromConfigGroup(in);
   // read data from HDF file
   Base_t::SetupFromHDFFilesAndConfigGroup(in);
-
-  // NORMAL MODE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#ifndef ELECTROSTATIC_1D__SOLVE_POISSON_EQUATION
-  TiePhiToE();
-#endif  
 }
 
 
@@ -354,10 +341,10 @@ void Electrostatic_1D<Field_t>::Initialize(const FLayout_t &layout,
   // current density
   J.initialize(vertex,layout,mesh);
   J(J.totalDomain())=0;
-
-#ifdef ELECTROSTATIC_1D__TEST_GAUSS_LAW
-  E_Poisson.initialize(vertex,layout,mesh);
-#endif
+  
+  // Electric field from the Gauss law
+  E_Gauss.initialize(vertex,layout,mesh);
+  E_Gauss(E_Gauss.totalDomain())=0;
 
   // Physical domain
   _I = this->J.physicalDomain();
@@ -422,37 +409,30 @@ void Electrostatic_1D<Field_t>::InitialField()
 
   CalculateEFromPhi();
   ApplyBoundaryConditionsToE();
-
-  // NORMAL MODE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#ifndef ELECTROSTATIC_1D__SOLVE_POISSON_EQUATION
-  TiePhiToE();
-#endif
-
-  // TEST MODE: also solve Poisson equation
-#ifdef ELECTROSTATIC_1D__TEST_GAUSS_LAW
-  E_Poisson = E;
-#endif
+  // Electric field from the Gauss Law
+  CalculateGaussField();
 }
 
 
-template<class Field_t>
-void Electrostatic_1D<Field_t>::InitializeEnforceGaussLaw()
-{
-  TiePhiToE();
-}
 
 template<class Field_t>
 void Electrostatic_1D<Field_t>::EnforceGaussLaw(double t, double dt)
 {
-  SolvePoissonEquation();
-  CalculateEFromPhi(); 
+  E(_L+1) =  E(_L) + 4*( Rho(_L) - RhoGJ(_L) )*dX;
+
+  // \b TODO: Poisson equation solution does not work 
+  // TiePhiToE();
+  // SolvePoissonEquation();
+  // CalculateEFromPhi(); 
 }
 
 
 
+
 /**
- * Evolve electromagnetic field in time. This method is called by PIC
- * for solution of Maxwell equations
+ * Evolve electromagnetic field in time. 
+ *
+ * This method is called by PIC for solution of Maxwell equations
  * 
  */
 template<class Field_t>
@@ -462,57 +442,79 @@ void Electrostatic_1D<Field_t>::EvolveElectroMagneticField(double t, double dt)
   double j_b = _JB(t);
 
   // NORMAL MODE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#ifndef ELECTROSTATIC_1D__SOLVE_POISSON_EQUATION
+#ifndef ELECTROSTATIC_1D__SOLVE_Gauss_EQUATION
 #ifndef ELECTROSTATIC_1D__TEST_GAUSS_LAW
   E(_I) -= 4*dt*( J(_I) - j_b );
 
   ApplyBoundaryConditionsToE();
   CalculatePhiFromE();
+  // Electric field from the Gauss Law
+  CalculateGaussField();
 #endif
 #endif
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
-  // TEST MODE: also solve Poisson equation
-#ifndef ELECTROSTATIC_1D__SOLVE_POISSON_EQUATION
+  // TEST MODE: also solve Poisson equation ----
+#ifndef ELECTROSTATIC_1D__SOLVE_Gauss_EQUATION
 #ifdef  ELECTROSTATIC_1D__TEST_GAUSS_LAW
   E(_I) -= 4*dt*( J(_I) - j_b );
   ApplyBoundaryConditionsToE();
   
-  CalculatePhiFromE(); // calculate Phi at ghost points
+  //CalculatePhiFromE(); // calculate Phi at ghost points -do not need it (?)
   SolvePoissonEquation();
-  E_Poisson(_I) = - ( Phi(_I) - Phi(_I-1) )/ dX;
+  E_Gauss(_I) = - ( Phi(_I) - Phi(_I-1) )/ dX;
 #endif
 #endif
-
+  // -------------------------------------------
 
   // TEST MODE: solve Poisson equation at each timestep
-#ifdef  ELECTROSTATIC_1D__SOLVE_POISSON_EQUATION
-
+#ifdef  ELECTROSTATIC_1D__SOLVE_Gauss_EQUATION
 #ifndef ELECTROSTATIC_1D__TEST_GAUSS_LAW
   SolvePoissonEquation();
   CalculateEFromPhi(); 
 #else
   // contradictory compiler options
-#error incompatible directives: ELECTROSTATIC_1D__TEST_GAUSS_LAW and ELECTROSTATIC_1D__SOLVE_POISSON_EQUATION
+#error incompatible directives: ELECTROSTATIC_1D__TEST_GAUSS_LAW and ELECTROSTATIC_1D__SOLVE_Gauss_EQUATION
 #endif
-
 #endif
-
+  // --------------------------------------------
 };
+
+
+/**
+ * Must be called \b after the electric field E is calculated:
+ * it needs E(0)
+ * 
+ */
+template<class Field_t>
+void Electrostatic_1D<Field_t>::CalculateGaussField()
+{
+  Pooma::blockAndEvaluate();
+
+  int i_s = _I.min();
+  E_Gauss(i_s)  = E(i_s);
+  E_Gauss(_L+1) = E_Gauss(_L) + 4*( Rho(_L) - RhoGJ(_L) )*dX;
+}
 
 
 /**
  * Set coefficients in numerical Poisson equation in the way it
  * follows the current state of the electric field
  * 
- * - set _Phi_BC{1,2}Type = BC__FOLLOW_E
+ * - set _Phi_BC{1,2}Type = BC__NEUMANN
  * - SetupPoissonEquationCoeff
+ *
+ * \b TODO: does not work!!!
  */
 template<class Field_t>
 void Electrostatic_1D<Field_t>::TiePhiToE()
 {
-  _Phi_BC1Type = BC__FOLLOW_E;
-  _Phi_BC2Type = BC__FOLLOW_E;
+  _Phi_BC1Type = BC__NEUMANN; 
+  _Phi_BC2Type = BC__DIRICHLET;
+
+  int i_s = _I.min();
+  _Phi_E0 = E(i_s);
 
   SetupPoissonEquationCoeff();
 }
@@ -532,9 +534,9 @@ void Electrostatic_1D<Field_t>::TiePhiToE()
  */
 template<class Field_t>
 double Electrostatic_1D<Field_t>::dJ_ToSet_E_i_OnTheNextTimeStep(int i, 
-                                                                               double e_i_nextstep, 
-                                                                               double t, 
-                                                                               double dt)
+                                                                 double e_i_nextstep, 
+                                                                 double t, 
+                                                                 double dt)
 {
   return  _JB(t) - J(i) + ( E(i) - e_i_nextstep )/(4*dt);
 }
@@ -651,18 +653,15 @@ inline void Electrostatic_1D<Field_t>::CalculateEFromPhi()
 template<class Field_t>
 void Electrostatic_1D<Field_t>::CalculatePhiFromE()
 {
+  Pooma::blockAndEvaluate();
+
   int l_s = _L.min();
   int l_e = _L.max();
 
-  Pooma::blockAndEvaluate();
   Phi(l_s-1) = 0;
   Interval<1> I(l_s,l_e+1);
   Phi(I) = Phi(I-1) - dX*E(I);
 }
-
-
-
-
 
 
 
@@ -725,11 +724,12 @@ void Electrostatic_1D<Field_t>::ApplyBoundaryConditionsToE()
 template<class Field_t>
 void Electrostatic_1D<Field_t>::ApplyBoundaryConditionsToRHS()
 {
+  Pooma::blockAndEvaluate(); // Scalar code below
+
   int l_s = _L.min();
   int l_e = _L.max();
 
   // adjust RHS
-  Pooma::blockAndEvaluate(); // Scalar code below
   if ( _Phi_BC1Type == BC__FOLLOW_E && _Phi_BC2Type == BC__FOLLOW_E )
     {
       d(l_s) -= a(l_s)*Phi(l_s-1);
@@ -751,11 +751,12 @@ void Electrostatic_1D<Field_t>::ApplyBoundaryConditionsToRHS()
 template<class Field_t>
 void Electrostatic_1D<Field_t>::ApplyBoundaryConditionsToPhi()
 {
+  Pooma::blockAndEvaluate();
+
   int l_s = _L.min();
   int l_e = _L.max();
 
   // Adjust Phi at ghost points
-  Pooma::blockAndEvaluate();
   if ( _Phi_BC1Type == BC__PERIODIC )  
     // periodic BC <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     {
@@ -777,8 +778,10 @@ void Electrostatic_1D<Field_t>::ApplyBoundaryConditionsToPhi()
 
 
 /** 
- * Setup coefficients for poisson equation solver
- * This function must be called after changing of boundary conditions
+ * Setup coefficients for poisson equation solver (Thomas algorithm)
+ *
+ * This function must be called every time after boundary conditions
+ * are changed
  * 
  */
 template<class Field_t>

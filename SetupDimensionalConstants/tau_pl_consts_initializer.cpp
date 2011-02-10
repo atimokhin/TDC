@@ -1,18 +1,16 @@
-#include "pcf_x0_consts_initializer.h"
+#include "tau_pl_consts_initializer.h"
 
 #include "../PhysicsLib/constants.h"
-#include "../PhysicsLib/small_functions.h"
 
-   		     
-
-void PcfX0_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
+void TauPl_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
 {
   // Read parameters from "PULSAR" group *****
   ATbase::Group_t *p_current_group = in.Get_pCurrentGroup();
-  in.ChangeGroup("PcfX0_ConstsInitializer");
+  in.ChangeGroup("TauPl_ConstsInitializer");
 
-  _Pcf = in.get_param("Pcf");
-  _X0  = in.get_param("X0");
+  //parameters local to this class -----------
+  _T0 = in.get_param("T0");
+  //------------------------------------------
 
   // parameters from  MagneticFieldConsts
   MagneticFieldConsts::SetupFromConfigGroup(in);
@@ -22,12 +20,14 @@ void PcfX0_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
 
 
   // Setup normalization constants -----------
-  _T0 = _X0/Constants::C;
+  _X0 = Constants::C * _T0;
 
-  _Phi0 = 1704.49 * _Pcf;
-  _E0   = _Phi0/_X0;
+  _Rho0 = pow(2.4409e-9/_T0, 2);
 
-  _Rho0 = _E0/( Constants::PI * _X0 );  
+  _E0   = Constants::PI * _Rho0 * _X0;
+  _Phi0 = _E0 * _X0;
+
+  _Pcf  = _Phi0/1705e0;
   //------------------------------------------
 }
 
