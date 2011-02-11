@@ -1,5 +1,6 @@
-
-PYTHON_INCLUDE=-I /usr/include/python2.6/ -I /usr/lib/python2.6/site-packages/numpy/core/include/numpy/
+PYTHON_INCLUDE=\
+	-I $(PYTHON_TOP_DIR)/include/python2.6/ \
+	-I $(PYTHON_MODULES_DIR)/numpy/core/include/numpy/
 
 cpp_plotting_files = $(wildcard x_Plotting/*.cpp)
 OBJ_PLOTTING  = $(cpp_plotting_files:.cpp=.o)
