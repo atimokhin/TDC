@@ -237,8 +237,6 @@ void ParticlesPropFields<Field_t>::Scatter_N_Pairs( Pairs& pairs, double t)
   int j_start = 0; 
   int j_end   = p.size()-1;
 
-  std::cout<<" test 0 "<<std::flush;
-
   for ( int j=j_start; j<=j_end; j++)
     {
       // x = x_em + v_ph*(t-t_em), where:
@@ -280,22 +278,12 @@ void ParticlesPropFields<Field_t>::Scatter_N_Pairs( Pairs& pairs, double t)
   // --------------------------------
   Pooma::blockAndEvaluate();
 
-  std::cout<<" test 1 "<<std::flush;
-
   // normalize n(x) to n_GJ
   N(N.totalDomain()) *= fmp.W0()/dX;
-  std::cout<<" test 2 "<<std::flush;
-
-  std::cout<<" domain1 "<<N1.totalDomain()<<std::flush;
   N1(N1.totalDomain()) *= fmp.W0()/dX;
-  std::cout<<" domain2 "<<N2.totalDomain()<<std::flush;
   N2(N2.totalDomain()) *= fmp.W0()/dX;
-  std::cout<<" domain3 "<<N3.totalDomain()<<std::flush;
-  std::cout<<" N3 "<<N3<<std::flush;
   N3(N3.totalDomain()) *= fmp.W0()/dX;
-  std::cout<<" domain4 "<<N4.totalDomain()<<std::flush;
   N4(N4.totalDomain()) *= fmp.W0()/dX;
-  std::cout<<" test 6 "<<std::flush;
 }
 
 

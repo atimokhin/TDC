@@ -58,7 +58,6 @@ typedef EMFields<Field_t>  EM_t;
 
 
 
-
 //! Main function for properties calculation
 int main(int argc, char *argv[])
 {
@@ -179,7 +178,6 @@ int main(int argc, char *argv[])
 
 
 
-
   // ********************************************
   // Pairs properties
   // ********************************************
@@ -214,18 +212,10 @@ int main(int argc, char *argv[])
       cout<<it<<" "<<flush;
       // read particles 
       pairs.ReadFromHDFFile(it, hdf_pairs);
-
-      // std::cout<<" read "<<std::flush;
-
       // calculate particle number density n(x)
       PairsProps.Scatter_N_Pairs( pairs, time[it-1]);
-
-      // std::cout<<" scattered "<<std::flush;
-
       // save dataset with n(x)
       PairsProps.SaveToHDFFile(time[it-1], timesteps[it-1]);
-
-      // std::cout<<" saved "<<std::flush;
     }
   cout<<"\n\n";
   // ----------------------------------------

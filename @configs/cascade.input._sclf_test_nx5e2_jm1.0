@@ -3,7 +3,7 @@ Group "CALCULATION_START_CONTROL" {
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'sclf_test_jm1.0';
+   StartFromCalcId = 'sclf_test_nx5e2_jm1.0';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -11,7 +11,7 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'sclf_test_jm1.0'; 
+   CalcId = 'sclf_test_nx5e2_jm1.0'; 
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
@@ -49,7 +49,7 @@ Group "DIMENSIONAL_CONSTANTS" {
          
    Group "PcfB0_ConstsInitializer" {
       ! Pcf -- characteristic Lorentz factor of electrons 
-      Pcf = 0.1;
+      Pcf = 15;
       
       ! Magnetic field at the pole  [10^12 G]
       B_12 = 1;
@@ -62,24 +62,24 @@ Group "DIMENSIONAL_CONSTANTS" {
 }
 
 Group "GEOMETRY" {
-   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
-   WIDTH  = 1;
    !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
    LENGTH = 1;
+   !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
+   WIDTH  = 1;
    ! Colatitude of the field line [ in units of \thepa_pc ]
    THETA = 1;
 }
 
 Group "GRID" {
    ! Number of Cells
-   NumberOfCells = 1000;
+   NumberOfCells = 500;
 }
 
 Group "TIME" {
    !  Timestep
-   dT =  2e-4;
+   dT =  4e-4;
    !  Number of timesteps
-   NumberOfTimeSteps = 100000;   
+   NumberOfTimeSteps = 50000;   
 }
 
 Group "RHO_GJ" {
@@ -103,7 +103,7 @@ Group "ELECTRODYNAMICS" {
          J0 = -1.0;
       }
       Group "BoundaryConditions_Phi" {
-         Type = 'SCLF_PHI';
+         Type = 'RS_PHI';
       }
       Group "BoundaryConditions_E" {
          Type = 'LooseEnds';
@@ -118,7 +118,7 @@ Group "PARTICLES" {
 
    ! these parameters are read at RESTART <<<<<<<<
    ! Number of particles to provide \rho_GJ
-   NGJ = 20000;
+   NGJ = 5000;
       
    NumberOfChargedParticleTypes = 2;
    ChargedParticles_#0 = 'Electrons';
@@ -127,17 +127,23 @@ Group "PARTICLES" {
    Group "BoundaryConditions" {	 
       Type = 'SCLF_2';
       ! Electron parameters ******
-      E__N_inj = 4;
-      E__P_inj = 0.0;
+      E__N_inj  = 6;
+      E__P_inj  = 0;
+      E__dP_inj = 0.05;
       ! must be < 0.5  <----------
-      E__Delta_inj = 0.499999;
+      E__Delta_inj = 0.49999999999999;
       ! **************************
       ! Proton parameters ********
-      I__N_inj = 4;
-      I__P_inj = 0.0;
+      I__N_inj  = 0;
+      I__P_inj  = 0;
+      I__dP_inj = 0;
       ! must be < 0.5  <<---------
-      I__Delta_inj = 0.499999;
+      I__Delta_inj = 0.49999999999999;
       ! **************************
+      ! using for tests: fix the seed of RNG
+      SetSeedForRandomNumberGenerator ? No;
+      ! the seed for RNG
+      Seed = 1234;
    }	 
    !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    
