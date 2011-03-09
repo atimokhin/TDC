@@ -23,7 +23,7 @@
       InitializerType='TauPl_ConstsInitializer';
    
       Group "TauPl_ConstsInitializer" {
-         ! T0 -- characteristic time in periods of GJ plasma oscillations
+         ! T0 -- period of GJ plasma oscillations in seconds
          T0 = 1;
 
          ! Magnetic field at the pole  [10^12 G]

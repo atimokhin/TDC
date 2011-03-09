@@ -9,6 +9,8 @@
 double PlasmaProps::_OmegaPl = 0;
 double PlasmaProps::_Tau = 0;
 double PlasmaProps::_LambdaDebye = 0;
+double PlasmaProps::_Tau_dim = 0;
+double PlasmaProps::_LambdaDebye_dim = 0;
 
 /** 
  * Reads data from the input file and sets pulsar gap parameters
@@ -25,6 +27,10 @@ void PlasmaProps::Initialize(FileInput &in)
   _Tau = 73.1545/sqrt(nc.Rho0())/nc.X0();
 
   _LambdaDebye = 11.6429/sqrt(nc.Rho0())/nc.X0();
+
+
+  _Tau_dim = 2.4409e-9/sqrt(nc.Rho0());
+  _LambdaDebye_dim = 11.6429/sqrt(nc.Rho0());
 }
 
 
@@ -35,6 +41,8 @@ void PlasmaProps::SaveToHDFFile(Save2HDF& hdf) const
   hdf.writeScalar("OmegaPl",_OmegaPl);
   hdf.writeScalar("Tau",_Tau);
   hdf.writeScalar("LambdaDebye",_LambdaDebye);
+  hdf.writeScalar("Tau_dim",_Tau);
+  hdf.writeScalar("LambdaDebye_dim",_LambdaDebye);
 
   hdf.popLoc();
 }
@@ -46,6 +54,8 @@ void PlasmaProps::ReadFromHDFFile(Save2HDF& hdf)
   hdf.readScalar("OmegaPl",_OmegaPl);
   hdf.readScalar("Tau",_Tau);
   hdf.readScalar("LambdaDebye",_LambdaDebye);
+  hdf.readScalar("Tau_dim",_Tau);
+  hdf.readScalar("LambdaDebye_dim",_LambdaDebye);
 
   hdf.popLoc();
 }
@@ -70,7 +80,9 @@ std::ostream& PlasmaProps::Print(std::ostream& s) const
   s<<separator;
   s<<"  Plasma parameters (for GJ density, non-relativistic):\n";
   s<<separator;
-  s<<"            Plasma frequency =  "<<scientific<<_OmegaPl<<" rad/sec\n\n";
+  s<<"            Plasma frequency =  "<<scientific<<_OmegaPl<<" rad/sec \n";
+  s<<" plasma osc period    Tau_pl =  "<<_Tau_dim<<" sec \n";
+  s<<" Debye length        Lamda_D =  "<<scientific<<_LambdaDebye_dim<<" cm \n\n";
 
   s<<" dimensionless period of\n";
   s<<" plasma oscillations  Tau_pl =  "<<_Tau<<"\n";

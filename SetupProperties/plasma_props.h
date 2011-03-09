@@ -43,8 +43,10 @@ public:
 protected:
 
   static double _OmegaPl;      //!< plasma frequency 
-  static double _LambdaDebye;  //!< Debye length
+  static double _LambdaDebye;  //!< dimensionless Debye length
   static double _Tau;          //!< dimensionless period of plasma oscillations 
+  static double _LambdaDebye_dim;  //!< Debye length
+  static double _Tau_dim;          //!< period of plasma oscillations 
 };
 
 

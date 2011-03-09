@@ -29,6 +29,7 @@ public:
   double V_vac() const { return _Vvac; };
   //! Vacuum potential drops in Volts
   double V_vac_Volts() const { return _Vvac*299.7; };
+  double V_vac_L_Volts() const { return _Vvac_L*299.7; };
   //! Coefficient in the equation of particle motion
   double Pcf() const { return _Pcf; };
   //! GJ number density
@@ -45,6 +46,10 @@ protected:
 
   static double _Vvac;     //!< Vacuum potential drops in statvolts
   static double _Pcf;      //!< Coefficient in the equation of particle motion
+
+  static double _Vvac_L;   //!< Vacuum potential drops in statvolts over the whole domain
+  static double _Pcf_L;    //!< Vacuum potential drops in mc^2 over the whole domain
+
   static double _n_GJ;     //!< Goldreich-Julian particle number density
   static double _P;        //!< Pulsar period
   static double _B_12;     //!< Pulsar magnatic field (from electrodynamics)

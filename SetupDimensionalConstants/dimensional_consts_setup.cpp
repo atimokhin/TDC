@@ -13,7 +13,7 @@ using namespace std;
 #include "pcf_B0_consts_initializer.h"
 #include "pcf_x0_consts_initializer.h"
 #include "tau_pl_consts_initializer.h"
-#include "x0__lD_GJ_consts_initializer.h"
+#include "x0_LambdaD_consts_initializer.h"
 
 /**
  * \ingroup setup_consts_grp
@@ -28,7 +28,7 @@ using namespace std;
   MACRO__MAKE_P_CONSTS_INITIALIZER(PcfB0_ConstsInitializer); \
   MACRO__MAKE_P_CONSTS_INITIALIZER(PcfX0_ConstsInitializer); \
   MACRO__MAKE_P_CONSTS_INITIALIZER(TauPl_ConstsInitializer); \
-  MACRO__MAKE_P_CONSTS_INITIALIZER(X0__lD_GJ_ConstsInitializer);
+  MACRO__MAKE_P_CONSTS_INITIALIZER(X0_LambdaD_ConstsInitializer);
 // ******************************************************
 
 

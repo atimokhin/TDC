@@ -3,7 +3,7 @@ Group "CALCULATION_START_CONTROL" {
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'sclf_test_nx5e2_jm1.0';
+   StartFromCalcId = 'sclf_test_nx2e3_jm1.0_injP';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -11,7 +11,7 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'sclf_test_nx5e2_jm1.0'; 
+   CalcId = 'sclf_test_nx2e3_jm1.0_injP'; 
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
@@ -45,25 +45,55 @@ Group "CODE_CONTROL" {
 }     
 
 Group "DIMENSIONAL_CONSTANTS" {
-   InitializerType='PcfB0_ConstsInitializer';
-         
+   InitializerType='PSR_ConstsInitializer';
+   
+   Group "PSR_ConstsInitializer" {
+      ! Period of pulsar [seconds]
+      P_SEC = 0.2;
+      ! Inclination angle
+      CHI = 0;
+
+      ! Magnetic field at the pole  [10^12 G]
+      B_12 = -1.3;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1;
+      
+      ! Optional:
+      ! NS radius [10^6 cm]
+      RNS_6 = 1;
+   }
+
    Group "PcfB0_ConstsInitializer" {
       ! Pcf -- characteristic Lorentz factor of electrons 
-      Pcf = 15;
+      Pcf = 4.18947e+08;
       
       ! Magnetic field at the pole  [10^12 G]
-      B_12 = 1;
+      B_12 = -1.3;
       ! Radius of curvature of magnetic field lines [ 10^6 cm]
       Rcur_6 = 1;
 
       ! Radius of Neutron Star [ 10^6 cm]
       RNS_6 = 1;
    }
+
+   Group "X0_LambdaD_ConstsInitializer" {
+      ! X0 -- Debye length in centimeters
+      X0 = 7.905837e-01;
+
+      ! Magnetic field at the pole  [10^12 G]
+      B_12 = -1.3;
+      ! Radius of curvature of magnetic field lines [ 10^6 cm]
+      Rcur_6 = 1;
+
+      ! Optional:
+      ! NS radius [10^6 cm]
+      RNS_6 = 1;
+   }
 }
 
 Group "GEOMETRY" {
    !  Lenghth of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
-   LENGTH = 1;
+   LENGTH = 10;
    !  Width of the gap in GJ dipole Rpc=Rns^3/2 * (\Omega/c)^1/2
    WIDTH  = 1;
    ! Colatitude of the field line [ in units of \thepa_pc ]
@@ -72,14 +102,14 @@ Group "GEOMETRY" {
 
 Group "GRID" {
    ! Number of Cells
-   NumberOfCells = 500;
+   NumberOfCells = 2000;
 }
 
 Group "TIME" {
    !  Timestep
-   dT =  4e-4;
+   dT =  1e-4;
    !  Number of timesteps
-   NumberOfTimeSteps = 50000;   
+   NumberOfTimeSteps = 150000;   
 }
 
 Group "RHO_GJ" {
@@ -103,7 +133,7 @@ Group "ELECTRODYNAMICS" {
          J0 = -1.0;
       }
       Group "BoundaryConditions_Phi" {
-         Type = 'SCLF_PHI';
+         Type = 'RS_PHI';
       }
       Group "BoundaryConditions_E" {
          Type = 'LooseEnds';
@@ -118,7 +148,7 @@ Group "PARTICLES" {
 
    ! these parameters are read at RESTART <<<<<<<<
    ! Number of particles to provide \rho_GJ
-   NGJ = 5000;
+   NGJ = 20000;
       
    NumberOfChargedParticleTypes = 2;
    ChargedParticles_#0 = 'Electrons';
@@ -131,14 +161,14 @@ Group "PARTICLES" {
       E__P_inj  = 0;
       E__dP_inj = 0.05;
       ! must be < 0.5  <----------
-      E__Delta_inj = 0.49999999999999;
+      E__Delta_inj = 0.4999999;
       ! **************************
       ! Proton parameters ********
-      I__N_inj  = 0;
+      I__N_inj  = 6;
       I__P_inj  = 0;
       I__dP_inj = 0;
       ! must be < 0.5  <<---------
-      I__Delta_inj = 0.49999999999999;
+      I__Delta_inj = 0.4999999;
       ! **************************
       ! using for tests: fix the seed of RNG
       SetSeedForRandomNumberGenerator ? No;
