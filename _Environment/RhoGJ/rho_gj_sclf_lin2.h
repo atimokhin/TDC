@@ -8,7 +8,7 @@
  * \ingroup rho_gj_grp
  *
  * \class  RhoGJFunctor_SCLF_lin2
- * GJ charge density given by: \f$ - sign(B) ( 1 - a min(1,x/x_0)) \f$
+ * GJ charge density given by: \f$ - sign(B)*( A_1 - A_2 min(1,x/x_0) ) \f$
  *
  * configuration file example
  \verbatim

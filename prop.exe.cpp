@@ -54,6 +54,17 @@ typedef EMFields<Field_t>  EM_t;
 
 
 
+class PropControl
+{
+public:
+  //! Setup control parameters from command line
+  void SetupFromCommandLine(int argc, char *argv[]);
+
+  bool DoPairs() const {return _DoPairs;}
+
+private:
+  bool _DoPairs;
+};
 
 
 
@@ -61,32 +72,44 @@ typedef EMFields<Field_t>  EM_t;
 //! Main function for properties calculation
 int main(int argc, char *argv[])
 {
-  FileInput in_energy;
-  in_energy.ReadFile( "prop.input" );
-
+  // ****************************************
+  // command line setup -- Controls
+  // ****************************************
   // setup input <<<<<<<<
   // calc_id
   InputControl ic;
   ic.SetupFromCommandLine(argc, argv);
-  // open config file and setup input directory
+  // setup properties <<<<<<<
+  PropControl prop;
+  prop.SetupFromCommandLine(argc, argv);
+  // setup output <<<<<<<
+  OutputControl out;
+  // exit if has been asked for help 
+  if ( ic.AskedForHelp() || out.AskedForHelp() )
+    exit(0);
+  // ****************************************
+  
+  // ****************************************
+  // config file setup 
+  // ****************************************
+  // ** open config file and setup input directory
   FileInput in;
   in.ReadFile( ic.ConfigFileName() );
   ic.SetupFromConfig(in);
-
-  // setup output <<<<<<<
-  OutputControl out;
+  // output directory
   out.SetupFromConfig(in);
- 
-  if ( ic.AskedForHelp() || out.AskedForHelp() )
-    exit(0);
-
   // setup parameters <<<
   ParameterList params;
   params.SetupFromConfig(in);
-
   // setup properties <<<
   SetupPropsList props;
   props.Initialize(in);
+  // ** energy bins parameters
+  FileInput in_energy;
+  in_energy.ReadFile( "prop.input" );
+  // ****************************************
+
+
 
 
   // --------------------------------
@@ -177,50 +200,52 @@ int main(int argc, char *argv[])
   // ********************************************
 
 
-
   // ********************************************
   // Pairs properties
   // ********************************************
-  // Setup Fields with particle properties
-  ParticlesPropFields<Field_t> PairsProps;
-  PairsProps.SetupFromConfigGroup(in_energy);
-  PairsProps.Initialize(ml.GetFieldLayout(), ml.GetMesh());
-  string pairs_prop_filename = "prop_"+ Pairs_namespace::PairsFileName + ".h5";
-  PairsProps.SetupOutputFile( pairs_prop_filename );
-
-  // setup Pairs --------------------------------
-  Pairs_t pairs(ml.GetParticlesLayout());
-  // name of current pairs HDF5 file
-  string pairs_filename = ic.InputDirName() + Pairs_namespace::PairsFileName + ".h5";
-  cout<<"Working with file \""<<pairs_filename<<"\"...\n";
-  // open Particles file
-  Save2HDF hdf_pairs;
-  hdf_pairs.open( pairs_filename.c_str() );
-
-  // n_timeshots, time, timesteps ------------
-  n_timeshots = tt.GetNumbeOfTimeshots(hdf_pairs);
-  time        = tt.GetTimeArray(hdf_pairs);
-  timesteps   = tt.GetTimestepArray(hdf_pairs);
- 
-  // ----------------------------------------
-  // iterate over timeshots
-  // ----------------------------------------
-  cout<<"Number of Timeshots: "<<n_timeshots<<"\n";
-  cout<<"Reading: ";
-  for ( int it=1; it<=n_timeshots; it++)
+  if ( prop.DoPairs() )
     {
-      cout<<it<<" "<<flush;
-      // read particles 
-      pairs.ReadFromHDFFile(it, hdf_pairs);
-      // calculate particle number density n(x)
-      PairsProps.Scatter_N_Pairs( pairs, time[it-1]);
-      // save dataset with n(x)
-      PairsProps.SaveToHDFFile(time[it-1], timesteps[it-1]);
-    }
-  cout<<"\n\n";
-  // ----------------------------------------
-  hdf_pairs.FlushHDFFile();
-  hdf_pairs.close();
+      // Setup Fields with particle properties
+      ParticlesPropFields<Field_t> PairsProps;
+      PairsProps.SetupFromConfigGroup(in_energy);
+      PairsProps.Initialize(ml.GetFieldLayout(), ml.GetMesh());
+      string pairs_prop_filename = "prop_"+ Pairs_namespace::PairsFileName + ".h5";
+      PairsProps.SetupOutputFile( pairs_prop_filename );
+
+      // setup Pairs --------------------------------
+      Pairs_t pairs(ml.GetParticlesLayout());
+      // name of current pairs HDF5 file
+      string pairs_filename = ic.InputDirName() + Pairs_namespace::PairsFileName + ".h5";
+      cout<<"Working with file \""<<pairs_filename<<"\"...\n";
+      // open Particles file
+      Save2HDF hdf_pairs;
+      hdf_pairs.open( pairs_filename.c_str() );
+
+      // n_timeshots, time, timesteps ------------
+      n_timeshots = tt.GetNumbeOfTimeshots(hdf_pairs);
+      time        = tt.GetTimeArray(hdf_pairs);
+      timesteps   = tt.GetTimestepArray(hdf_pairs);
+ 
+      // ----------------------------------------
+      // iterate over timeshots
+      // ----------------------------------------
+      cout<<"Number of Timeshots: "<<n_timeshots<<"\n";
+      cout<<"Reading: ";
+      for ( int it=1; it<=n_timeshots; it++)
+        {
+          cout<<it<<" "<<flush;
+          // read particles 
+          pairs.ReadFromHDFFile(it, hdf_pairs);
+          // calculate particle number density n(x)
+          PairsProps.Scatter_N_Pairs( pairs, time[it-1]);
+          // save dataset with n(x)
+          PairsProps.SaveToHDFFile(time[it-1], timesteps[it-1]);
+        }
+      cout<<"\n\n";
+      // ----------------------------------------
+      hdf_pairs.FlushHDFFile();
+      hdf_pairs.close();
+    } 
   // ********************************************
 
 
@@ -233,6 +258,36 @@ int main(int argc, char *argv[])
   return 0;
 }
 
+
+
+void PropControl::SetupFromCommandLine(int argc, char *argv[])
+{
+  // noPairs
+  struct arg_lit *help_arg =
+    arg_lit0("h", "help", NULL);
+  struct arg_lit *noPairs_arg =
+    arg_lit0(NULL, "noPairs", "do not calculate Pairs properties");
+  // end
+  struct arg_end *end_arg = arg_end(20);
+  // constrcut argtable
+  void *argtable[] = {help_arg,noPairs_arg,end_arg};
+  // parse command line arguments
+  int nerrors = arg_parse(argc,argv,argtable);
+
+  if( help_arg->count == 1 ) 
+    {
+      arg_print_glossary(stdout, argtable, "   %-25s %s\n");
+      std::cout<<std::flush;
+    }
+
+  if( noPairs_arg->count == 1 ) 
+    _DoPairs = false;
+  else
+    _DoPairs = true;
+
+  // clear memory
+  arg_freetable(argtable,sizeof(argtable)/sizeof(argtable[0]));
+}
 
 
 
