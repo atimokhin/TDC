@@ -3,7 +3,7 @@ Group "CALCULATION_START_CONTROL" {
    RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'SCLF__Arons_II_L1_nGJ2.5e4_nx2.5e3_dt8e-5__RhoGJlin2_A1_AAm0.2__R6C__dP5e-2_inj5_s1';
+   StartFromCalcId = 'Arons__j2.000_Pcf9e8_L1_nGJ2.5e4_nx2.5e3_dt8e-5__RhoGJexp2_A1_AAm0.1__R6C__dP5e-2_inj5_sU';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -11,7 +11,7 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'SCLF__Arons_IV_L1_nGJ2.5e4_nx2.5e3_dt8e-5__RhoGJlin2_A1_AAm0.2__R6C__dP5e-2_inj5_s1'; 
+   CalcId = 'Arons__j2.000_Pcf9e8_L1_nGJ2.5e4_nx2.5e3_dt8e-5__RhoGJexp2_A1_AAm0.1__R6C__dP5e-2_inj5_sU'; 
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
@@ -49,7 +49,7 @@ Group "DIMENSIONAL_CONSTANTS" {
          
    Group "PcfB0_ConstsInitializer" {
       ! Pcf -- characteristic Lorentz factor of electrons 
-      Pcf = 3e8;
+      Pcf = 9e8;
       
       ! Magnetic field at the pole  [10^12 G]
       B_12 = 1;
@@ -83,11 +83,11 @@ Group "TIME" {
 }
 
 Group "RHO_GJ" {
-   Type = 'RhoGJFunctor_SCLF_lin2';
+   Type = 'RhoGJFunctor_SCLF_exp2';
    ! RhoGJFunctor_SCLF_lin2 parameters
    A1 = 1;
-   A2 = -0.2;
-   X0 = 0.3*NParam[GEOMETRY](LENGTH);
+   A2 = -0.1;
+   X0 = 0.1*NParam[GEOMETRY](LENGTH);
 }
 
 Group "MAGNETIC_FIELD" {
@@ -105,7 +105,7 @@ Group "ELECTRODYNAMICS" {
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
          ! current density in units of |\rho_{GJ}^0|
-         J0 = -0.9;
+         J0 = -2.000;
       }
       Group "BoundaryConditions_Phi" {
          Type = 'SCLF_PHI';
@@ -158,7 +158,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 0;
+      NumberOfParticles_Initial = 57250;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -194,7 +194,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = 1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 0;
+      NumberOfParticles_Initial = 30000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters

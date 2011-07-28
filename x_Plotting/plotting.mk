@@ -1,5 +1,5 @@
 PYTHON_INCLUDE=\
-	-I $(PYTHON_TOP_DIR)/include/python2.6/ \
+	-I $(PYTHON_DISTR_INCLUDE_DIR) \
 	-I $(PYTHON_MODULES_DIR)/numpy/core/include/numpy/
 
 cpp_plotting_files = $(wildcard x_Plotting/*.cpp)

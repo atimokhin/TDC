@@ -8,6 +8,7 @@
 // ******************************************************
 #include "rho_gj_const.h"
 #include "rho_gj_sclf_lin2.h"
+#include "rho_gj_sclf_exp2.h"
 
 
 /**
@@ -20,7 +21,8 @@
  */
 #define MACRO__MAKE_P_RHOGJ_FUNCTOR_FOR_ALL	\
   MACRO__MAKE_P_RHOGJ_FUNCTOR(RhoGJFunctor_Const); \
-  MACRO__MAKE_P_RHOGJ_FUNCTOR(RhoGJFunctor_SCLF_lin2);
+  MACRO__MAKE_P_RHOGJ_FUNCTOR(RhoGJFunctor_SCLF_lin2) \
+  MACRO__MAKE_P_RHOGJ_FUNCTOR(RhoGJFunctor_SCLF_exp2);
 
 // ******************************************************
 

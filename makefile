@@ -18,7 +18,7 @@ CXXFLAGS= -O3 -fPIC -funroll-loops -march=$(ARCH) -D POOMA_BOUNDS_CHECK=0 -D NOC
 # **************************************
 HOST := $(shell hostname)
 
-ifeq ($(HOST),tosha)
+ifeq ($(HOST),tosh)
 ON_LAPTOP=true
 else ifeq ($(HOST),mondatta)
 ON_DESKTOP_UCB=true
@@ -65,7 +65,7 @@ MYHOMEDIR=/home/atim
 INCLUDE_RANDOM_LIB=-I LIBS -DDEFAULT_GENERATOR=SRandomGenerator32 
 INCLUDE_ARGTABLE2_FLAG=
 LIB_ARGTABLE2_FLAG= -largtable2
-ARCH=pentium-m 
+ARCH=core2
 
 POOMA_VERSION=freepooma_serial
 ATBASE_VERSION=
