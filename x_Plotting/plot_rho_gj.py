@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import matplotlib.pyplot as plt
+import numpy             as np
 
 # PDG Boiler plate ==========================================
 # append module search path for ATbase
@@ -36,7 +37,12 @@ ax = fig.add_subplot(111)
 ax.plot(pd.x,pd.y)
 ax.set_xlim(pd.xlim)
 ## ax.set_ylim([-2.1,2.1])
-ax.set_ylim([-1.5,0.1])
+ax.set_ylim([-2,0.1])
+
+ax.xaxis.set_ticks(np.arange(0,1,0.1), minor=True )
+ax.yaxis.set_ticks(np.arange(-2,0.1,0.1), minor=True )
+# draw grid lines
+ax.grid(b=True, which='both')
 
 ax.set_xlabel('$x$',fontsize='x-large')
 ax.set_ylabel(r'$\rho_\mathrm{GJ}$',fontsize='x-large')
