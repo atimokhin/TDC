@@ -1,9 +1,9 @@
 Group "CALCULATION_START_CONTROL" {
    ! Start new calculation or restart a previous one <-----------------
-   RestartCalculations ? Yes;
+   RestartCalculations ? No;
 
    ! Start from CalcID
-   StartFromCalcId = 'Arons__j2.000_Pcf9e8_L1_nGJ2.5e4_nx2.5e3_dt8e-5__RhoGJlin2_A1_AAm0.7_X1__R6C__dP5e-2_inj11_sU';
+   StartFromCalcId = 'Arons__j1.059_Pcf9e8_L1_nGJ1e5_nx5e3_dt4e-5__RhoGJlin2_A1_AAm0.7_X1__R6C__dP5e-2_inj12_sU';
    ! Start from Step ( -1 for start from the last step )
    StartFromStep   = -1;
 }
@@ -11,15 +11,15 @@ Group "CALCULATION_START_CONTROL" {
 
 Group "OUTPUT_CONTROL" {
    ! Identificator of calculation <------------------------------
-   CalcId = 'Arons__j2.000_Pcf9e8_L1_nGJ2.5e4_nx2.5e3_dt8e-5__RhoGJlin2_A1_AAm0.7_X1__R6C__dP5e-2_inj11_sU__1'; 
+   CalcId = 'Arons__j1.059_Pcf9e8_L1_nGJ1e5_nx5e3_dt4e-5__RhoGJlin2_A1_AAm0.7_X1__R6C__dP5e-2_inj12_sU'; 
 
    ! -> zero or negative output intervals means no output <--
    ! Number Of Timesteps after which timelabel is printed to cout
-   TimeStepStdoutPrintInterval  = 100;
+   TimeStepStdoutPrintInterval  = 200;
    ! Number Of Timesteps after which timelabel is printed to logfile
-   TimeStepLogFilePrintInterval = 100;
+   TimeStepLogFilePrintInterval = 200;
    ! Number Of Timesteps after which results are saved into HDF files
-   TimeStepHDFFileSaveInterval  = 150;
+   TimeStepHDFFileSaveInterval  = 300;
 }
 
 Group "CODE_CONTROL" {
@@ -72,14 +72,14 @@ Group "GEOMETRY" {
 
 Group "GRID" {
    ! Number of Cells
-   NumberOfCells = 2500;
+   NumberOfCells = 5000;
 }
 
 Group "TIME" {
    !  Timestep
-   dT =  8e-5;
+   dT =  4e-5;
    !  Number of timesteps
-   NumberOfTimeSteps = 100000;   
+   NumberOfTimeSteps = 300000;   
 }
 
 Group "RHO_GJ" {
@@ -105,7 +105,7 @@ Group "ELECTRODYNAMICS" {
       Group "Electrostatic_1D_J" {
          Type = 'Constant';
          ! current density in units of |\rho_{GJ}^0|
-         J0 = -2.000;
+         J0 = -1.059;
       }
       Group "BoundaryConditions_Phi" {
          Type = 'SCLF_PHI';
@@ -123,7 +123,7 @@ Group "PARTICLES" {
 
    ! these parameters are read at RESTART <<<<<<<<
    ! Number of particles to provide \rho_GJ
-   NGJ = 25000;
+   NGJ = 100000;
       
    NumberOfChargedParticleTypes = 3;
    ChargedParticles_#0 = 'Electrons';
@@ -133,14 +133,14 @@ Group "PARTICLES" {
    Group "BoundaryConditions" {  
       Type = 'SCLF_2';
       ! Electron parameters ******
-      E__N_inj  = 11;
+      E__N_inj  = 12;
       E__P_inj  = 0;
       E__dP_inj = 5e-2;
       ! must be < 0.5  <----------
       E__Delta_inj = 0.499;
       ! **************************
       ! Proton parameters ********
-      I__N_inj  = 11;
+      I__N_inj  = 12;
       I__P_inj  = 0;
       I__dP_inj = 0.023*5e-2;
       ! must be < 0.5  <<---------
@@ -158,7 +158,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = -1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 53750;
+      NumberOfParticles_Initial = 215000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
@@ -194,7 +194,7 @@ Group "PARTICLES" {
       Mass   = 1;
       Charge = 1;
       ! Initial number of particles
-      NumberOfParticles_Initial = 20000;
+      NumberOfParticles_Initial = 80000;
       ! these parameters are read at RESTART<<<<<<
       Group "LPT" {
          ! Required parameters
