@@ -90,7 +90,7 @@ LIB_POOMA_FLAGS=-L$(POOMADIR)/lib/ -l pooma
 #LIB_HDF5_FLAGS=-D H5_USE_16_API $(HDFHOMEDIR)/lib/libhdf5_hl.a $(HDFHOMEDIR)/lib/libhdf5.a -lz -lm
 
 # ATbase *******************************
-ATBASE_DIR=$(MYHOMEDIR)/WORK/C++/ATbase2$(ATBASE_VERSION)
+ATBASE_DIR=$(MYHOMEDIR)/00__SCIENCE/WORK/C++/ATbase2$(ATBASE_VERSION)
 ATBASE=$(ATBASE_DIR)/lib/
 ATBASE_INCLUDE= -I$(ATBASE)
 ATBASE_LIB= -L$(ATBASE) -lATbase -lstdc++

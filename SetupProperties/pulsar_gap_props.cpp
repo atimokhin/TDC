@@ -12,6 +12,7 @@ double PulsarGapProps::_Vvac_L = 0;
 double PulsarGapProps::_Pcf_L = 0;
 double PulsarGapProps::_n_GJ = 0;
 double PulsarGapProps::_P = 0;
+double PulsarGapProps::_Rpc = 0;
 double PulsarGapProps::_B_12 = 0;
 
 
@@ -35,6 +36,8 @@ void PulsarGapProps::Initialize(FileInput &in)
   _n_GJ = nc.Rho0()/4.8032e-10;
 
   _P = 33.3667*mf.B_12()/nc.Rho0();
+
+  _Rpc = nc.X0();
 
   _B_12 = mf.B_12();
 
@@ -89,6 +92,11 @@ ostream& PulsarGapProps::Print(ostream& s) const
   s<<separator;
   s<<" Pulsar Gap parameters:\n";
   s<<separator;
+
+  s<<"Pulsar:\n";
+  s<<" Period = "<<setw(13)<<_P<<" sec\n";
+  s<<"    Rpc = "<<setw(13)<<_Rpc<<" cm \n\n";
+
   s<<"Over L:\n";
   s<<" Vacuum potential drop V_vac = "<<setw(13)<<this->V_vac_L_Volts()<<" Volts\n";
   s<<"                         Pcf = "<<setw(13)<<_Pcf_L<<" (e*V_vac/mc^2) \n\n";

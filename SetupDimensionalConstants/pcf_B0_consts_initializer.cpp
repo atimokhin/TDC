@@ -24,7 +24,7 @@ void PcfB0_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
 
 
   // Setup normalization constants -----------
-  // pulsar period - derive from magnetic field stegth and voltage
+  // pulsar period - derive from magnetic field strength and voltage
   double Period = sqrt( 1.29e7 * pow(_RNS_6, 3) * _B_12/_Pcf );
 
   _X0 = 1.448e4 * pow(_RNS_6, 1.5)/sqrt(Period);

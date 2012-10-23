@@ -52,6 +52,7 @@ protected:
 
   static double _n_GJ;     //!< Goldreich-Julian particle number density
   static double _P;        //!< Pulsar period
+  static double _Rpc;      //!< Pulsar polar cap width
   static double _B_12;     //!< Pulsar magnatic field (from electrodynamics)
 };
 
