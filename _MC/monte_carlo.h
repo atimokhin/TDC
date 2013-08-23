@@ -44,40 +44,40 @@
  * config file example
  \verbatim
 
-Group "MONTE_CARLO" {
+ Group "MONTE_CARLO" {
 
-   ! Dimension of the internal Photon array
-   MaxNumberOfPhotons = 150;
+ ! Dimension of the internal Photon array
+ MaxNumberOfPhotons = 150;
 
-   ! -------------------------------------
-   ! Pair creation smoothing   (if not set - false)
-   ! smooth pair injection over several cells?
-   DoPairInjectionSmoothing ? Yes;
-   NSmoothCells = 75;
-   ! -------------------------------------
+ ! -------------------------------------
+ ! Pair creation smoothing   (if not set - false)
+ ! smooth pair injection over several cells?
+ DoPairInjectionSmoothing ? Yes;
+ NSmoothCells = 75;
+ ! -------------------------------------
 
-   ! -------------------------------------
-   ! >>>> test run parameters
-   ! -------------------------------------
-   !* On the spot pair creation (if not set - false)
-   DoOnTheSpotPairCreation  ? No;
-   ! -------------------------------------
-   !* Reduce rate of pair injection (if not set - false)
-   DoReducePairInjectionRate ? No;
-   PairInjectionRate_Factor = 0.25;
-   ! -------------------------------------
-   !* using for tests: fix the seed of RNG
-   SetSeedForRandomNumberGenerator ? No;
-   ! the seed for RNG
-   Seed = 1234;
-   ! -------------------------------------
+ ! -------------------------------------
+ ! >>>> test run parameters
+ ! -------------------------------------
+ !* On the spot pair creation (if not set - false)
+ DoOnTheSpotPairCreation  ? No;
+ ! -------------------------------------
+ !* Reduce rate of pair injection (if not set - false)
+ DoReducePairInjectionRate ? No;
+ PairInjectionRate_Factor = 0.25;
+ ! -------------------------------------
+ !* using for tests: fix the seed of RNG
+ SetSeedForRandomNumberGenerator ? No;
+ ! the seed for RNG
+ Seed = 1234;
+ ! -------------------------------------
     
-     ...
-     ...
-} 
+ ...
+ ...
+ } 
 
  \endverbatim
- */
+*/
 class MonteCarlo
 {
 public:
@@ -87,7 +87,7 @@ public:
   //! create virtual pairs - one of two functions called in Cascade::RunSimulations()
   template<class Particles, class Pairs>
   bool Particles2Pairs( ParticleList<Particles>& plist, Pairs& pairs, 
-			double t, double dt, ParticleID& id );
+                        double t, double dt, ParticleID& id );
 
   //! inject particles from virtual pairs - one of two functions called in Cascade::RunSimulations()
   template<class Particles, class Pairs>
@@ -192,22 +192,22 @@ bool MonteCarlo::Particles2Pairs(ParticleList<Particles>& pl,
       // iterate over individual particles in the local patch
       int n = p.size();
       for ( int i=0; i<n; i++)
-	{
+        {
           // particle momentum before emission
           double p_par_init = p.P_par(i);
-	  // If this particle emits photons then:
-	  if ( SingleParticleEmission(dt, i, p) )
-	    {
-	      // set common photons parameters
-	      _Ph.SetInheritedParams( p.X(i)(0),t, p_par_init, p.IDTS(i),p.ID(i) );
+          // If this particle emits photons then:
+          if ( SingleParticleEmission(dt, i, p) )
+            {
+              // set common photons parameters
+              _Ph.SetInheritedParams( p.X(i)(0),t, p_par_init, p.IDTS(i),p.ID(i) );
 	      
-	      // Create pairs 
-	      pairs_created = CreatePairs(id) || pairs_created;
+              // Create pairs 
+              pairs_created = CreatePairs(id) || pairs_created;
 
-	      // clean all photons container
-	      _Ph.Clear();
-	    }
-	}
+              // clean all photons container
+              _Ph.Clear();
+            }
+        }
     }
 
   if ( pairs_created ) 
@@ -289,8 +289,8 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
   for ( int i=0; i<n; i++)
     {
       if ( pairs.T_cr(i) < t_new )
-	{
-	  if ( !particles_injected ) particles_injected = true;
+        {
+          if ( !particles_injected ) particles_injected = true;
 
           // if asked reduce number of injected particles
           // by setting flag 'do_inject_particles' to 'true' with probability
@@ -315,9 +315,9 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
                                  pairs.Origin(i), pairs.IDTS(i), pairs.ID(i) );
             }
 
-	  // store destroy request for pair in any case
-	  pairs_global.deferredDestroy (Loc<1>(i),i_patch);
-	}
+          // store destroy request for pair in any case
+          pairs_global.deferredDestroy (Loc<1>(i),i_patch);
+        }
     }
 
   if ( particles_injected )

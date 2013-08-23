@@ -58,9 +58,9 @@ class Cascade
   // Mesh type and Point type **************
   #define DIM 1
   typedef MeshTraits<DIM,
-		     double,
-		     UniformRectilinearTag,CartesianTag,
-		     DIM>::Mesh_t  Mesh_t; 
+                     double,
+                     UniformRectilinearTag,CartesianTag,
+                     DIM>::Mesh_t  Mesh_t; 
   typedef Mesh_t::PointType_t                         PointType_t; 
 
   // Field type and Field layout ***********

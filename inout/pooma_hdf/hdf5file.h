@@ -83,11 +83,11 @@ public:
 #if 0
   template <int Dim, class MeshTag, class T, class EngineTag /*, class T2 = T */>
   inline bool writeField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			 const GuardLayers<Dim>& g = GuardLayers<Dim>(0))
+                         const GuardLayers<Dim>& g = GuardLayers<Dim>(0))
 #else
-  template <class MeshTag, class T, class EngineTag /*, class T2 = T */>
-  inline bool writeField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			 const GuardLayers<MeshTag::dimensions>& g = GuardLayers<MeshTag::dimensions>(0))
+    template <class MeshTag, class T, class EngineTag /*, class T2 = T */>
+    inline bool writeField(const char *id, const Field<MeshTag, T, EngineTag>& f,
+                           const GuardLayers<MeshTag::dimensions>& g = GuardLayers<MeshTag::dimensions>(0))
 #endif
   {
     return writeFieldOther<T, MeshTag, T, EngineTag>(id, f, g);
@@ -97,17 +97,17 @@ public:
 #if 0
   template <int Dim, class T2, class MeshTag, class T, class EngineTag>
   bool writeFieldOther(const char *id, const Field<MeshTag, T, EngineTag>& f,
-		       const GuardLayers<Dim>& g = GuardLayers<Dim>(0));
+                       const GuardLayers<Dim>& g = GuardLayers<Dim>(0));
 #else
   template <class T2, class MeshTag, class T, class EngineTag>
   bool writeFieldOther(const char *id, const Field<MeshTag, T, EngineTag>& f,
-		       const GuardLayers<MeshTag::dimensions>& g = GuardLayers<MeshTag::dimensions>(0));
+                       const GuardLayers<MeshTag::dimensions>& g = GuardLayers<MeshTag::dimensions>(0));
 #endif
 
   /// read a field from the current location
   template <class MeshTag, class T, class EngineTag, int Dim>
   bool readField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-		 GuardLayers<Dim>& g);
+                 GuardLayers<Dim>& g);
 
   //@}
 
@@ -145,9 +145,9 @@ public:
   template <class T,  class EngineTag>
   bool writeDynamicArrayOther(const char *id, const DynamicArray<T, EngineTag>& a);
 
-//   /// read an array from the current location
-//   template <int Dim, class T, class EngineTag>
-//   bool readArray(const char *id, const DynamicArray<T, EngineTag>& f);
+  //   /// read an array from the current location
+  //   template <int Dim, class T, class EngineTag>
+  //   bool readArray(const char *id, const DynamicArray<T, EngineTag>& f);
   // **************************************************************************
   // My addition for Dynamic Array ********************************************
 
@@ -196,24 +196,24 @@ protected:
   /// engine view - it doesn't affect the written domain.
   template <int Dim, class T, class EngineTag, class T2>
   bool writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
-		   const GuardLayers<Dim>& g);
+                   const GuardLayers<Dim>& g);
 
   /// reads a dataset into an engine,
   /// the guard layers is only a hint what is contained in the actual
   /// engine view - it doesn't affect the read domain.
   template <int Dim, class T, class EngineTag>
   bool readEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
-		  const GuardLayers<Dim>& g);
+                  const GuardLayers<Dim>& g);
 
   /// stores one subfield with metadata into a new dataset
   template <class MeshTag, class T, class EngineTag, class T2, int Dim>
   bool writeSubField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-		     const GuardLayers<Dim>& g);
+                     const GuardLayers<Dim>& g);
 
   /// reads from a dataset into a subfield and restore metadata
   template <class MeshTag, class T, class EngineTag, int Dim>
   bool readSubField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-		    GuardLayers<Dim>& g);
+                    GuardLayers<Dim>& g);
 
   /// factored out subroutine to read one dimension of the spacings arrays
   bool readOneSpacing(const char *id, Array<1, double, Brick> &s);

@@ -43,13 +43,13 @@ bool HDF5File::getAttribute(const char *id, T& value)
     if (io()) {
       hid_t attr_id = H5Aopen_name(loc(), id);
       if (!(attr_id < 0)) {
-	HDF5Object<T> o(val, attr_id);
-	hid_t type_id = o.type();
-	res = !(H5Aread(attr_id, type_id, o.write()) < 0);
-	if (!res && debug())
-	  std::cerr << Pooma::context() << ": cannot read attribute " << id << std::endl;
-	H5Tclose(type_id);
-	H5Aclose(attr_id);
+        HDF5Object<T> o(val, attr_id);
+        hid_t type_id = o.type();
+        res = !(H5Aread(attr_id, type_id, o.write()) < 0);
+        if (!res && debug())
+          std::cerr << Pooma::context() << ": cannot read attribute " << id << std::endl;
+        H5Tclose(type_id);
+        H5Aclose(attr_id);
       }
     }
     RemoteProxy<T> broadcast(val, ioContext());
@@ -63,7 +63,7 @@ bool HDF5File::getAttribute(const char *id, T& value)
       hid_t type_id = o.type();
       res = !(H5Aread(attr_id, type_id, o.write()) < 0);
       if (!res && debug())
-	std::cerr << Pooma::context() << ": cannot read attribute " << id << std::endl;
+        std::cerr << Pooma::context() << ": cannot read attribute " << id << std::endl;
       H5Tclose(type_id);
       H5Aclose(attr_id);
     }
@@ -160,7 +160,7 @@ struct ReadWaitingIterate : public Pooma::Iterate_t {
 
 template <int Dim, class T, class EngineTag, class T2>
 bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
-			   const GuardLayers<Dim>& g)
+                           const GuardLayers<Dim>& g)
 {
   typedef Engine<Dim, T, EngineTag> Engine_t;
   hid_t filespace_id = -1, dataset_id = -1;
@@ -172,18 +172,18 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
       filespace_id = H5Dget_space(dataset_id);
       int ndims = H5Sget_simple_extent_ndims(filespace_id);
       if (ndims == Dim) {
-	hsize_t dims[ndims];
-	H5Sget_simple_extent_dims(filespace_id, dims, NULL);
-	for (int i=0; i<Dim; ++i)
-	  if (dims[i] != e.domain()[i].size())
-	    res = false;
+        hsize_t dims[ndims];
+        H5Sget_simple_extent_dims(filespace_id, dims, NULL);
+        for (int i=0; i<Dim; ++i)
+          if (dims[i] != e.domain()[i].size())
+            res = false;
       } else
-	res = false;
+        res = false;
       if (res == false) {
-	if (debug())
-	  std::cerr << "dataspace dimensions do not match." << std::endl;
-	H5Sclose(filespace_id);
-	H5Dclose(dataset_id);
+        if (debug())
+          std::cerr << "dataspace dimensions do not match." << std::endl;
+        H5Sclose(filespace_id);
+        H5Dclose(dataset_id);
       }
     } else {
       hid_t filetype_id = HDF5TypeTraits<T2>::type();
@@ -191,8 +191,8 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
       dataset_id = H5Dcreate(loc(), id, filetype_id, filespace_id, H5P_DEFAULT);
       H5Tclose(filetype_id);
       if (dataset_id < 0) {
-	H5Sclose(filespace_id);
-	res = false;
+        H5Sclose(filespace_id);
+        res = false;
       }
     }
   }
@@ -204,15 +204,15 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
 
     // iterate over engines layout
     typedef typename Engine_t::Layout_t Layout_t;
-//     for (typename Layout_t::const_iterator subdomi = e.layout().beginGlobal();
-// 	 subdomi != e.layout().endGlobal();
-// 	 ++subdomi) {
+    //     for (typename Layout_t::const_iterator subdomi = e.layout().beginGlobal();
+    // 	 subdomi != e.layout().endGlobal();
+    // 	 ++subdomi) {
     //###################### my change
     Layout_t e_layout = e.layout();
     for (typename Layout_t::const_iterator subdomi = e_layout.beginGlobal();
-	 subdomi != e_layout.endGlobal();
-	 ++subdomi) {
-    //###################### my change
+         subdomi != e_layout.endGlobal();
+         ++subdomi) {
+      //###################### my change
 
       // use part of subdomain inside engines domain (view)
       Interval<Dim> subdom = intersect((*subdomi).domain(), e.domain());
@@ -232,17 +232,17 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
       Pooma::blockAndEvaluate();
 
       if (io()) {
-	// write into hyperslab of file - remeber to move subdom to its zero-based total domain
-	if (H5Sselect_hyperslab(filespace_id, H5S_SELECT_SET, subdom - e.domain().mins()) >= 0) {
-	  HDF5Object<typename LArray_t::Engine_t::LocalEngine_t> lo(a.engine().localEngine());
-	  hid_t memtype_id = lo.type();
-	  hid_t memspace_id = lo.dataspace();
-	  if (H5Dwrite(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.read()) < 0)
-	    res = false;
-	  H5Sclose(memspace_id);
-	  H5Tclose(memtype_id);
-	} else
-	  res = false;
+        // write into hyperslab of file - remeber to move subdom to its zero-based total domain
+        if (H5Sselect_hyperslab(filespace_id, H5S_SELECT_SET, subdom - e.domain().mins()) >= 0) {
+          HDF5Object<typename LArray_t::Engine_t::LocalEngine_t> lo(a.engine().localEngine());
+          hid_t memtype_id = lo.type();
+          hid_t memspace_id = lo.dataspace();
+          if (H5Dwrite(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.read()) < 0)
+            res = false;
+          H5Sclose(memspace_id);
+          H5Tclose(memtype_id);
+        } else
+          res = false;
       }
     }
 
@@ -272,15 +272,15 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
 
     // parallel I/O version, iterate over engines local patches of layout
     typedef typename Engine_t::Layout_t Layout_t;
-//     for (typename Layout_t::const_iterator subdomi = e.layout().beginLocal();
-// 	 subdomi != e.layout().endLocal();
-// 	 ++subdomi) {
+    //     for (typename Layout_t::const_iterator subdomi = e.layout().beginLocal();
+    // 	 subdomi != e.layout().endLocal();
+    // 	 ++subdomi) {
     //###################### my change
     Layout_t e_layout = e.layout();
     for (typename Layout_t::const_iterator subdomi = e_layout.beginLocal();
-	 subdomi != e_layout.endLocal();
-	 ++subdomi) {
-    //###################### my change
+         subdomi != e_layout.endLocal();
+         ++subdomi) {
+      //###################### my change
       // use part of subdomain inside engines domain (view)
       Interval<Dim> subdom = intersect((*subdomi).domain(), e.domain());
 
@@ -294,15 +294,15 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
 
       // write into hyperslab of file - remeber to move subdom to its zero-based total domain
       if (H5Sselect_hyperslab(filespace_id, H5S_SELECT_SET, subdom - e.domain().mins()) >= 0) {
-	HDF5Object<PEngineV_t> lo(pev);
-	hid_t memtype_id = lo.type();
-	hid_t memspace_id = lo.dataspace();
-	if (H5Dwrite(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.read()) < 0)
-	  res = false;
-	H5Sclose(memspace_id);
-	H5Tclose(memtype_id);
+        HDF5Object<PEngineV_t> lo(pev);
+        hid_t memtype_id = lo.type();
+        hid_t memspace_id = lo.dataspace();
+        if (H5Dwrite(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.read()) < 0)
+          res = false;
+        H5Sclose(memspace_id);
+        H5Tclose(memtype_id);
       } else
-	res = false;
+        res = false;
     }
 
     H5Sclose(filespace_id);
@@ -323,7 +323,7 @@ bool HDF5File::writeEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
 
 template <int Dim, class T, class EngineTag>
 bool HDF5File::readEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
-			  const GuardLayers<Dim>& gr)
+                          const GuardLayers<Dim>& gr)
 {
   typedef Engine<Dim, T, EngineTag> Engine_t;
   hid_t filespace_id = -1, dataset_id = -1;
@@ -351,15 +351,15 @@ bool HDF5File::readEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
 
     // iterate over engines layout
     typedef typename Engine_t::Layout_t Layout_t;
-//     for (typename Layout_t::const_iterator subdomi = e.layout().beginGlobal();
-// 	 res && subdomi != e.layout().endGlobal();
-// 	 ++subdomi) {
+    //     for (typename Layout_t::const_iterator subdomi = e.layout().beginGlobal();
+    // 	 res && subdomi != e.layout().endGlobal();
+    // 	 ++subdomi) {
     //###################### my change
     Layout_t e_layout = e.layout();
     for (typename Layout_t::const_iterator subdomi = e_layout.beginGlobal();
-	 res && subdomi != e_layout.endGlobal();
-	 ++subdomi) {
-    //###################### my change
+         res && subdomi != e_layout.endGlobal();
+         ++subdomi) {
+      //###################### my change
       // use part of subdomain inside engines domain (view)
       Interval<Dim> subdom = intersect((*subdomi).domain(), e.domain());
 
@@ -369,23 +369,23 @@ bool HDF5File::readEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
       a.engine() = Engine<Dim, T, Remote<Brick> >(ioContext(), subdom);
 
       if (io()) {
-	// read from hyperslab of file - remeber to move subdom to its zero-based total domain,
-	// but honour differences in stored/to-be-read GuardLayers
-	// this way we can "fix" the hyperslab to be read in the case out reading
-	// view is different from the writing view
-	Interval<Dim> hyperdom = subdom - e.domain().mins();
-	for (int i=0; i<Dim; ++i)
-	  hyperdom[i] += g.lower(i) - gr.lower(i);
-	if (H5Sselect_hyperslab(filespace_id, H5S_SELECT_SET, subdom - e.domain().mins()) >= 0) {
-	  HDF5Object<Engine<Dim, T, Brick> > lo(a.engine().localEngine());
-	  hid_t memtype_id = lo.type();
-	  hid_t memspace_id = lo.dataspace();
-	  if (H5Dread(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.write()) < 0)
-	    res = false;
-	  H5Sclose(memspace_id);
-	  H5Tclose(memtype_id);
-	} else
-	  res = false;
+        // read from hyperslab of file - remeber to move subdom to its zero-based total domain,
+        // but honour differences in stored/to-be-read GuardLayers
+        // this way we can "fix" the hyperslab to be read in the case out reading
+        // view is different from the writing view
+        Interval<Dim> hyperdom = subdom - e.domain().mins();
+        for (int i=0; i<Dim; ++i)
+          hyperdom[i] += g.lower(i) - gr.lower(i);
+        if (H5Sselect_hyperslab(filespace_id, H5S_SELECT_SET, subdom - e.domain().mins()) >= 0) {
+          HDF5Object<Engine<Dim, T, Brick> > lo(a.engine().localEngine());
+          hid_t memtype_id = lo.type();
+          hid_t memspace_id = lo.dataspace();
+          if (H5Dread(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.write()) < 0)
+            res = false;
+          H5Sclose(memspace_id);
+          H5Tclose(memtype_id);
+        } else
+          res = false;
       }
 
       // copy data read into array view of engine
@@ -431,15 +431,15 @@ bool HDF5File::readEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
 
     // parallel I/O version, iterate over engines local patches of layout
     typedef typename Engine_t::Layout_t Layout_t;
-//     for (typename Layout_t::const_iterator subdomi = e.layout().beginLocal();
-// 	 res && subdomi != e.layout().endLocal();
-// 	 ++subdomi) {
+    //     for (typename Layout_t::const_iterator subdomi = e.layout().beginLocal();
+    // 	 res && subdomi != e.layout().endLocal();
+    // 	 ++subdomi) {
     //###################### my change
     Layout_t e_layout = e.layout();
     for (typename Layout_t::const_iterator subdomi = e_layout.beginLocal();
-	 res && subdomi != e_layout.endLocal();
-	 ++subdomi) {
-    //###################### my change
+         res && subdomi != e_layout.endLocal();
+         ++subdomi) {
+      //###################### my change
       // use part of subdomain inside engines domain (view)
       Interval<Dim> subdom = intersect((*subdomi).domain(), e.domain());
 
@@ -455,20 +455,20 @@ bool HDF5File::readEngine(const char *id, const Engine<Dim, T, EngineTag>& e,
       // view is different from the writing view
       Interval<Dim> hyperdom = subdom - e.domain().mins();
       for (int i=0; i<Dim; ++i)
-	hyperdom[i] += g.lower(i) - gr.lower(i);
+        hyperdom[i] += g.lower(i) - gr.lower(i);
       if (H5Sselect_hyperslab(filespace_id, H5S_SELECT_SET, subdom - e.domain().mins()) >= 0) {
-	HDF5Object<PEngineV_t> lo(pev);
-	//HDF5Object<Engine<Dim, T, Brick> > lo(a.engine());
-	hid_t memtype_id = lo.type();
-	hid_t memspace_id = lo.dataspace();
-	if (H5Dread(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.write()) < 0)
-	  res = false;
-	H5Sclose(memspace_id);
-	H5Tclose(memtype_id);
+        HDF5Object<PEngineV_t> lo(pev);
+        //HDF5Object<Engine<Dim, T, Brick> > lo(a.engine());
+        hid_t memtype_id = lo.type();
+        hid_t memspace_id = lo.dataspace();
+        if (H5Dread(dataset_id, memtype_id, memspace_id, filespace_id, H5P_DEFAULT, lo.write()) < 0)
+          res = false;
+        H5Sclose(memspace_id);
+        H5Tclose(memtype_id);
       } else {
-	if (debug())
-	  std::cout << Pooma::context() << ": Error selecting hyperslab" << std::endl;
-	res = false;
+        if (debug())
+          std::cout << Pooma::context() << ": Error selecting hyperslab" << std::endl;
+        res = false;
       }
     }
 
@@ -537,10 +537,10 @@ bool HDF5File::readSpacings(Array<1, double, Brick> s[Dim])
 
 template <class MeshTag, class T, class EngineTag, class T2, int Dim>
 bool HDF5File::writeSubField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			     const GuardLayers<Dim>& g)
+                             const GuardLayers<Dim>& g)
 {
   PInsist(f.numMaterials() == 1 && f.centeringSize() == 1,
-	  "called with more than one subfield");
+          "called with more than one subfield");
 
   // trigger necessary relations
   forEach(f, PerformUpdateTag(), NullCombine());
@@ -558,9 +558,9 @@ bool HDF5File::writeSubField(const char *id, const Field<MeshTag, T, EngineTag>&
 
 
   // store origin/spacings/domain which may differ from global ones
-//   setAttribute("origin", positions(f).read(grow(f.physicalDomain(), g).firsts()));
-//   writeSpacings<Dim>(f.mesh().spacings(), grow(f.physicalDomain(), g));
-//   setAttribute("domain", grow(f.physicalDomain(), g).sizes());
+  //   setAttribute("origin", positions(f).read(grow(f.physicalDomain(), g).firsts()));
+  //   writeSpacings<Dim>(f.mesh().spacings(), grow(f.physicalDomain(), g));
+  //   setAttribute("domain", grow(f.physicalDomain(), g).sizes());
 
   // store BCs
   writeBCs(f);
@@ -572,10 +572,10 @@ bool HDF5File::writeSubField(const char *id, const Field<MeshTag, T, EngineTag>&
 
 template <class MeshTag, class T, class EngineTag, int Dim>
 bool HDF5File::readSubField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			    GuardLayers<Dim>& g)
+                            GuardLayers<Dim>& g)
 {
   PInsist(f.numMaterials() == 1 && f.centeringSize() == 1,
-	  "called with more than one subfield");
+          "called with more than one subfield");
 
   // try to get GuardLayer information
   g = GuardLayers<Dim>(0);
@@ -605,11 +605,11 @@ bool HDF5File::readSubField(const char *id, const Field<MeshTag, T, EngineTag>& 
 #if 0
 template <int Dim, class T2, class MeshTag, class T, class EngineTag>
 bool HDF5File::writeFieldOther(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			       const GuardLayers<Dim>& g)
+                               const GuardLayers<Dim>& g)
 #else
-template <class T2, class MeshTag, class T, class EngineTag>
-bool HDF5File::writeFieldOther(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			       const GuardLayers<MeshTag::dimensions>& g)
+  template <class T2, class MeshTag, class T, class EngineTag>
+  bool HDF5File::writeFieldOther(const char *id, const Field<MeshTag, T, EngineTag>& f,
+                                 const GuardLayers<MeshTag::dimensions>& g)
 #endif
 {
   if (f.numMaterials() == 1 && f.centeringSize() == 1)
@@ -636,7 +636,7 @@ bool HDF5File::writeFieldOther(const char *id, const Field<MeshTag, T, EngineTag
 
 template <class MeshTag, class T, class EngineTag, int Dim>
 bool HDF5File::readField(const char *id, const Field<MeshTag, T, EngineTag>& f,
-			 GuardLayers<Dim>& g)
+                         GuardLayers<Dim>& g)
 {
   bool res = true;
 
@@ -773,7 +773,7 @@ bool HDF5File::writeBCs(const Field<MeshTag, T, EngineTag>& f)
 
     } else if (dynamic_cast<ConstantFaceBC_t>(item)) {
       const ConstantFaceBC<Dim, T>& bc
-	= static_cast<ConstantFaceBC_t>(item)->functor();
+        = static_cast<ConstantFaceBC_t>(item)->functor();
       bctype = "constant";
       face = bc.face();
       T value = bc.constant();

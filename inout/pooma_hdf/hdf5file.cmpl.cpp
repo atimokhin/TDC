@@ -78,9 +78,9 @@ bool HDF5File::create(const char *name, bool excl, int io_context)
       return RemoteProxy<bool>(res, ioContext()).value();
 
     file_id_m = H5Fcreate(name,
-			  H5F_ACC_TRUNC
-			  |(excl ? H5F_ACC_EXCL : 0),
-			  H5P_DEFAULT, H5P_DEFAULT);
+                          H5F_ACC_TRUNC
+                          |(excl ? H5F_ACC_EXCL : 0),
+                          H5P_DEFAULT, H5P_DEFAULT);
     res = !(file_id_m < 0);
 
     if (res)
@@ -98,9 +98,9 @@ bool HDF5File::create(const char *name, bool excl, int io_context)
 #endif
 
     file_id_m = H5Fcreate(name,
-			  H5F_ACC_TRUNC
-			  |(excl ? H5F_ACC_EXCL : 0),
-			  H5P_DEFAULT, access_plist);
+                          H5F_ACC_TRUNC
+                          |(excl ? H5F_ACC_EXCL : 0),
+                          H5P_DEFAULT, access_plist);
     res = !(file_id_m < 0);
     if (!allOk(res))
       return false;
@@ -130,7 +130,7 @@ bool HDF5File::pushLocLoc_(hid_t loc_id, const std::string& id, bool creat, bool
     new_loc_id = H5Gcreate(loc_id, id.c_str(), 0);
 
   } else if (!(oi_err < 0)
-	     && !(creat && excl)) {
+             && !(creat && excl)) {
     if (stat.type == H5G_GROUP)
       new_loc_id = H5Gopen(loc_id, id.c_str());
     else if (stat.type == H5G_DATASET)
@@ -186,7 +186,7 @@ bool HDF5File::peekLocLoc_(hid_t loc_id, const std::string& id)
 
   if (!(oi_err < 0)) {
     if (stat.type == H5G_GROUP
-	|| stat.type == H5G_DATASET)
+        || stat.type == H5G_DATASET)
       return true;
   }
 
@@ -273,7 +273,7 @@ bool HDF5File::readOneSpacing(const char *id, Array<1, double, Brick> &s)
       hid_t type_id = o.type();
       res = !(H5Aread(attr_id, type_id, o.write()) < 0);
       if (!res && debug())
-	std::cerr << Pooma::context() << ": cannot read attribute " << id << std::endl;
+        std::cerr << Pooma::context() << ": cannot read attribute " << id << std::endl;
       H5Tclose(type_id);
       H5Aclose(attr_id);
     }
