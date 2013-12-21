@@ -30,7 +30,7 @@ public:
   {};
 
   // size of the patch
-  Base_t::size;
+  using Base_t::size;
 
 public:
 

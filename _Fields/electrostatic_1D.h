@@ -161,9 +161,9 @@ template<class Field_t>
 Electrostatic_1D<Field_t>::Electrostatic_1D()
 {
   PAssert( static_cast<int>(Field_t::dimensions) == 1 );
-  AddSavedField("Phi",Phi);
+  this->AddSavedField("Phi",Phi);
 
-  AddSavedField("E_Gauss",E_Gauss);
+  this->AddSavedField("E_Gauss",E_Gauss);
 
   // set all boundary quantities to zero
   _V0=_V1=_Phi_E0=_Phi_E1=0;

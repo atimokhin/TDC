@@ -113,22 +113,22 @@ Pairs<PT>::Pairs(const typename Base_t::ParticleLayout_t &pl):
   My_Particles<PT>(pl)
 {
   // add other attributes
-  AddAttribute_INT( "IDTS_Parent", IDTS_Parent);
-  AddAttribute_INT( "ID_Parent",   ID_Parent);
-  AddAttribute_Scalar("T_cr", T_cr);
-  AddAttribute_Point( "X_cr", X_cr);
-  AddAttribute_Point( "X_em", X_em);
-  AddAttribute_Scalar("Energy", E);
-  AddAttribute_Scalar("Psi",    Psi);
+  this->AddAttribute_INT( "IDTS_Parent", IDTS_Parent);
+  this->AddAttribute_INT( "ID_Parent",   ID_Parent);
+  this->AddAttribute_Scalar("T_cr", T_cr);
+  this->AddAttribute_Point( "X_cr", X_cr);
+  this->AddAttribute_Point( "X_em", X_em);
+  this->AddAttribute_Scalar("Energy", E);
+  this->AddAttribute_Scalar("Psi",    Psi);
 
   // attributes to be saved in HDF file
-  AddSavedAttribute("IDTS_Parent", IDTS_Parent);
-  AddSavedAttribute("ID_Parent",   ID_Parent);
-  AddSavedAttribute("T_cr", T_cr);
-  AddSavedAttribute("X_cr", X_cr);
-  AddSavedAttribute("X_em", X_em);
-  AddSavedAttribute("Energy", E);
-  AddSavedAttribute("Psi",    Psi);
+  this->AddSavedAttribute("IDTS_Parent", IDTS_Parent);
+  this->AddSavedAttribute("ID_Parent",   ID_Parent);
+  this->AddSavedAttribute("T_cr", T_cr);
+  this->AddSavedAttribute("X_cr", X_cr);
+  this->AddSavedAttribute("X_em", X_em);
+  this->AddSavedAttribute("Energy", E);
+  this->AddSavedAttribute("Psi",    Psi);
 }
 
 

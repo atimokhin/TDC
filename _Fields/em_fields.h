@@ -85,11 +85,11 @@ protected:
 template<class Field_t>
 EMFields<Field_t>::EMFields() 
 {
-  AddSavedField("Rho",Rho);
-  AddSavedField("J",J);
-  AddSavedField("E_acc",E);    
+  this->AddSavedField("Rho",Rho);
+  this->AddSavedField("J",J);
+  this->AddSavedField("E_acc",E);    
     
-  AddSavedField("RhoGJ",RhoGJ);
+  this->AddSavedField("RhoGJ",RhoGJ);
 };
 
 

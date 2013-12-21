@@ -88,14 +88,14 @@ Charged<PT>::Charged(const typename Base_t::ParticleLayout_t &pl):
   My_Particles<PT>(pl)
 {
   // add other attributes
-  AddAttribute_Point( "X", X);
-  AddSavedAttribute(  "X", X);
+  this->AddAttribute_Point( "X", X);
+  this->AddSavedAttribute(  "X", X);
 
-  AddAttribute_Scalar("P_par", P_par);
-  AddSavedAttribute(  "P_par", P_par);
+  this->AddAttribute_Scalar("P_par", P_par);
+  this->AddSavedAttribute(  "P_par", P_par);
 
-  AddAttribute_Scalar("P_perp", P_perp);
-  AddSavedAttribute(  "P_perp", P_perp);
+  this->AddAttribute_Scalar("P_perp", P_perp);
+  this->AddSavedAttribute(  "P_perp", P_perp);
 
   Base_t::AddSavedProperty("Mass",M);
   Base_t::AddSavedProperty("Charge",Q);
