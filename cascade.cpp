@@ -60,16 +60,16 @@ Cascade::~Cascade()
  *   - initializes Particles by calling Plist.SetupFromConfigGroup(in)
  *   .
  *   configuration file example
-     \verbatim
-       Group "PARTICLES" { 
-          ..... 
-          NumberOfChargedParticleTypes = 1;
-          ChargedParticles_#0 = 'Electrons';
-          Group "Electrons" {
-          .....
-          }
-      }
-     \endverbatim
+ \verbatim
+ Group "PARTICLES" { 
+ ..... 
+ NumberOfChargedParticleTypes = 1;
+ ChargedParticles_#0 = 'Electrons';
+ Group "Electrons" {
+ .....
+ }
+ }
+ \endverbatim
  * .
  *
  * @param in FileInput object
@@ -93,12 +93,12 @@ void Cascade::SetupFromConfig(FileInput& in)
       _T0 = tt.GetTimeOfTheTimeshot(hdf, start_timeshot );
       start_timestep_number = tt.GetTimestepOfTheTimeshot(hdf, start_timeshot );
       hdf.close();
-     }
-   else
-     {
-        _T0 = 0;
-        start_timestep_number = 0;
-     }
+    }
+  else
+    {
+      _T0 = 0;
+      start_timestep_number = 0;
+    }
 
   // set start timestep number for all timetables
   Timetable::SetStartTimestep(start_timestep_number);
@@ -319,15 +319,22 @@ void Cascade::RunSimulations()
       // ************************************
       // current status info -> log file
       if ( __output.DoLogFileOutput(it) || it == time.NumberOfSteps() ) 
-	{
-	  __output.LogStream()<<CurrentStateInfo(it, t)<<std::flush;
-	}
+        {
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"\n"<<std::flush;
+#endif
+          __output.LogStream()<<CurrentStateInfo(it, t)<<std::flush;
+        }
       // current status info -> stdout
       if ( __output.DoStdoutOutput(it) ) 
-	{
-	  std::cout<<CurrentStateInfo(it, t)<<std::flush;
-	}
+        {
+          std::cout<<CurrentStateInfo(it, t)<<std::flush;
+        }
       // ************************************
+
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"|"<<it<<";"<<std::flush;
+#endif
 
 
       // ************************************
@@ -335,20 +342,30 @@ void Cascade::RunSimulations()
       // ************************************
       // Move particles
       if ( __code.DoMoveParticles() ) 
-	{
-	  _PIC.MoveAndScatterParticles(_PList,*_pEM, _NSFlux,_LCFlux, t,dt);
-	}
+        {
+          _PIC.MoveAndScatterParticles(_PList,*_pEM, _NSFlux,_LCFlux, t,dt);
+        }
+
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"PIC,"<<std::flush;
+#endif
+
+
       // Solve field eqiations
       if ( __code.DoMaxwell() ) 
-	{
-	  _PIC.SolveFieldEquations(*_pEM, t,dt);
+        {
+          _PIC.SolveFieldEquations(*_pEM, t,dt);
 
           // // if asked enforce Gauss law
           // if ( __code.DoEnforceGaussLaw(it) )
           //   {
-	  //     _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
+          //     _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
           //   }
-	}
+        }
+
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"Maxwell,"<<std::flush;
+#endif
       // ************************************
 
 
@@ -356,47 +373,63 @@ void Cascade::RunSimulations()
       // <MC> Inject pairs 
       // ************************************
       if ( __code.DoInjectPairs() ) 
-	{
-	  _MC.Pairs2Particles(*_pPairs,_PList, t,dt);
-	}
+        {
+          _MC.Pairs2Particles(*_pPairs,_PList, t,dt);
+          Pooma::blockAndEvaluate();
+        }
+
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"Pairs2Particles,"<<std::flush;
+#endif
+
 
       // ************************************
       // <BC> Apply time-dependent boundary conditions
       // ************************************
       _pBC->ApplyTimeDependentBC(*_pEM,_PList, t,dt);
+
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"BC,"<<std::flush;
+#endif
       
 
       // ************************************
       // <LPT> Adjust number of particles 
       // ************************************
       if ( __code.DoLPT(t) ) 
-	{
-	  if ( _LPT.AdjustNumberOfParticles(_PList) )
-	    {
-	      _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
-	      LogEvent(it,"Particle number adjusted");
-	    }
-	}
+        {
+          if ( _LPT.AdjustNumberOfParticles(_PList) )
+            {
+              _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
+              LogEvent(it,"Particle number adjusted");
+            }
+        }
+
 
       // ************************************
       // <<MC>>  Create pairs 
       // ************************************
       if ( __code.DoCreatePairs() ) 
-	{
-	  _MC.Particles2Pairs(_PList,*_pPairs, t,dt,_ID);
-	}
+        {
+          _MC.Particles2Pairs(_PList,*_pPairs, t,dt,_ID);
+          Pooma::blockAndEvaluate();
+        }
+
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"Particles2Pairs,"<<std::flush;
+#endif
 
 
       // ************************************
       // <LPT> Adjust number of pairs and emitting particles
       // ************************************
       if ( __code.DoLPT(t) ) 
-	{
-	  if ( _LPT.AdjustNumberOfPairs(*_pPairs) )  
-	    {
-	      LogEvent(it,"Pairs numbers adjusted");
-	    }
-	}
+        {
+          if ( _LPT.AdjustNumberOfPairs(*_pPairs) )  
+            {
+              LogEvent(it,"Pairs numbers adjusted");
+            }
+        }
 
 
       // ************************************
@@ -408,40 +441,44 @@ void Cascade::RunSimulations()
           FlushHDFFile();
         }
 
+#ifdef TDC_DEBUG_LOG
+      __output.LogStream()<<"SaveToHDF,"<<std::flush;
+#endif
+
       // ************************************
       // <Control> Pause program to see results?
       // ************************************
       // Watch for stop requests
       stop.Watch();
-       if ( stop.Asked_Pause() )
-         {
-	   LogEvent(it," Computations Paused! <<<<<<<<<<<");
-           // flush data in HDF file
-           FlushHDFFile();
-	   LogEvent(it," HDF Files are ready to be seen <========");
-           // wait untill RESUME request is received
-           while ( stop.Asked_Pause() ) stop.Watch(); 
-	   LogEvent(it," Computations Resumed! <<<<<<<<<<");
-         } 
+      if ( stop.Asked_Pause() )
+        {
+          LogEvent(it," Computations Paused! <<<<<<<<<<<");
+          // flush data in HDF file
+          FlushHDFFile();
+          LogEvent(it," HDF Files are ready to be seen <========");
+          // wait untill RESUME request is received
+          while ( stop.Asked_Pause() ) stop.Watch(); 
+          LogEvent(it," Computations Resumed! <<<<<<<<<<");
+        } 
 
       
       // ************************************
       // <Control> Interrupt calculations? 
       // ************************************
-       if ( stop.Asked_Stop() ) 
-	 {
-           if ( stop.Asked_SaveCurrentState() )
-             {
-               // if results are not saved -- save them
-               if ( !__output.DoSaveToHDFFiles(it) ) this->SaveToHDFFile(t, it);
-               // write notice about interupted calculations
-               LogEvent(it," Results at this step are saved! <-------");
-             }
-	   // write notice about interupted calculations
-	   LogEvent(it," Computations Interupted! <<<<<<<");
-	   // itrerrupt the loop
-	   break;
-	 }
+      if ( stop.Asked_Stop() ) 
+        {
+          if ( stop.Asked_SaveCurrentState() )
+            {
+              // if results are not saved -- save them
+              if ( !__output.DoSaveToHDFFiles(it) ) this->SaveToHDFFile(t, it);
+              // write notice about interupted calculations
+              LogEvent(it," Results at this step are saved! <-------");
+            }
+          // write notice about interupted calculations
+          LogEvent(it," Computations Interupted! <<<<<<<");
+          // itrerrupt the loop
+          break;
+        }
     }
   // +++++++++++++++++++++++++++++++++++++++
 };
