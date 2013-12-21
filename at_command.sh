@@ -15,4 +15,4 @@ then
 fi
 
 # start simulations
-./run_cascade.exe
+./run_cascade.exe --dir ../RESULTS/WD2TB/Test/ 2>&1

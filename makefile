@@ -1,6 +1,9 @@
-CXXFLAGS= -O3 -fPIC -funroll-loops -march=$(ARCH) -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
+#CXXFLAGS= -g -O2 -mtune=$(ARCH) -march=$(ARCH) -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
+CXXFLAGS= -O3 -fPIC -funroll-loops -mtune=native -march=native -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert -rdynamic
 #CXXFLAGS= -g
 #CXXFLAGS= -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
+
+CXXFLAGS:=$(CXXFLAGS) -D TDC_DEBUG_LOG -D TDC_DEBUG_LOG_MC
 
 # **************************************
 # ******* TEST OPTIONS *****************
@@ -28,20 +31,23 @@ endif
 
 HDFHOMEDIR=$(HDF5DIR)
 
-# desktop @ UCB++++++++++++++++++++++++
-ifdef ON_DESKTOP_UCB
-MYHOMEDIR=/export/mondatta1/atim
-EXTERNAL_LIBS_DIR=/export/mondatta1/atim/MyPrograms/
-INCLUDE_RANDOM_LIB=-I LIBS -DDEFAULT_GENERATOR=SRandomGenerator64
-INCLUDE_ARGTABLE2_FLAG=-I$(EXTERNAL_LIBS_DIR)/argtable2/include 
-LIB_ARGTABLE2_FLAG=$(EXTERNAL_LIBS_DIR)/argtable2/lib/libargtable2.a
-ARCH=athlon64
+# -------------------------------------
+# my laptop++++++++++++++++++++++++++++
+ifdef ON_LAPTOP
+EXTERNAL_LIBS_DIR=/usr/local/
+MYHOMEDIR=/home/atim
+INCLUDE_RANDOM_LIB=-I LIBS -DDEFAULT_GENERATOR=SRandomGenerator64 
+INCLUDE_ARGTABLE2_FLAG=
+LIB_ARGTABLE2_FLAG= -largtable2
+ARCH=native
 
-POOMA_VERSION=my_freepooma_fast_debug
-ATBASE_VERSION= 
+POOMA_VERSION=freepooma_serial
+ATBASE_VERSION=
 # HDF5 
-INCLUDE_HDF5_FLAGS=-D H5_USE_16_API -I$(HDFHOMEDIR)/include/ 
-LIB_HDF5_FLAGS=-D H5_USE_16_API $(HDFHOMEDIR)/lib/libhdf5_hl.a $(HDFHOMEDIR)/lib/libhdf5.a -lz -lm
+INCLUDE_HDF5_FLAGS=-D H5_USE_16_API 
+LIB_HDF5_FLAGS=-D H5_USE_16_API  -lhdf5 -lz -lm
+#LIB_HDF5_FLAGS=-D H5_USE_16_API $(HDFHOMEDIR)/lib/libhdf5_hl.a $(HDFHOMEDIR)/lib/libhdf5.a -lz -lm
+LIB_HDF5_FLAGS=-D H5_USE_16_API -lhdf5 -lz -lm
 # -------------------------------------
 # henyey @ UCB+++++++++++++++++++++++++
 else ifdef ON_HENYEY_UCB
@@ -57,21 +63,6 @@ ATBASE_VERSION=
 # HDF5 
 INCLUDE_HDF5_FLAGS=-I$(HDFHOMEDIR)/include/    -D H5_USE_16_API  
 LIB_HDF5_FLAGS=-L$(HDFHOMEDIR)/lib/    -D H5_USE_16_API  -lhdf5 -lz -lm
-# -------------------------------------
-# my laptop++++++++++++++++++++++++++++
-else ifdef ON_LAPTOP
-EXTERNAL_LIBS_DIR=/usr/local/
-MYHOMEDIR=/home/atim
-INCLUDE_RANDOM_LIB=-I LIBS -DDEFAULT_GENERATOR=SRandomGenerator32 
-INCLUDE_ARGTABLE2_FLAG=
-LIB_ARGTABLE2_FLAG= -largtable2
-ARCH=core2
-
-POOMA_VERSION=freepooma_serial
-ATBASE_VERSION=
-# HDF5 
-INCLUDE_HDF5_FLAGS=-D H5_USE_16_API 
-LIB_HDF5_FLAGS=-D H5_USE_16_API  -lhdf5 -lz -lm
 endif
 # -------------------------------------
 # **************************************
@@ -90,7 +81,7 @@ LIB_POOMA_FLAGS=-L$(POOMADIR)/lib/ -l pooma
 #LIB_HDF5_FLAGS=-D H5_USE_16_API $(HDFHOMEDIR)/lib/libhdf5_hl.a $(HDFHOMEDIR)/lib/libhdf5.a -lz -lm
 
 # ATbase *******************************
-ATBASE_DIR=$(MYHOMEDIR)/00__SCIENCE/WORK/C++/ATbase2$(ATBASE_VERSION)
+ATBASE_DIR=$(MYHOMEDIR)/00__SCIENCE/WORK/AT_LIBS/C++/ATbase2$(ATBASE_VERSION)
 ATBASE=$(ATBASE_DIR)/lib/
 ATBASE_INCLUDE= -I$(ATBASE)
 ATBASE_LIB= -L$(ATBASE) -lATbase -lstdc++
@@ -297,7 +288,7 @@ depend: $(DEP_OBJ) $(DEP_TEST_OBJ) $(DEP_PLOTTING_OBJ)
 	@echo '>>>>>>>>' make.depend is created 
 
 $(DEP_OBJ): %.d : %.cpp
-	gcc -MM -MG -MT $(patsubst %.cpp, %.o, $<)  $< -MF $@
+	$(CXX) -MM -MG -MT $(patsubst %.cpp, %.o, $<)  $< -MF $@
 	@perl -pi -e 's|Pooma/\w*.h||g; s|^\s*\\\n||g' $@
 	@perl -pi -e 's|(.*)*RandomLib/\w*.hpp||g; s|^\s*\\\n||g' $@
 	@perl -pi -e 's|IO/HDF5.h||g' $@
