@@ -59,6 +59,9 @@ public:
   //! colatitude of the polar cap edge at the stellar surface
   double ThetaPC() const { return _Theta_PC; };
 
+  //! Print physical paramneters
+  virtual std::ostream& Print(std::ostream& s) const;
+
 private:
 
   double _Theta_PC;    //! colatitude of the polar cap edge at the stellar surface

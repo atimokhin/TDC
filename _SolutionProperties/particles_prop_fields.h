@@ -71,12 +71,12 @@ public:
 template<class Field_t>
 ParticlesPropFields<Field_t>::ParticlesPropFields() 
 {
-  AddSavedField("N",N);
+  this->AddSavedField("N",N);
 
-  AddSavedField("N1",N1);
-  AddSavedField("N2",N2);
-  AddSavedField("N3",N3);
-  AddSavedField("N4",N4);
+  this->AddSavedField("N1",N1);
+  this->AddSavedField("N2",N2);
+  this->AddSavedField("N3",N3);
+  this->AddSavedField("N4",N4);
 };
 
 template<class Field_t>

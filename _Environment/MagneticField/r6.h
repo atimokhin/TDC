@@ -57,6 +57,9 @@ public:
   //! Maximum value of \f$ B_\perp/B_q \f$
   virtual double XMax( double x0, Direction d ) const;
 
+  //! Print physical paramneters
+  virtual std::ostream& Print(std::ostream& s) const;
+
 protected:
 
   double _SignB;       //!< Sign of the magnetic field (+1|0|-1)

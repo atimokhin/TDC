@@ -1,3 +1,5 @@
+#include <string>
+
 #include "r6_cutoff.h"
 
 #include "../../SetupDimensionalConstants/norm_consts.h"
@@ -92,8 +94,16 @@ inline double R6_CutOff::XMax( double x0, Direction d ) const
 
 std::ostream& R6_CutOff::Print(std::ostream& s) const
 {
-  MagneticField::Print(s);
-  s<<"  X_cutoff : "<<_X_cutoff<<"\n\n";
+  string separator=string(40,'-')+"\n";
+  s<<"\n";
+  s<<separator;
+  s<<"Magnetic Field : "<<_ClassName<<" <<<<<<<<<<<<< \n";
+  s<<separator;
+  s<<"   SignB="<<_SignB<<"\n";
+  s<<"      B0="<<_B0<<" 10^12 G\n";
+  s<<"   R_cur="<<Rcur(0)*1e6<<" [cm]\n";
+  s<<"X_cutoff="<<_X_cutoff<<"\n\n";
+  s<<separator<<"\n";
+  s<<std::flush;
   return s;
 }
-

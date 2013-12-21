@@ -23,6 +23,7 @@
 #include "SetupProperties/setup_props_list.h"
 #include "SetupProperties/RS_cascade_props.h"
 
+#include "_Environment/MagneticField/magnetic_field_maker.h"
 
 
 /** 
@@ -62,6 +63,18 @@ int main(int argc, char *argv[])
   SetupPropsList props;
   props.Initialize(in);
   std::cout<<props;  
+
+
+  // Setup Magnetic field ***********************
+  in.ChangeGroup("MAGNETIC_FIELD");
+
+  string magnetic_field_name = in.get_name("Type");
+  MagneticField* p_magnetic_field = MagneticFieldMaker(in).pMake(magnetic_field_name); 
+  p_magnetic_field->SetupFromConfigGroup(in);
+
+  in.ChangeGroup();
+  std::cout<<*p_magnetic_field;
+  // ********************************************
 
   return 0; 
 }

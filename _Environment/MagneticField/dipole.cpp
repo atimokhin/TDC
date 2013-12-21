@@ -1,3 +1,5 @@
+#include <string>
+
 #include "dipole.h"
 
 #include "../../SetupDimensionalConstants/norm_consts.h"
@@ -134,4 +136,21 @@ inline double Dipole::XMax( double x0, Direction d ) const
   else
     // upward propagating photon - Bmax inside the gap
     return 0.333333333333333 * ( 4*x0 + 1e0/_Alpha );
+}
+
+
+std::ostream& Dipole::Print(std::ostream& s) const
+{
+  string separator=string(40,'-')+"\n";
+  s<<"\n";
+  s<<separator;
+  s<<"Magnetic Field : "<<_ClassName<<" <<<<<<<<<<<<< \n";
+  s<<separator;
+  s<<"   SignB="<<_SignB<<"\n";
+  s<<"      B0="<<_B0<<" 10^12 G\n";
+  s<<"R_cur(0)="<<Rcur(0)*1e6<<" [cm]\n";
+  s<<"R_cur(1)="<<Rcur(1)*1e6<<" [cm]\n";
+  s<<separator<<"\n";
+  s<<std::flush;
+  return s;
 }
