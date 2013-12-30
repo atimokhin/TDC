@@ -41,6 +41,7 @@ void DimensionalConstsSetup::SetupFromConfig(FileInput &in)
   ConstsInitializer* p_initializer = MakeInitializer(initializer_name);
   p_initializer->SetupFromConfigGroup(in);
 
+  delete p_initializer;
   in.ChangeGroup();
 }
 
