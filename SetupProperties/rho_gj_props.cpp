@@ -44,6 +44,8 @@ void RhoGJProps::Initialize(FileInput &in)
       _N_Total += (*p_rhogj)(x);
     }
   _N_Total *= static_cast<double>(n_gj)/nx;
+
+  delete p_rhogj;
 }
 
 

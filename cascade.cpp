@@ -35,8 +35,12 @@ Cascade::Cascade()
 Cascade::~Cascade()
 {
   delete _pEM;
+  delete __p_rhogj_functor;
+  delete __p_magnetic_field;
+
   delete _pPairs;
   _PList.FreeMemory();
+  delete _pBC;
 };
 
 
@@ -203,8 +207,8 @@ void Cascade::SetupFromConfig(FileInput& in)
   in.ChangeGroup("RHO_GJ");
 
   string rhogj_functor_name = in.get_name("Type");
-  RhoGJFunctor* p_rhogj_functor = RhoGJFunctorMaker(in).pMake(rhogj_functor_name); 
-  p_rhogj_functor->SetupFromConfigGroup(in);
+  __p_rhogj_functor = RhoGJFunctorMaker(in).pMake(rhogj_functor_name); 
+  __p_rhogj_functor->SetupFromConfigGroup(in);
 
   in.ChangeGroup();
   // ********************************************
@@ -216,8 +220,8 @@ void Cascade::SetupFromConfig(FileInput& in)
   in.ChangeGroup("MAGNETIC_FIELD");
 
   string magnetic_field_name = in.get_name("Type");
-  MagneticField* p_magnetic_field = MagneticFieldMaker(in).pMake(magnetic_field_name); 
-  p_magnetic_field->SetupFromConfigGroup(in);
+  __p_magnetic_field = MagneticFieldMaker(in).pMake(magnetic_field_name); 
+  __p_magnetic_field->SetupFromConfigGroup(in);
 
   in.ChangeGroup();
   // ********************************************
@@ -230,7 +234,7 @@ void Cascade::SetupFromConfig(FileInput& in)
 
   string em_name = in.get_name("Type");
   _pEM = EMFieldsMaker<Field_t>().pMake(em_name);
-  _pEM->SetRhoGJFunctor(p_rhogj_functor);
+  _pEM->SetRhoGJFunctor(__p_rhogj_functor);
   _pEM->Initialize(ml.GetFieldLayout(), ml.GetMesh());
   _pEM->SetupOutputFile();
 
@@ -256,14 +260,13 @@ void Cascade::SetupFromConfig(FileInput& in)
   if ( __code.DoMonteCarlo() ) 
     {
       _MC.SetupFromConfig(in);
-      _MC.SetMagneticField(p_magnetic_field);
+      _MC.SetMagneticField(__p_magnetic_field);
     }
 
   // ********************************************
   // Setup Large Particles Tools ****************
   // ********************************************
   if ( __code.DoLPT() ) _LPT.SetupFromConfig(in);
-
 };
 
 
@@ -320,9 +323,6 @@ void Cascade::RunSimulations()
       // current status info -> log file
       if ( __output.DoLogFileOutput(it) || it == time.NumberOfSteps() ) 
         {
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"\n"<<std::flush;
-#endif
           __output.LogStream()<<CurrentStateInfo(it, t)<<std::flush;
         }
       // current status info -> stdout
@@ -331,10 +331,6 @@ void Cascade::RunSimulations()
           std::cout<<CurrentStateInfo(it, t)<<std::flush;
         }
       // ************************************
-
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"|"<<it<<";"<<std::flush;
-#endif
 
 
       // ************************************
@@ -345,10 +341,6 @@ void Cascade::RunSimulations()
         {
           _PIC.MoveAndScatterParticles(_PList,*_pEM, _NSFlux,_LCFlux, t,dt);
         }
-
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"PIC,"<<std::flush;
-#endif
 
 
       // Solve field eqiations
@@ -362,10 +354,6 @@ void Cascade::RunSimulations()
           //     _PIC.EnforceGaussLaw(_PList,*_pEM, t,dt);
           //   }
         }
-
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"Maxwell,"<<std::flush;
-#endif
       // ************************************
 
 
@@ -375,22 +363,14 @@ void Cascade::RunSimulations()
       if ( __code.DoInjectPairs() ) 
         {
           _MC.Pairs2Particles(*_pPairs,_PList, t,dt);
-          Pooma::blockAndEvaluate();
+          // Pooma::blockAndEvaluate();
         }
-
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"Pairs2Particles,"<<std::flush;
-#endif
 
 
       // ************************************
       // <BC> Apply time-dependent boundary conditions
       // ************************************
       _pBC->ApplyTimeDependentBC(*_pEM,_PList, t,dt);
-
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"BC,"<<std::flush;
-#endif
       
 
       // ************************************
@@ -415,10 +395,6 @@ void Cascade::RunSimulations()
           Pooma::blockAndEvaluate();
         }
 
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"Particles2Pairs,"<<std::flush;
-#endif
-
 
       // ************************************
       // <LPT> Adjust number of pairs and emitting particles
@@ -441,9 +417,6 @@ void Cascade::RunSimulations()
           FlushHDFFile();
         }
 
-#ifdef TDC_DEBUG_LOG
-      __output.LogStream()<<"SaveToHDF,"<<std::flush;
-#endif
 
       // ************************************
       // <Control> Pause program to see results?

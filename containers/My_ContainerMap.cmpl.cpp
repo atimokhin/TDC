@@ -10,7 +10,6 @@ My_ContainerMap::~My_ContainerMap()
   for (Iter_t iter = map_m.begin(); iter != map_m.end(); ++iter)
     {
       delete iter->second;
-      map_m.erase(iter);
     }
 }
 

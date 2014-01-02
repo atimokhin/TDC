@@ -17,6 +17,8 @@
 #include "_Particles/ID/particle_id.h"
 
 #include "_Fields/em_fields.h"
+#include "_Environment/RhoGJ/rho_gj.h"
+#include "_Environment/MagneticField/magnetic_field.h"
 
 #include "_SolutionProperties/particle_flux.h"
 
@@ -120,6 +122,8 @@ private:
   //! Electromagnetic fields
   EM_t*  _pEM;
 
+  RhoGJFunctor*  __p_rhogj_functor;
+  MagneticField* __p_magnetic_field;
   //!@}
 
 
