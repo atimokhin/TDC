@@ -13,6 +13,7 @@
 
 #include "utils/do_print_usage_info.h"
 
+#include "_Control/output_control.h"
 #include "_Control/code_control.h"
 #include "_Control/input_control.h"
 
@@ -55,6 +56,10 @@ int main(int argc, char *argv[])
 
   DimensionalConstsSetup consts;
   consts.SetupFromConfig(in);
+
+  OutputControl out;
+  out.SetupFromConfig(in);
+  std::cout<<out;
 
   CodeControl  cc;
   cc.SetupFromConfig(in);

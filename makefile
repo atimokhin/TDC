@@ -1,9 +1,10 @@
 #CXXFLAGS= -g -O2 -mtune=$(ARCH) -march=$(ARCH) -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
-CXXFLAGS= -O3 -fPIC -funroll-loops -mtune=native -march=native -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert -rdynamic
-#CXXFLAGS= -g
-#CXXFLAGS= -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert 
+CXXFLAGS= -g -O3 -fPIC -funroll-loops -mtune=native -march=native -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert -rdynamic
 
-CXXFLAGS:=$(CXXFLAGS) -D TDC_DEBUG_LOG -D TDC_DEBUG_LOG_MC
+#CXXFLAGS= -g -O3 -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert -rdynamic
+
+#CXXFLAGS:=$(CXXFLAGS) -g -Xlinker -Map=output.map
+#CXXFLAGS:=$(CXXFLAGS) -O1 -D POOMA_BOUNDS_CHECK=0 -D NOCTAssert -D NOPAssert
 
 # **************************************
 # ******* TEST OPTIONS *****************
@@ -74,6 +75,14 @@ POOMADIR=$(EXTERNAL_LIBS_DIR)/$(POOMA_VERSION)/linux/
 INCLUDE_POOMA_FLAGS=-I$(POOMADIR)/src/ \
         -I$(POOMADIR)/lib/PoomaConfiguration 
 LIB_POOMA_FLAGS=-L$(POOMADIR)/lib/ -l pooma 
+
+# debugging
+#INCLUDE_POOMA_FLAGS=-I/home/atim/00__SCIENCE/WORK/src_libs/pooma/POOMA_SRC/current_installation_src/freepooma/src/ \
+        -I/home/atim/00__SCIENCE/WORK/src_libs/pooma/POOMA_SRC/current_installation_src/freepooma/lib/Serial1_Debug/
+
+#LIB_POOMA_FLAGS=-L/home/atim/00__SCIENCE/WORK/src_libs/pooma/POOMA_SRC/current_installation_src/freepooma/lib/Serial1_Debug/ -l pooma-gcc
+
+
 
 # HDF5 *********************************
 #INCLUDE_HDF5_FLAGS=-D H5_USE_16_API -I$(HDFHOMEDIR)/include/ 
@@ -219,7 +228,7 @@ OBJ=$(sort $(OBJ_CASCADE) )
 # <=========== all
 # <===========
 
-all:  run_cascade.exe print_parameters.exe  save_compiler_opts prop.exe #tests
+all: save_compiler_opts run_cascade.exe print_parameters.exe prop.exe #tests
 #all:  calculate_energy.exe  
 
 run_cascade.exe: $(RANDOM_LIB_SRC) $(OBJ_CASCADE) 

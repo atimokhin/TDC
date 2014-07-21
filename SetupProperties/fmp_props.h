@@ -24,8 +24,8 @@ public:
 
   void Initialize(FileInput &in);
 
-  double W0()    const { return _W0; };
-  double W_FMP() const { return _WFMP; };
+  double W0()  const { return _W0; };
+  double WGJ() const { return _WGJ; };
 
 
   void SaveToHDFFile(Save2HDF& hdf) const;
@@ -36,7 +36,7 @@ public:
 private:
 
   static double _W0;    //<! normalized charge of the FMP
-  static double _WFMP;  //<! number of real physical particles in one FMP
+  static double _WGJ;  //<! number of real physical particles in one FMP
 };
 
 

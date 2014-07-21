@@ -128,7 +128,7 @@ int OutputControl::SetupResultsDir()
  */
 std::ostream& OutputControl::Print(std::ostream& s) const
 {
-  s<<"\n Results will be written in:\n\n   ";
+  s<<"\n Results will be written to:\n\n   ";
   s<<OutputDirName()<<"\n\n";
   s<<std::flush;
 

@@ -1,5 +1,6 @@
 COMPILER_OPTS
 make.depend
+massif.out.*
 
 # Track this files -- data for K_5_1/3 function interpolation
 !_MC/Emission/Kcr.h5

@@ -28,27 +28,27 @@
  * configuration file example
  \verbatim
 
-   Group "BoundaryConditions" {	 
-      Type = 'SCLF_2';
-      ! Electron parameters ******
-      E__N_inj  = 1;
-      E__P_inj  = 0;
-      E__dP_inj = 0.01;
-      ! must be < 0.5  <----------
-      E__Delta_inj = 0.4999999999999999;
-      ! **************************
-      ! Proton parameters ********
-      I__N_inj  = 0;
-      I__P_inj  = 0;
-      I__dP_inj = 0;
-      ! must be < 0.5  <<---------
-      I__Delta_inj = 0.4999999999999999;
-      ! **************************
-      ! using for tests: fix the seed of RNG
-      SetSeedForRandomNumberGenerator ? No;
-      ! the seed for RNG
-      Seed = 1234;
-   }	 
+ Group "BoundaryConditions" {	 
+ Type = 'SCLF_2';
+ ! Electron parameters ******
+ E__N_inj  = 1;
+ E__P_inj  = 0;
+ E__dP_inj = 0.01;
+ ! must be < 0.5  <----------
+ E__Delta_inj = 0.4999999999999999;
+ ! **************************
+ ! Proton parameters ********
+ I__N_inj  = 0;
+ I__P_inj  = 0;
+ I__dP_inj = 0;
+ ! must be < 0.5  <<---------
+ I__Delta_inj = 0.4999999999999999;
+ ! **************************
+ ! using for tests: fix the seed of RNG
+ SetSeedForRandomNumberGenerator ? No;
+ ! the seed for RNG
+ Seed = 1234;
+ }	 
  
  \endverbatim
  *

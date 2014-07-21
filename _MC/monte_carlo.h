@@ -179,11 +179,12 @@ bool MonteCarlo::Particles2Pairs(ParticleList<Particles>& pl,
 {
   bool pairs_created = false;
 
+  // patch number
+  int i_patch = 0;
+
   // iterate over particle list
   for (int ipl=0; ipl<pl.Size(); ipl++)
     {
-      // patch number
-      int i_patch = 0;
       // local patch of particles
       Charged_Patch<Particles>   p(*pl[ipl],i_patch);
       // set particle id generator
@@ -214,9 +215,10 @@ bool MonteCarlo::Particles2Pairs(ParticleList<Particles>& pl,
     {
       int n_new_pairs = _PairCache.Size();
       int n_old_pairs = pairs.size();
-      pairs.create(n_new_pairs);
 
-      Pooma::blockAndEvaluate();
+      pairs.create(n_new_pairs,i_patch);
+
+      // Pooma::blockAndEvaluate();
 
       for (int i=0; i<n_new_pairs; i++)
         {
@@ -325,10 +327,11 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
       int n_new_pairs = _PositronCache.Size();
       int n_old_p = positrons.size();
       int n_old_e = electrons.size();
-      positrons.create(n_new_pairs);
-      electrons.create(n_new_pairs);
 
-      Pooma::blockAndEvaluate();
+      positrons.create(n_new_pairs,i_patch);
+      electrons.create(n_new_pairs,i_patch);
+
+      // Pooma::blockAndEvaluate();
 
       for (int i=0; i<n_new_pairs; i++)
         {
@@ -354,6 +357,7 @@ bool MonteCarlo::Pairs2Particles(Pairs& pairs_global,
       pairs_global.Swap();
       
       pl.Swap();
+
       _PositronCache.Clear();
       _ElectronCache.Clear();
     }

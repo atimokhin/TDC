@@ -2,6 +2,7 @@
  *  \file  run_cascade.exe.cpp
  *  \brief Main file for cascade simulation
  */
+//#include <mcheck.h>
 
 #include <iostream>
 #include "argtable2.h"
@@ -30,6 +31,9 @@
 //! Main function for cascade simulation
 int main(int argc, char *argv[])
 {
+
+  // mtrace(); /* Starts the recording of memory allocations and releases */
+
   // start timer ++++++++++++++++++++
   Timer timer;
   timer.Start();
@@ -67,6 +71,7 @@ int main(int argc, char *argv[])
   out.LogStream()<<params<<std::flush;
   out.LogStream()<<props<<std::flush;
 
+  std::cout<<out;
   // --------------------------------
 
   // save PID to pid file -----------

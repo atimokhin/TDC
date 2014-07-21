@@ -35,7 +35,7 @@ public:
 private:
   
   int NumberOfParticlesInCell(P& p, 					  
-			      const typename P::Traits_t::Mesh_t& m, int i_cell);
+                              const typename P::Traits_t::Mesh_t& m, int i_cell);
 
 
 
@@ -87,7 +87,7 @@ bool SCLF_3<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
 
 template<class EM, class P>
 int SCLF_3<EM,P>::NumberOfParticlesInCell(P& p, 
-					  const typename P::Traits_t::Mesh_t& m, int i_cell)
+                                          const typename P::Traits_t::Mesh_t& m, int i_cell)
 {
   int number_of_particles=0;
   Loc<1> cell(i_cell);
@@ -95,7 +95,7 @@ int SCLF_3<EM,P>::NumberOfParticlesInCell(P& p,
   for ( int i=0; i<p.size(); i++ )
     {
       if ( cell == m.cellContaining ( p.X(i) ) )
-	number_of_particles++;
+        number_of_particles++;
     }
   
   return number_of_particles;

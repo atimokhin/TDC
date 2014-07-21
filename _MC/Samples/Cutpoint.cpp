@@ -22,9 +22,9 @@ void Cutpoint::Initialize(std::vector<double>& x, std::vector<double>& f, int m)
   for( int i=0; i<_m; i++ )
     {
       while( a <= i && ++j < _F.size() ) 
-	{
-	  a=_m*_F[j];
-	}
+        {
+          a=_m*_F[j];
+        }
       _I[i] = j;
     }
 }

@@ -93,7 +93,7 @@ Charged<PT>::Charged(const typename Base_t::ParticleLayout_t &pl):
 
   this->AddAttribute_Scalar("P_par", P_par);
   this->AddSavedAttribute(  "P_par", P_par);
-
+  
   this->AddAttribute_Scalar("P_perp", P_perp);
   this->AddSavedAttribute(  "P_perp", P_perp);
 

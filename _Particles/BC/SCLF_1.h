@@ -24,15 +24,15 @@
  * configuration file example
  \verbatim
 
-   Group "BoundaryConditions" {	 
-      Type = 'SCLF_1';
-      ! momentum of injected electrons
-      P_inject_e = 10;
-      ! momentum of injected protons
-      P_inject_p = 10;
-      ! minimum fractional momentum of injected particles
-      MIN_WEIGHT = 1e-4;
-   }	 
+ Group "BoundaryConditions" {	 
+ Type = 'SCLF_1';
+ ! momentum of injected electrons
+ P_inject_e = 10;
+ ! momentum of injected protons
+ P_inject_p = 10;
+ ! minimum fractional momentum of injected particles
+ MIN_WEIGHT = 1e-4;
+ }	 
  
  \endverbatim
  *
@@ -123,10 +123,10 @@ bool SCLF_1<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       pParticles->P_perp(I) = 0;
       // update current and charge densities
       for (int i=I.min(); i<=I.max(); i++)
-	{
-	  em.J(0)   += coeff_j_rho/dt;
-	  em.Rho(0) += coeff_j_rho/dx;
-	}
+        {
+          em.J(0)   += coeff_j_rho/dt;
+          em.Rho(0) += coeff_j_rho/dx;
+        }
     }
   // the last particle is injected with fractional weight 
   if ( w_inj_last > _MIN_WEIGHT )
@@ -139,10 +139,10 @@ bool SCLF_1<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       pParticles->P_perp(I) = 0;
       // update current and charge densities
       for (int i=I.min(); i<=I.max(); i++)
-	{
-	  em.J(0)   += pParticles->Weight(i) * coeff_j_rho/dt;
-	  em.Rho(0) += pParticles->Weight(i) * coeff_j_rho/dx;
-	}
+        {
+          em.J(0)   += pParticles->Weight(i) * coeff_j_rho/dt;
+          em.Rho(0) += pParticles->Weight(i) * coeff_j_rho/dx;
+        }
     }
   
   cout<<"    after:  j(0)="<<setw(10)<<em.J(0)<<" Rho(0)="<<em.Rho(0)<<"\n"; 

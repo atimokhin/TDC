@@ -57,7 +57,7 @@ public:
 private:
   //! Pulsar period \f$ P \f$ in seconds
   static double _P;
-  //! inclination angle - between \f$ \vec{\Omega} \f$ and \f$ \mu \f$
+  //! inclination angle - between \f$ \vec{\Omega} \f$ and \f$ \mu \f$, radians
   static double _Chi;
 };
 

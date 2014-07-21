@@ -16,7 +16,7 @@ void PSR_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
 
   //parameters local to this class -----------
   _P     = in.get_param("P_SEC");
-  _Chi   = in.get_param("CHI");
+  _Chi   = 1.745329e-2 * in.get_param("CHI"); // degrees to radians conversion
   //------------------------------------------
 
   // parameters from  MagneticFieldConsts
@@ -33,7 +33,7 @@ void PSR_ConstsInitializer::SetupFromConfigGroup(FileInput &in)
   _X0 = 1.448e4 * pow(_RNS_6, 1.5)/sqrt(_P);
   _T0 = _X0/Constants::C;
 
-  _Rho0 = 33.3667 * _B_12/_P;  
+  _Rho0 = 33.3667 * _B_12*cos(_Chi)/_P;  
 
   _E0   = Constants::PI * _Rho0 * _X0;
   _Phi0 = _E0 * _X0;

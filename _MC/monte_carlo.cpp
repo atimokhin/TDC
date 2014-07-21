@@ -137,10 +137,10 @@ bool MonteCarlo::CreatePairs(ParticleID& id)
 
 	  // add newly created pair
 	  _PairCache.Add(_Ph.Weight[i], 
-                         t_cr, x_cr, _Ph.Get_X0(), 
-                         e_sign*_Ph.E[i], psi_cr, 
-                         _Ph.Origin[i],
-                         _Ph.Get_IDTS(), _Ph.Get_ID(), id.GetIDTS(), id.GetID() );
+                     t_cr, x_cr, _Ph.Get_X0(), 
+                     e_sign*_Ph.E[i], psi_cr, 
+                     _Ph.Origin[i],
+                     _Ph.Get_IDTS(), _Ph.Get_ID(), id.GetIDTS(), id.GetID() );
 
 #ifdef TEST_GAMMA2PAIR
 	  test_photon_absorbed = true;
