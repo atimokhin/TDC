@@ -34,7 +34,7 @@ public:
   EMFields(); 
 
   //! setup output hdf file
-  void SetupOutputFile(std::string filename);
+  void SetupOutputFile(std::string filename = InOut::FieldsFile);
 
   //! Maxwell Equation solver
   virtual void EvolveElectroMagneticField(double t, double dt) = 0;
@@ -98,7 +98,7 @@ EMFields<Field_t>::EMFields()
  * <b> by default the filename is InOut::FieldsFile </b>
  */
 template<class Field_t>
-void EMFields<Field_t>::SetupOutputFile(std::string filename = InOut::FieldsFile)
+void EMFields<Field_t>::SetupOutputFile(std::string filename)
 {
   Base_t::SetupOutputFile(filename);
 }

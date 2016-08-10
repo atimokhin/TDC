@@ -24,15 +24,15 @@
  * configuration file example
  \verbatim
 
-   Group "BoundaryConditions" {	 
-      Type = 'INJECT';
-      ! number of particles injected at each timestep
-      N_INJECT = 10;
-      ! momentum of injected electrons
-      P_inject_e = 10;
-      ! momentum of injected protons
-      P_inject_p = 10;
-   }	 
+ Group "BoundaryConditions" {	 
+    Type = 'INJECT';
+    ! number of particles injected at each timestep
+    N_INJECT = 10;
+    ! momentum of injected electrons
+    P_inject_e = 10;
+    ! momentum of injected protons
+    P_inject_p = 10;
+ }	 
  
  \endverbatim
  *
@@ -54,7 +54,7 @@ public:
   }
 
   //! BC that cannont be expressed in terms of POOMA BC methods
-  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt );
+  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt );
 
 
 private:
@@ -70,7 +70,7 @@ private:
 
 
 template<class EM, class P>
-bool INJECT<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt )
+bool INJECT<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt )
 {
   P     *pParticles; 
   double p;
@@ -84,17 +84,17 @@ bool INJECT<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   for (int i=0; i<2; i++)
     {
       if ( i==0 ) // inject electrons 
-	{
-	  pParticles = &( plist.GetParticles("Electrons") );
-	  p = _P_INJECT_E;
-	  n = _N_INJECT_E;
-	}
+        {
+          pParticles = &( plist.GetParticles("Electrons") );
+          p = _P_INJECT_E;
+          n = _N_INJECT_E;
+        }
       else // inject protons 
-	{
-	  pParticles = &( plist.GetParticles("Positrons") );
-	  p = _P_INJECT_P;
-	  n = _N_INJECT_P;
-	}
+        {
+          pParticles = &( plist.GetParticles("Positrons") );
+          p = _P_INJECT_P;
+          n = _N_INJECT_P;
+        }
       
       // velocity of injected particles
       double beta = p/sqrt(1+p*p);
@@ -104,20 +104,23 @@ bool INJECT<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       
       // inject particles with weight 1
       if ( n > 0 )
-	{
-	  Interval<1> I = pParticles->Create(n);
-	  pParticles->Origin(I) = 'P';
-	  pParticles->Weight(I) = 1;
-	  pParticles->X(I)      = (delta-0.5)*dx;
-	  pParticles->P_par(I)  = p;
-	  pParticles->P_perp(I) = 0;
-	  // update current and charge densities
-	  for (int i=I.min(); i<=I.max(); i++)
-	    {
-	      em.J(0)   += coeff_j_rho/dt;
-	      em.Rho(0) += coeff_j_rho/dx;
-	    }
-	}
+        {
+          Interval<1> I = pParticles->Create(n);
+          pParticles->Origin(I) = 'P';
+          pParticles->Weight(I) = 1;
+          pParticles->X(I)      = (delta-0.5)*dx;
+          pParticles->P_par(I)  = p;
+          pParticles->P_perp(I) = 0;
+          // assign ID's to injected particles
+          for (Interval<1>::iterator iter=I.begin();  iter!=I.end(); iter++)
+            {
+              pParticles->IDTS(*iter) = p_id.GetIDTS();
+              pParticles->ID(*iter)   = p_id.GetID();
+            }
+          // update current and charge densities
+          em.J(0)   += coeff_j_rho/dt*(I.max()-I.min()+1);
+          em.Rho(0) += coeff_j_rho/dx*(I.max()-I.min()+1);
+        }
     }
   plist.Sync();
 

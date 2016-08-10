@@ -48,7 +48,7 @@ public:
   void SetupFromConfigGroup(FileInput& in);
 
   //! BC that cannont be expressed in terms of POOMA BC methods
-  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt );
+  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt );
 
 private:
 
@@ -72,7 +72,7 @@ void SCLF_1<EM,P>::SetupFromConfigGroup(FileInput& in)
 
 
 template<class EM, class P>
-bool SCLF_1<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt )
+bool SCLF_1<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt )
 {
   P     *pParticles; 
   double p_inject;
@@ -121,12 +121,15 @@ bool SCLF_1<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       pParticles->X(I)      = (delta-0.5)*dx;
       pParticles->P_par(I)  = p_inject;
       pParticles->P_perp(I) = 0;
-      // update current and charge densities
-      for (int i=I.min(); i<=I.max(); i++)
+      // assign ID's to injected particles
+      for (Interval<1>::iterator iter=I.begin();  iter!=I.end(); iter++)
         {
-          em.J(0)   += coeff_j_rho/dt;
-          em.Rho(0) += coeff_j_rho/dx;
+          pParticles->IDTS(*iter) = p_id.GetIDTS();
+          pParticles->ID(*iter)   = p_id.GetID();
         }
+      // update current and charge densities
+      em.J(0)   += coeff_j_rho/dt*(I.max()-I.min()+1);
+      em.Rho(0) += coeff_j_rho/dx*(I.max()-I.min()+1);
     }
   // the last particle is injected with fractional weight 
   if ( w_inj_last > _MIN_WEIGHT )
@@ -137,11 +140,14 @@ bool SCLF_1<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       pParticles->X(I)      = (delta-0.5)*dx;
       pParticles->P_par(I)  = p_inject;
       pParticles->P_perp(I) = 0;
-      // update current and charge densities
-      for (int i=I.min(); i<=I.max(); i++)
+      // assign ID's to injected particles
+      for (Interval<1>::iterator iter=I.begin();  iter!=I.end(); iter++)
         {
-          em.J(0)   += pParticles->Weight(i) * coeff_j_rho/dt;
-          em.Rho(0) += pParticles->Weight(i) * coeff_j_rho/dx;
+          pParticles->IDTS(*iter) = p_id.GetIDTS();
+          pParticles->ID(*iter)   = p_id.GetID();
+          // update current and charge densities
+          em.J(0)   += pParticles->Weight(*iter) * coeff_j_rho/dt;
+          em.Rho(0) += pParticles->Weight(*iter) * coeff_j_rho/dx;
         }
     }
   

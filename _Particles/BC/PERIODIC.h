@@ -33,7 +33,7 @@ public:
   };
 
   //! BC that cannont be expressed in terms of POOMA BC methods
-  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt ) 
+  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt ) 
   {
     return false;
   };

@@ -29,7 +29,7 @@ public:
   }
 
   //! BC that cannont be expressed in terms of POOMA BC methods
-  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt );
+  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt );
 
 
 private:
@@ -49,7 +49,7 @@ private:
 
 
 template<class EM, class P>
-bool SCLF_3<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt )
+bool SCLF_3<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt )
 {
   P *p_particles; 
   double delta_x = Pooma::cellVolumes(em.Rho).comp(0).read(0);
@@ -73,6 +73,13 @@ bool SCLF_3<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       p_electrons->X(I_e)      = 0.5*delta_x;
       p_electrons->P_par(I_e)  = _P_Pairs_e;
       p_electrons->P_perp(I_e) = 0;
+      for (Interval<1>::iterator iter=I_e.begin();  iter!=I_e.end(); iter++)
+        {
+          // assign ID's to injected particles
+          p_electrons->IDTS(*iter)	= p_id.GetIDTS();
+		  p_electrons->ID(*iter)	= p_id.GetID();
+        }
+      p_electrons->Swap(); // swap because new particles are created <<<
 	  	  
       Interval<1> I_p = p_protons->Create(n_inj);
       p_protons->Origin(I_p) = 'P';
@@ -80,6 +87,13 @@ bool SCLF_3<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
       p_protons->X(I_p)      = 0.5*delta_x;
       p_protons->P_par(I_p)  = _P_Pairs_p;
       p_protons->P_perp(I_p) = 0;
+      for (Interval<1>::iterator iter=I_p.begin();  iter!=I_p.end(); iter++)
+        {
+          // assign ID's to injected particles
+          p_protons->IDTS(*iter)	= p_id.GetIDTS();
+		  p_protons->ID(*iter)	= p_id.GetID();
+        }
+      p_protons->Swap(); // swap because new particles are created <<<
     }
   
   return true;

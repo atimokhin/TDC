@@ -145,7 +145,7 @@ public:
   Attribute_INT_t  IDTS;
   //! Attribute: Particle ID (patch# and consequtive# of particle created in that patch)
   Attribute_INT_t  ID;
-   // ----------------------------------------
+  // ----------------------------------------
 
 
 public:
@@ -167,9 +167,9 @@ private:
 
 private:
 
-   //! map of saved properties
+  //! map of saved properties
   My_PropertyMap   _SavedProperties;
-   //! map of saved attributes
+  //! map of saved attributes
   My_AttributeMap  _SavedAttributes;
 
   //! Timetable
@@ -350,28 +350,28 @@ void My_Particles<PT>::AddAttribute_CHAR(string name, Attribute_CHAR_t& attr)
  *
  * config file example:
  \verbatim
-     ...
-     NumberOfParticles_Initial = 1;
-     NumberOfParticles_Maximal = 2000;
-     NumberOfParticles_Optimum = 1000;
-     Group "InitialConditions" {	 
-        NumberOfInitializedAttributes = 2;
-        AttributeName_#0 = 'X';
-        AttributeName_#1 = 'Momentum';	 
-        Group "X" {		
-           DistributionName='Discrete';
-           Group "Discrete" {		
-           ....
-           }   
-        }
-        Group "Momentum" {		
-           DependsOnAttribute='X';
-           DistributionName='SinX';
-           Group "SinX" {		
-           ....
-           }
-        }
-     }
+ ...
+ NumberOfParticles_Initial = 1;
+ NumberOfParticles_Maximal = 2000;
+ NumberOfParticles_Optimum = 1000;
+ Group "InitialConditions" {	 
+ NumberOfInitializedAttributes = 2;
+ AttributeName_#0 = 'X';
+ AttributeName_#1 = 'Momentum';	 
+ Group "X" {		
+ DistributionName='Discrete';
+ Group "Discrete" {		
+ ....
+ }   
+ }
+ Group "Momentum" {		
+ DependsOnAttribute='X';
+ DistributionName='SinX';
+ Group "SinX" {		
+ ....
+ }
+ }
+ }
  \endverbatim
  * 
  * @param in InputFile object
@@ -404,10 +404,10 @@ void My_Particles<PT>::SetupFromConfigGroup(FileInput& in, ParticleID& p_id)
       // Set particle id *****************************************
       p_id.SetPatch(0);
       for (int i=0; i<number_of_particles; i++)
-	{
-	  IDTS(i) = p_id.GetIDTS();
-	  ID(i)   = p_id.GetID();
-	}
+        {
+          IDTS(i) = p_id.GetIDTS();
+          ID(i)   = p_id.GetID();
+        }
 
 
 
@@ -421,64 +421,64 @@ void My_Particles<PT>::SetupFromConfigGroup(FileInput& in, ParticleID& p_id)
 
       // iterate over attributes only if at least one particle was created
       for (int i_attr=0; i_attr<n_attr; i_attr++)
-	{
-	  string attr_name = in.get_name("AttributeName",i_attr);
-	  in.ChangeGroup(attr_name);
+        {
+          string attr_name = in.get_name("AttributeName",i_attr);
+          in.ChangeGroup(attr_name);
 
-	  string distr_name = in.get_name("DistributionName");
+          string distr_name = in.get_name("DistributionName");
 
-	  // Does the initial distribution of the attribute depends on another one?
-	  // ponter to atribute on which another attribute depends
-	  Attribute_Point_t* pattr_base;
-	  bool               is_independent = true;
+          // Does the initial distribution of the attribute depends on another one?
+          // ponter to atribute on which another attribute depends
+          Attribute_Point_t* pattr_base;
+          bool               is_independent = true;
 
 
-	  if ( in.name_is_set("DependsOnAttribute") )
-	    {
-	      is_independent = false;
-	      pattr_base = Attributes_Point.Item(in.get_name("DependsOnAttribute"));
+          if ( in.name_is_set("DependsOnAttribute") )
+            {
+              is_independent = false;
+              pattr_base = Attributes_Point.Item(in.get_name("DependsOnAttribute"));
 
-	      if (!pattr_base)
-		{
-		  NoSuchAttribute(attr_name);
-		  exit(1);
-		}
-	    }
+              if (!pattr_base)
+                {
+                  NoSuchAttribute(attr_name);
+                  exit(1);
+                }
+            }
 
-	  if ( Attribute_Point_t* pattr = Attributes_Point.Item(attr_name) )
-	    {
-	      InitialDistribution<Attribute_Point_t>* p_distr = 
-		InitialDistributionMaker<Attribute_Point_t>(in).pMake(distr_name);
-	      // independent or dependent?
-	      is_independent? (*p_distr)(*pattr) : (*p_distr)(*pattr, *pattr_base);
+          if ( Attribute_Point_t* pattr = Attributes_Point.Item(attr_name) )
+            {
+              InitialDistribution<Attribute_Point_t>* p_distr = 
+                InitialDistributionMaker<Attribute_Point_t>(in).pMake(distr_name);
+              // independent or dependent?
+              is_independent? (*p_distr)(*pattr) : (*p_distr)(*pattr, *pattr_base);
 
-	      delete p_distr;
-	    }
-	  else if ( Attribute_Scalar_t* pattr = Attributes_Scalar.Item(attr_name) )
-	    {
-	      InitialDistribution<Attribute_Scalar_t,Attribute_Point_t>* p_distr = 
-		InitialDistributionMaker<Attribute_Scalar_t,Attribute_Point_t>(in).pMake(distr_name);
-	      // independent or dependent?
-	      is_independent? (*p_distr)(*pattr) : (*p_distr)(*pattr, *pattr_base);
+              delete p_distr;
+            }
+          else if ( Attribute_Scalar_t* pattr = Attributes_Scalar.Item(attr_name) )
+            {
+              InitialDistribution<Attribute_Scalar_t,Attribute_Point_t>* p_distr = 
+                InitialDistributionMaker<Attribute_Scalar_t,Attribute_Point_t>(in).pMake(distr_name);
+              // independent or dependent?
+              is_independent? (*p_distr)(*pattr) : (*p_distr)(*pattr, *pattr_base);
 
-	      delete p_distr;
-	    }
-	  else if ( Attribute_INT_t* pattr = Attributes_INT.Item(attr_name) )
-	    {
-	      InitialDistribution<Attribute_INT_t,Attribute_Point_t>* p_distr = 
-		InitialDistributionMaker<Attribute_INT_t,Attribute_Point_t>(in).pMake(distr_name);
-	      // independent or dependent?
-	      is_independent? (*p_distr)(*pattr) : (*p_distr)(*pattr, *pattr_base);
+              delete p_distr;
+            }
+          else if ( Attribute_INT_t* pattr = Attributes_INT.Item(attr_name) )
+            {
+              InitialDistribution<Attribute_INT_t,Attribute_Point_t>* p_distr = 
+                InitialDistributionMaker<Attribute_INT_t,Attribute_Point_t>(in).pMake(distr_name);
+              // independent or dependent?
+              is_independent? (*p_distr)(*pattr) : (*p_distr)(*pattr, *pattr_base);
 
-	      delete p_distr;
-	    }
-	  else
-	    {
-	      NoSuchAttribute(attr_name);
-	    }
+              delete p_distr;
+            }
+          else
+            {
+              NoSuchAttribute(attr_name);
+            }
 
-	  in.ChangeGroup("..");
-	}
+          in.ChangeGroup("..");
+        }
       in.ChangeGroup("..");
     }
   

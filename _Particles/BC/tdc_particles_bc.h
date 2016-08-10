@@ -10,6 +10,7 @@
 #include "../../_Fields/em_fields.h"
 
 #include "../particle_list.h"
+#include "../ID/particle_id.h"
 
 
 /**
@@ -54,9 +55,10 @@ public:
    * 
    * @param   em    reference to a class with electromagnetic fields
    * @param   plist ParticleList with Charged  partciles
+   * @param   p_id  ParticleID, neede if particles are injected
    * @return  true  if boundary conditions were applied, i.e. sync on particles is required
    */
-  virtual bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt ) = 0;
+  virtual bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt) = 0;
 
 
 protected:

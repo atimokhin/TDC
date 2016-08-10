@@ -370,7 +370,7 @@ void Cascade::RunSimulations()
       // ************************************
       // <BC> Apply time-dependent boundary conditions
       // ************************************
-      _pBC->ApplyTimeDependentBC(*_pEM,_PList, t,dt);
+      _pBC->ApplyTimeDependentBC(*_pEM,_PList, _ID, t,dt);
       
 
       // ************************************

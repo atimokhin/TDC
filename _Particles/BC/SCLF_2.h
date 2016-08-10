@@ -63,7 +63,7 @@ public:
   void SetupFromConfigGroup(FileInput& in);
 
   //! BC that cannont be expressed in terms of POOMA BC methods
-  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt );
+  bool ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt );
 
 
 private:
@@ -103,7 +103,7 @@ void SCLF_2<EM,P>::SetupFromConfigGroup(FileInput& in)
 
 
 template<class EM, class P>
-bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double t, double dt )
+bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, ParticleID& p_id, double t, double dt )
 {
   double x_inj;
   // cell size
@@ -122,9 +122,16 @@ bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   p_E.X(Ie)      = x_inj;
   p_E.P_perp(Ie) = 0;
   for (Interval<1>::iterator iter=Ie.begin();  iter!=Ie.end(); iter++)
-    p_E.P_par(*iter)  = _E__P_inj + _Rand.FixedS()*_E__dP_inj;
+    {
+      // momentum distribution
+      p_E.P_par(*iter)  = _E__P_inj + _Rand.FixedS()*_E__dP_inj;
+      // assign ID's to injected particles
+      p_E.IDTS(*iter)  = p_id.GetIDTS();
+      p_E.ID(*iter)    = p_id.GetID();
+    }
   p_E.Swap(); // swap because new particles are created <<<
   // --------------------------------------
+
 
   // inject ions --------------------------
   P& p_I = plist.GetParticles("Protons");
@@ -137,7 +144,13 @@ bool SCLF_2<EM,P>::ApplyTimeDependentBC( EM& em, ParticleList<P>& plist, double 
   p_I.X(Ii)      = x_inj;
   p_I.P_perp(Ii) = 0;
   for (Interval<1>::iterator iter=Ii.begin();  iter!=Ii.end(); iter++)
-    p_I.P_par(*iter)  = _I__P_inj + _Rand.FixedS()*_I__dP_inj;
+    {
+      // momentum distribution
+      p_I.P_par(*iter) = _I__P_inj + _Rand.FixedS()*_I__dP_inj;
+      // assign ID's to injected particles
+      p_I.IDTS(*iter)  = p_id.GetIDTS();
+      p_I.ID(*iter)    = p_id.GetID();
+    }
   p_I.Swap(); // swap because new particles are created <<<
   // --------------------------------------
       
